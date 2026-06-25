@@ -1,9 +1,11 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
+import { NavLink } from 'react-router-dom'
+import { motion, AnimatePresence } from 'framer-motion'
 import allSections from '../data/dsa'
 import roadmapTechs from '../data/roadmap'
 import { useDSAStore } from '../store/dsaStore'
 import { useRoadmapStore } from '../store/roadmapStore'
-import ProgressBar from '../components/ProgressBar'
+import { usePlannerStore } from '../store/plannerStore'
 
 const quotes = [
   "Code is like humor. When you have to explain it, it's bad. – Cory House",
@@ -28,6 +30,11 @@ const quotes = [
   'It works on my machine. – Every developer ever',
 ]
 
+function getTodayStr(): string {
+  const d = new Date()
+  return `${String(d.getDate()).padStart(2, '0')}-${String(d.getMonth() + 1).padStart(2, '0')}-${d.getFullYear()}`
+}
+
 function getGreeting(): string {
   const hour = new Date().getHours()
   if (hour < 12) return 'Good morning'
@@ -35,152 +42,552 @@ function getGreeting(): string {
   return 'Good evening'
 }
 
-function getDaysUntil(dateStr: string): number {
-  const now = new Date()
-  const target = new Date(dateStr)
-  const diff = target.getTime() - now.getTime()
-  return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)))
+function HeroSection() {
+  const greeting = getGreeting()
+  const today = getTodayStr()
+  const { tasks } = usePlannerStore()
+  const { getProgress } = useRoadmapStore()
+
+  const todayTasks = useMemo(() => tasks.filter(t => t.date === today), [tasks, today])
+  const completedTasks = useMemo(() => todayTasks.filter(t => t.status === 'done'), [todayTasks])
+  const todayProgress = todayTasks.length > 0 ? Math.round((completedTasks.length / todayTasks.length) * 100) : 0
+
+  const streak = parseInt(localStorage.getItem('placement-os-streak') || '0', 10)
+
+  const totalHours = useMemo(() =>
+    roadmapTechs
+      .filter(t => !t.isCheckpoint)
+      .reduce((sum, t) => sum + getProgress(t.id).hoursSpent, 0),
+    [getProgress],
+  )
+
+  const quote = useRef(quotes[Math.floor(Math.random() * quotes.length)])
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="card-premium p-6 lg:p-8"
+    >
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+        <div className="space-y-4">
+          <div>
+            <h1 className="text-2xl lg:text-3xl font-bold text-stone-900 dark:text-white tracking-tight">
+              {greeting}, Nikhil 👋
+            </h1>
+            <p className="text-sm text-stone-500 dark:text-zinc-400 mt-1">
+              Current Goal: Become a Full Stack Software Engineer
+            </p>
+          </div>
+          <div className="space-y-2">
+            <div className="flex items-center gap-4 text-sm">
+              <span className="text-stone-600 dark:text-zinc-300">Today's Progress</span>
+              <span className="font-mono text-indigo-400 font-semibold">{todayProgress}%</span>
+              <span className="text-stone-400">•</span>
+              <span className="text-stone-500">{completedTasks.length} of {todayTasks.length} Tasks Completed</span>
+            </div>
+            <div className="w-full max-w-md h-2 bg-stone-200 dark:bg-zinc-800 rounded-full overflow-hidden">
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: `${todayProgress}%` }}
+                transition={{ duration: 1, ease: 'easeOut' }}
+                className="h-full rounded-full bg-gradient-to-r from-indigo-500 to-purple-500"
+              />
+            </div>
+          </div>
+          <div className="flex items-center gap-6 text-sm">
+            <span className="text-stone-600 dark:text-zinc-300">Current Streak 🔥 {streak} days</span>
+            <span className="text-stone-600 dark:text-zinc-300">Study Time Today • {totalHours}h total</span>
+          </div>
+        </div>
+        <div className="space-y-2 text-right">
+          <p className="text-xs text-stone-400 italic max-w-xs">"{quote.current}"</p>
+          <NavLink to="/dsa-tracker" className="btn-primary inline-block">Continue Learning →</NavLink>
+        </div>
+      </div>
+    </motion.div>
+  )
 }
 
-function getDefaultCountdown(): string {
-  const d = new Date()
-  d.setFullYear(d.getFullYear() + 1)
-  return d.toISOString().split('T')[0]
-}
-
-export default function Dashboard() {
+function QuickStatsGrid() {
   const { getSectionStats } = useDSAStore()
   const { getProgress } = useRoadmapStore()
 
-  const [quoteIndex, setQuoteIndex] = useState(0)
-  const [countdownDate, setCountdownDate] = useState(() => {
-    return localStorage.getItem('placement-os-countdown') || getDefaultCountdown()
-  })
-
-  useEffect(() => {
-    localStorage.setItem('placement-os-countdown', countdownDate)
-  }, [countdownDate])
-
-  useEffect(() => {
-    setQuoteIndex(Math.floor(Math.random() * quotes.length))
-  }, [])
-
-  const greeting = getGreeting()
-
-  const dsaStats = useMemo(() => {
-    let totalSolved = 0, totalProblems = 0
-    let easy = 0, medium = 0, hard = 0
-    let easySolved = 0, mediumSolved = 0, hardSolved = 0
-    for (const section of allSections) {
-      const stats = getSectionStats(section.id)
-      totalSolved += stats.solved
-      totalProblems += stats.total
-      easy += stats.easy
-      medium += stats.medium
-      hard += stats.hard
-      easySolved += stats.easySolved
-      mediumSolved += stats.mediumSolved
-      hardSolved += stats.hardSolved
+  const stats = useMemo(() => {
+    let dsaSolved = 0
+    let dsaTotal = 0
+    for (const s of allSections) {
+      const st = getSectionStats(s.id)
+      dsaSolved += st.solved
+      dsaTotal += st.total
     }
-    return { totalSolved, totalProblems, easy, medium, hard, easySolved, mediumSolved, hardSolved }
-  }, [getSectionStats])
+    const dsaPct = dsaTotal > 0 ? Math.round((dsaSolved / dsaTotal) * 100) : 0
 
-  const roadmapStats = useMemo(() => {
-    const nonCheckpoints = roadmapTechs.filter((t) => !t.isCheckpoint)
-    const completed = nonCheckpoints.filter((t) => getProgress(t.id).status === 'completed').length
-    return { completed, total: nonCheckpoints.length }
-  }, [getProgress])
+    const nonCheckpoints = roadmapTechs.filter(t => !t.isCheckpoint)
+    const roadmapCompleted = nonCheckpoints.filter(t => getProgress(t.id).status === 'completed').length
+    const roadmapPct = nonCheckpoints.length > 0 ? Math.round((roadmapCompleted / nonCheckpoints.length) * 100) : 0
 
-  const daysLeft = getDaysUntil(countdownDate)
+    const overallPct = Math.round((dsaPct + roadmapPct) / 2)
+    const totalHours = nonCheckpoints.reduce((sum, t) => sum + getProgress(t.id).hoursSpent, 0)
+
+    return [
+      { label: 'Overall Progress', value: `${overallPct}%`, progress: overallPct },
+      { label: 'DSA Progress', value: `${dsaSolved}/${dsaTotal}`, progress: dsaPct },
+      { label: 'Development', value: `${roadmapCompleted}/${nonCheckpoints.length}`, progress: roadmapPct },
+      { label: 'Core Subjects', value: '0%', progress: 0 },
+      { label: 'Study Hours', value: `${totalHours}h`, progress: undefined },
+      { label: 'XP', value: '0', progress: undefined },
+      { label: 'Level', value: '1', progress: undefined },
+      { label: 'Problems Solved', value: `${dsaSolved}`, progress: undefined },
+      { label: 'Projects', value: '0', progress: undefined },
+      { label: 'GitHub Streak', value: '0', progress: undefined },
+    ]
+  }, [getSectionStats, getProgress])
 
   return (
-    <div className="space-y-8">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="glass rounded-2xl p-8 lg:col-span-2">
-          <h1 className="text-2xl font-bold text-stone-900 dark:text-gray-100">
-            {greeting}, Placement Seeker
-          </h1>
-          <p className="text-sm text-stone-500 dark:text-gray-400 mt-2 italic">
-            &ldquo;{quotes[quoteIndex]}&rdquo;
-          </p>
-        </div>
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+      {stats.map((stat, i) => (
+        <motion.div
+          key={stat.label}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: i * 0.05 }}
+          className="card-premium p-4 hover:border-indigo-500/20 transition-all duration-300"
+        >
+          <p className="text-xs text-zinc-400">{stat.label}</p>
+          <p className="stat-value text-stone-900 dark:text-white mt-1">{stat.value}</p>
+          {stat.progress !== undefined && (
+            <div className="mt-2 h-1 bg-stone-200 dark:bg-zinc-800 rounded-full overflow-hidden">
+              <div className="h-full rounded-full bg-indigo-500" style={{ width: `${stat.progress}%` }} />
+            </div>
+          )}
+        </motion.div>
+      ))}
+    </div>
+  )
+}
 
-        <div className="glass rounded-2xl p-8 lg:col-span-1">
-          <h2 className="text-lg font-semibold text-stone-900 dark:text-gray-100">
-            Placement Countdown
-          </h2>
-          <p className="text-3xl font-bold text-indigo-500 mt-2">
-            {daysLeft}{' '}
-            <span className="text-base font-normal text-stone-400">days</span>
-          </p>
-          <p className="text-xs text-stone-400 mt-1">until Placement Season</p>
-          <input
-            type="date"
-            value={countdownDate}
-            onChange={(e) => setCountdownDate(e.target.value)}
-            className="mt-3 px-3 py-1.5 rounded-lg bg-white/50 dark:bg-gray-800/50 border border-stone-200 dark:border-gray-700 text-sm w-full focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
-        </div>
+function TodayTimeline() {
+  const today = getTodayStr()
+  const { tasks } = usePlannerStore()
+
+  const todayTasks = useMemo(
+    () => tasks.filter(t => t.date === today).sort((a, b) => a.startTime.localeCompare(b.startTime)),
+    [tasks, today],
+  )
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="card-premium p-6"
+    >
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="section-title">Today's Planner</h2>
+        <span className="text-xs text-zinc-400">{today}</span>
       </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="glass rounded-2xl p-8">
-          <h2 className="text-lg font-semibold text-stone-900 dark:text-gray-100">
-            DSA Progress
-          </h2>
-          <p className="text-sm text-stone-500 mt-1">
-            {dsaStats.totalSolved}/{dsaStats.totalProblems} problems solved
-          </p>
-          <ProgressBar
-            value={dsaStats.totalProblems > 0 ? (dsaStats.totalSolved / dsaStats.totalProblems) * 100 : 0}
-            className="mt-3"
-          />
-          <div className="flex gap-4 mt-3 text-sm">
-            <span className="text-green-500">
-              E {dsaStats.easySolved}/{dsaStats.easy}
-            </span>
-            <span className="text-yellow-500">
-              M {dsaStats.mediumSolved}/{dsaStats.medium}
-            </span>
-            <span className="text-red-500">
-              H {dsaStats.hardSolved}/{dsaStats.hard}
-            </span>
-          </div>
-        </div>
-
-        <div className="glass rounded-2xl p-8">
-          <h2 className="text-lg font-semibold text-stone-900 dark:text-gray-100">
-            Roadmap Progress
-          </h2>
-          <p className="text-sm text-stone-500 mt-1">
-            {roadmapStats.completed}/{roadmapStats.total} technologies completed
-          </p>
-          <ProgressBar
-            value={roadmapStats.total > 0 ? (roadmapStats.completed / roadmapStats.total) * 100 : 0}
-            className="mt-3"
-          />
-        </div>
+      <div className="space-y-0">
+        <AnimatePresence>
+          {todayTasks.length === 0 ? (
+            <motion.p
+              key="empty"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="text-sm text-zinc-500 py-4"
+            >
+              No tasks scheduled for today
+            </motion.p>
+          ) : (
+            todayTasks.map((task, i) => (
+              <motion.div
+                key={task.id}
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -10 }}
+                transition={{ delay: i * 0.05 }}
+                className={`flex items-center gap-4 py-3 border-l-2 pl-4 -ml-[1px] ${
+                  task.status === 'done'
+                    ? 'border-green-500/50 opacity-60'
+                    : 'border-indigo-500/50'
+                }`}
+              >
+                <span className="text-xs font-mono text-zinc-500 w-12">{task.startTime}</span>
+                <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400">
+                  {task.category}
+                </span>
+                <span
+                  className={`text-sm flex-1 ${
+                    task.status === 'done'
+                      ? 'line-through text-zinc-600'
+                      : 'text-stone-700 dark:text-zinc-300'
+                  }`}
+                >
+                  {task.category} — {task.startTime}–{task.endTime}
+                </span>
+                {task.status === 'done' && <span className="text-green-400 text-xs">✓</span>}
+              </motion.div>
+            ))
+          )}
+        </AnimatePresence>
       </div>
+    </motion.div>
+  )
+}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {[
-          "Today's Progress",
-          'Weekly Goal',
-          'Monthly Goal',
-          'XP / Level',
-          'Total Study Hours',
-        ].map((title, index) => (
-          <div
-            key={title}
-            style={{ animationDelay: `${index * 40}ms` }}
-            className="glass rounded-2xl p-8 opacity-60 grayscale animate-fade-in-up"
+function ContinueLearning() {
+  const { getSectionStats } = useDSAStore()
+  const { getProgress } = useRoadmapStore()
+
+  const items = useMemo(() => {
+    const dsaItems = allSections
+      .filter(s => {
+        const stats = getSectionStats(s.id)
+        return stats.solved > 0 && stats.solved < stats.total
+      })
+      .slice(0, 2)
+      .map(s => {
+        const stats = getSectionStats(s.id)
+        return {
+          title: s.title,
+          type: 'DSA' as const,
+          progress: stats.total > 0 ? Math.round((stats.solved / stats.total) * 100) : 0,
+          link: '/dsa-tracker',
+        }
+      })
+
+    const techItems = roadmapTechs
+      .filter(t => !t.isCheckpoint && getProgress(t.id).status === 'learning')
+      .slice(0, 2)
+      .map(t => ({
+        title: t.name,
+        type: 'Development' as const,
+        progress: Math.min(100, Math.round((getProgress(t.id).hoursSpent / 40) * 100)),
+        link: '/roadmap',
+      }))
+
+    return [...dsaItems, ...techItems]
+  }, [getSectionStats, getProgress])
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="card-premium p-6"
+    >
+      <h2 className="section-title mb-4">Continue Learning</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {items.map(item => (
+          <NavLink
+            key={item.title}
+            to={item.link}
+            className="p-4 rounded-xl bg-stone-100 dark:bg-zinc-800/50 hover:bg-stone-200 dark:hover:bg-zinc-800 transition-all duration-200 border border-transparent hover:border-indigo-500/20"
           >
-            <h3 className="text-sm font-medium text-stone-500 dark:text-gray-400">
-              {title}
-            </h3>
-            <p className="text-xs text-stone-400 mt-4">Coming Soon</p>
+            <p className="text-xs text-zinc-400 uppercase tracking-wider">{item.type}</p>
+            <p className="text-sm font-medium text-stone-800 dark:text-zinc-200 mt-1">{item.title}</p>
+            <div className="mt-3 flex items-center gap-3">
+              <div className="flex-1 h-1.5 bg-stone-200 dark:bg-zinc-700/50 rounded-full overflow-hidden">
+                <div className="h-full rounded-full bg-indigo-500" style={{ width: `${item.progress}%` }} />
+              </div>
+              <span className="text-xs font-mono text-indigo-400">{item.progress}%</span>
+            </div>
+          </NavLink>
+        ))}
+        {items.length === 0 && (
+          <p className="text-sm text-zinc-500 col-span-2 py-4">Start learning to see progress here</p>
+        )}
+      </div>
+    </motion.div>
+  )
+}
+
+const revisionItems = [
+  { title: 'Arrays', due: 'Tomorrow' },
+  { title: 'React Hooks', due: 'In 2 days' },
+  { title: 'Binary Search', due: 'In 5 days' },
+  { title: 'Linked Lists', due: 'Next week' },
+]
+
+function UpcomingRevisions() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="card-premium p-6"
+    >
+      <h2 className="section-title mb-4">Upcoming Revisions</h2>
+      <div className="space-y-2">
+        {revisionItems.map(item => (
+          <div key={item.title} className="flex items-center justify-between py-2">
+            <span className="text-sm text-stone-700 dark:text-zinc-300">{item.title}</span>
+            <span className="text-xs font-mono text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded-full">
+              {item.due}
+            </span>
           </div>
         ))}
+      </div>
+    </motion.div>
+  )
+}
+
+function WeeklyHeatmap() {
+  const { tasks } = usePlannerStore()
+
+  const cells = useMemo(() => {
+    const today = new Date()
+    const days: { date: string; count: number }[] = []
+    for (let i = 34; i >= 0; i--) {
+      const d = new Date(today)
+      d.setDate(d.getDate() - i)
+      const dateStr = `${String(d.getDate()).padStart(2, '0')}-${String(d.getMonth() + 1).padStart(2, '0')}-${d.getFullYear()}`
+      const count = tasks.filter(t => t.date === dateStr && t.status === 'done').length
+      days.push({ date: dateStr, count })
+    }
+    return days
+  }, [tasks])
+
+  const weeks: { date: string; count: number }[][] = []
+  for (let w = 0; w < 5; w++) {
+    weeks.push(cells.slice(w * 7, (w + 1) * 7))
+  }
+
+  const getColor = (count: number) => {
+    if (count === 0) return 'bg-zinc-800'
+    if (count <= 1) return 'bg-indigo-900/60'
+    if (count <= 3) return 'bg-indigo-700/60'
+    return 'bg-indigo-500/60'
+  }
+
+  const hasActivity = tasks.some(t => t.status === 'done')
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="card-premium p-6"
+    >
+      <h2 className="section-title mb-4">Activity</h2>
+      <div className="flex gap-1">
+        {weeks.map((week, wi) => (
+          <div key={wi} className="flex flex-col gap-1">
+            {week.map(cell => (
+              <div
+                key={cell.date}
+                className={`w-3 h-3 rounded-sm ${getColor(cell.count)}`}
+                title={`${cell.date}: ${cell.count} tasks`}
+              />
+            ))}
+          </div>
+        ))}
+      </div>
+      {!hasActivity && (
+        <p className="text-xs text-zinc-500 mt-3">No activity yet</p>
+      )}
+    </motion.div>
+  )
+}
+
+const defaultAchievements = [
+  { label: 'First 10 Problems', icon: '🎯', unlocked: false },
+  { label: 'Completed Arrays', icon: '📚', unlocked: false },
+  { label: '7-Day Streak', icon: '🔥', unlocked: false },
+  { label: 'Quick Learner', icon: '⚡', unlocked: false },
+  { label: 'Problem Solver', icon: '💡', unlocked: false },
+  { label: 'Consistent', icon: '📅', unlocked: false },
+]
+
+function RecentAchievements() {
+  const stored = localStorage.getItem('placement-os-achievements')
+  const achievements = stored ? JSON.parse(stored) : defaultAchievements
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="card-premium p-6"
+    >
+      <h2 className="section-title mb-4">Achievements</h2>
+      <div className="grid grid-cols-3 gap-2">
+        {achievements.map((a: { label: string; icon: string; unlocked: boolean }) => (
+          <div
+            key={a.label}
+            className={`text-center p-2 rounded-xl ${a.unlocked ? 'bg-indigo-500/10' : 'bg-zinc-800/30'} ${!a.unlocked ? 'opacity-40' : ''}`}
+          >
+            <span className="text-lg">{a.icon}</span>
+            <p className="text-[10px] text-zinc-400 mt-1 leading-tight">{a.label}</p>
+          </div>
+        ))}
+      </div>
+    </motion.div>
+  )
+}
+
+function PomodoroWidget() {
+  const [timeLeft, setTimeLeft] = useState(25 * 60)
+  const [isActive, setIsActive] = useState(false)
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
+  useEffect(() => {
+    if (isActive) {
+      intervalRef.current = setInterval(() => {
+        setTimeLeft(t => {
+          if (t <= 1) {
+            setIsActive(false)
+            return 25 * 60
+          }
+          return t - 1
+        })
+      }, 1000)
+    } else {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current)
+        intervalRef.current = null
+      }
+    }
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current)
+        intervalRef.current = null
+      }
+    }
+  }, [isActive])
+
+  const minutes = Math.floor(timeLeft / 60)
+  const seconds = timeLeft % 60
+  const totalSeconds = 25 * 60
+  const progress = ((totalSeconds - timeLeft) / totalSeconds) * 100
+
+  const reset = () => {
+    setTimeLeft(25 * 60)
+    setIsActive(false)
+  }
+
+  return (
+    <div className="card-premium p-6 text-center">
+      <h2 className="section-title mb-4">Pomodoro</h2>
+      <div className="relative w-32 h-32 mx-auto">
+        <svg className="w-32 h-32 -rotate-90" viewBox="0 0 120 120">
+          <circle cx="60" cy="60" r="54" fill="none" stroke="#27272a" strokeWidth="4" />
+          <circle
+            cx="60" cy="60" r="54" fill="none" stroke="#6366f1" strokeWidth="4"
+            strokeDasharray={`${2 * Math.PI * 54}`}
+            strokeDashoffset={`${2 * Math.PI * 54 * (1 - progress / 100)}`}
+            strokeLinecap="round"
+            className="transition-all duration-1000"
+          />
+        </svg>
+        <div className="absolute inset-0 flex items-center justify-center">
+          <span className="text-2xl font-mono font-bold text-stone-900 dark:text-white">
+            {String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}
+          </span>
+        </div>
+      </div>
+      <div className="flex gap-2 justify-center mt-4">
+        <button onClick={() => setIsActive(!isActive)} className="btn-primary text-xs px-3 py-1.5">
+          {isActive ? 'Pause' : 'Start'}
+        </button>
+        <button onClick={reset} className="btn-ghost text-xs">Reset</button>
+      </div>
+    </div>
+  )
+}
+
+function QuickNotesWidget() {
+  const [note, setNote] = useState(() => localStorage.getItem('placement-os-quick-notes') || '')
+  useEffect(() => { localStorage.setItem('placement-os-quick-notes', note) }, [note])
+
+  return (
+    <div className="card-premium p-6">
+      <h2 className="section-title mb-3">Quick Notes</h2>
+      <textarea
+        value={note}
+        onChange={e => setNote(e.target.value)}
+        placeholder="Type a quick note..."
+        className="w-full h-24 px-3 py-2 rounded-xl bg-stone-100 dark:bg-zinc-800/50 border border-stone-200 dark:border-zinc-700/50 text-sm resize-none focus:outline-none focus:ring-1 focus:ring-indigo-500 placeholder:text-zinc-500"
+      />
+    </div>
+  )
+}
+
+function RecentActivity() {
+  const progress = useDSAStore(s => s.progress)
+  const { techProgress } = useRoadmapStore()
+
+  const activities = useMemo(() => {
+    const result: { text: string; date: Date }[] = []
+
+    const problemMap = new Map<string, string>()
+    for (const section of allSections) {
+      for (const p of section.problems) {
+        problemMap.set(p.id, p.name)
+      }
+    }
+
+    const now = new Date()
+    for (const [id, p] of Object.entries(progress)) {
+      if (p.completedAt) {
+        const name = problemMap.get(id) || id
+        result.push({ text: `Solved: ${name}`, date: new Date(p.completedAt) })
+      }
+    }
+
+    for (const [id, tp] of Object.entries(techProgress)) {
+      if (tp.completionDate) {
+        const tech = roadmapTechs.find(t => t.id === id)
+        const name = tech?.name || id
+        result.push({ text: `Completed: ${name}`, date: new Date(tp.completionDate) })
+      }
+    }
+
+    result.sort((a, b) => b.date.getTime() - a.date.getTime())
+    return result.slice(0, 5).map(({ text, date }) => {
+      const diff = Math.round((now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24))
+      const timeStr = diff === 0 ? 'Today' : diff === 1 ? 'Yesterday' : `${diff}d ago`
+      return { text, time: timeStr }
+    })
+  }, [progress, techProgress])
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="card-premium p-6"
+    >
+      <h2 className="section-title mb-4">Recent Activity</h2>
+      <div className="space-y-3">
+        {activities.length === 0 ? (
+          <p className="text-sm text-zinc-500 py-2">No recent activity — start solving problems!</p>
+        ) : (
+          activities.map((act, i) => (
+            <div key={i} className="flex items-center justify-between">
+              <span className="text-sm text-stone-700 dark:text-zinc-300">{act.text}</span>
+              <span className="text-xs text-zinc-500">{act.time}</span>
+            </div>
+          ))
+        )}
+      </div>
+    </motion.div>
+  )
+}
+
+export default function Dashboard() {
+  return (
+    <div className="space-y-6">
+      <HeroSection />
+      <QuickStatsGrid />
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2 space-y-6">
+          <TodayTimeline />
+          <ContinueLearning />
+          <UpcomingRevisions />
+        </div>
+        <div className="space-y-6">
+          <WeeklyHeatmap />
+          <RecentAchievements />
+          <PomodoroWidget />
+          <QuickNotesWidget />
+          <RecentActivity />
+        </div>
       </div>
     </div>
   )
