@@ -1,5 +1,6 @@
 import { NavLink, useLocation } from 'react-router-dom'
 import { useUIStore } from '../store/uiStore'
+import { useGamificationStore, XP_PER_LEVEL } from '../store/gamificationStore'
 import { motion } from 'framer-motion'
 
 const navGroups = [
@@ -54,7 +55,11 @@ const activePages = ['/dashboard', '/planner', '/calendar', '/dsa-tracker', '/ro
 
 export default function Sidebar() {
   const { sidebarOpen, toggleSidebar, theme, toggleTheme } = useUIStore()
+  const { xp, level } = useGamificationStore()
   const location = useLocation()
+
+  const xpInLevel = xp % XP_PER_LEVEL
+  const xpProgress = Math.min(100, Math.round((xpInLevel / XP_PER_LEVEL) * 100))
 
   return (
     <aside className={`fixed top-0 left-0 h-full z-40 flex flex-col bg-white dark:bg-[#09090B] border-r border-stone-200/50 dark:border-[#ffffff08] transition-all duration-300 ${sidebarOpen ? 'w-60' : 'w-16'}`}>
@@ -70,6 +75,38 @@ export default function Sidebar() {
             {sidebarOpen ? <polyline points="15 18 9 12 15 6" /> : <polyline points="9 18 15 12 9 6" />}
           </svg>
         </button>
+      </div>
+
+      {/* User area */}
+      <div className="px-3 py-3 border-b border-stone-200/50 dark:border-[#ffffff08]">
+        {sidebarOpen ? (
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-sm font-bold text-white flex-shrink-0">
+              NK
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-xs font-semibold text-zinc-300">Nikhil</p>
+              <p className="text-[10px] text-indigo-400">Level {level}</p>
+            </div>
+          </div>
+        ) : (
+          <div className="flex justify-center">
+            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-xs font-bold text-white">
+              NK
+            </div>
+          </div>
+        )}
+        {sidebarOpen && (
+          <div className="mt-2 space-y-1">
+            <div className="flex items-center justify-between text-[10px] text-zinc-500">
+              <span>XP</span>
+              <span className="font-mono">{xpInLevel}/{XP_PER_LEVEL}</span>
+            </div>
+            <div className="h-1.5 bg-zinc-800 rounded-full overflow-hidden">
+              <div className="h-full rounded-full bg-gradient-to-r from-indigo-500 to-purple-500" style={{ width: `${xpProgress}%` }} />
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Navigation */}
