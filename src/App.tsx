@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import Layout from './components/Layout'
+import DSATracker from './pages/DSATracker'
 
 const Placeholder = ({ title }: { title: string }) => (
   <div className="flex items-center justify-center h-full min-h-[60vh]">
@@ -12,7 +13,7 @@ export default function App() {
     <Routes>
       <Route element={<Layout />}>
         <Route index element={<Navigate to="/dsa-tracker" replace />} />
-        <Route path="/dsa-tracker" element={<Placeholder title="DSA Tracker" />} />
+        <Route path="/dsa-tracker" element={<DSATracker />} />
         <Route path="/roadmap" element={<Placeholder title="Full Stack Roadmap" />} />
         <Route path="/dashboard" element={<Placeholder title="Dashboard" />} />
         <Route path="/planner" element={<Placeholder title="Today's Planner" />} />
