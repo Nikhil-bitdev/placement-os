@@ -1,9 +1,8 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
-// Layout will be built in Task 7 — for now the import will error
-// This is expected and will be resolved in a later task
+import Layout from './components/Layout'
 
 const Placeholder = ({ title }: { title: string }) => (
-  <div className="flex items-center justify-center h-full">
+  <div className="flex items-center justify-center h-full min-h-[60vh]">
     <p className="text-gray-400 text-lg">{title} — Coming Soon</p>
   </div>
 )
@@ -11,7 +10,7 @@ const Placeholder = ({ title }: { title: string }) => (
 export default function App() {
   return (
     <Routes>
-      <Route element={<Placeholder title="App Shell" />}>
+      <Route element={<Layout />}>
         <Route index element={<Navigate to="/dsa-tracker" replace />} />
         <Route path="/dsa-tracker" element={<Placeholder title="DSA Tracker" />} />
         <Route path="/roadmap" element={<Placeholder title="Full Stack Roadmap" />} />
