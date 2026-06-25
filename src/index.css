@@ -9,15 +9,23 @@
 }
 
 body {
-  @apply bg-gray-50 text-gray-900 dark:bg-gray-950 dark:text-gray-100 transition-colors duration-300;
+  font-family: 'Fira Sans', system-ui, sans-serif;
+  @apply bg-gray-50 text-gray-900 dark:bg-[#050506] dark:text-gray-100 transition-colors duration-300;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Fira Code', monospace;
 }
 
 @layer components {
   .glass {
-    @apply bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border border-white/20 dark:border-gray-700/20 shadow-lg;
+    @apply bg-white/80 dark:bg-[#0a0a0c]/90 backdrop-blur-xl border border-white/20 dark:border-[#ffffff14] shadow-lg dark:shadow-[#00000080];
   }
   .glass-hover {
-    @apply hover:bg-white/90 dark:hover:bg-gray-900/90 transition-colors duration-200;
+    @apply hover:bg-white/90 dark:hover:bg-[#0a0a0c] transition-colors duration-200;
+  }
+  .card-stats {
+    @apply text-2xl font-bold font-mono;
   }
 }
 
@@ -28,6 +36,20 @@ body {
   }
   .dark .scrollbar-thin {
     scrollbar-color: theme('colors.gray.700') transparent;
+  }
+}
+
+/* Focus visible ring for keyboard nav */
+*:focus-visible {
+  @apply outline-none ring-2 ring-indigo-500 ring-offset-2 ring-offset-white dark:ring-offset-[#050506];
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
 
