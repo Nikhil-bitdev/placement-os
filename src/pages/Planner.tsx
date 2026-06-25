@@ -92,12 +92,12 @@ export default function Planner() {
         <button
           onClick={goToPrevDay}
           aria-label="Previous day"
-          className="px-3 py-1.5 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+          className="px-3 py-1.5 rounded-lg bg-stone-200 dark:bg-gray-700 text-stone-700 dark:text-gray-300 text-sm hover:bg-stone-300 dark:hover:bg-gray-600 transition-colors"
         >
           ← Prev
         </button>
         <div className="flex items-center gap-4">
-          <span className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+          <span className="text-lg font-semibold text-stone-900 dark:text-gray-100">
             {selectedDate}
           </span>
           {selectedDate !== today() && (
@@ -112,7 +112,7 @@ export default function Planner() {
         <button
           onClick={goToNextDay}
           aria-label="Next day"
-          className="px-3 py-1.5 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+          className="px-3 py-1.5 rounded-lg bg-stone-200 dark:bg-gray-700 text-stone-700 dark:text-gray-300 text-sm hover:bg-stone-300 dark:hover:bg-gray-600 transition-colors"
         >
           Next →
         </button>
@@ -120,16 +120,16 @@ export default function Planner() {
 
       {/* Quick Add Form */}
       <div role="form" aria-label="Quick add task" className="glass rounded-2xl p-4">
-        <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-3">
+        <h3 className="text-sm font-semibold text-stone-900 dark:text-gray-100 mb-3">
           Quick Add Task
         </h3>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 items-end">
           <div className="flex flex-col gap-1">
-            <label className="text-xs text-gray-400">Category</label>
+            <label className="text-xs text-stone-400">Category</label>
             <select
               value={newCategory}
               onChange={(e) => setNewCategory(e.target.value as PlannerCategory)}
-              className="px-3 py-1.5 rounded-lg bg-white/50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="px-3 py-1.5 rounded-lg bg-white/50 dark:bg-gray-800/50 border border-stone-200 dark:border-gray-700 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
             >
               {categories.map((c) => (
                 <option key={c} value={c}>{c}</option>
@@ -137,29 +137,29 @@ export default function Planner() {
             </select>
           </div>
           <div className="flex flex-col gap-1">
-            <label className="text-xs text-gray-400">Start</label>
+            <label className="text-xs text-stone-400">Start</label>
             <input
               type="time"
               value={newStart}
               onChange={(e) => setNewStart(e.target.value)}
-              className="px-3 py-1.5 rounded-lg bg-white/50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="px-3 py-1.5 rounded-lg bg-white/50 dark:bg-gray-800/50 border border-stone-200 dark:border-gray-700 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
           <div className="flex flex-col gap-1">
-            <label className="text-xs text-gray-400">End</label>
+            <label className="text-xs text-stone-400">End</label>
             <input
               type="time"
               value={newEnd}
               onChange={(e) => setNewEnd(e.target.value)}
-              className="px-3 py-1.5 rounded-lg bg-white/50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="px-3 py-1.5 rounded-lg bg-white/50 dark:bg-gray-800/50 border border-stone-200 dark:border-gray-700 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
           <div className="flex flex-col gap-1">
-            <label className="text-xs text-gray-400">Priority</label>
+            <label className="text-xs text-stone-400">Priority</label>
             <select
               value={newPriority}
               onChange={(e) => setNewPriority(e.target.value as 'low' | 'medium' | 'high')}
-              className="px-3 py-1.5 rounded-lg bg-white/50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="px-3 py-1.5 rounded-lg bg-white/50 dark:bg-gray-800/50 border border-stone-200 dark:border-gray-700 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
             >
               <option value="low">Low</option>
               <option value="medium">Medium</option>
@@ -167,13 +167,13 @@ export default function Planner() {
             </select>
           </div>
           <div className="flex flex-col gap-1">
-            <label className="text-xs text-gray-400">Notes</label>
+            <label className="text-xs text-stone-400">Notes</label>
             <input
               type="text"
               value={newNotes}
               onChange={(e) => setNewNotes(e.target.value)}
               placeholder="Optional notes"
-              className="px-3 py-1.5 rounded-lg bg-white/50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 text-sm w-40 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="px-3 py-1.5 rounded-lg bg-white/50 dark:bg-gray-800/50 border border-stone-200 dark:border-gray-700 text-sm w-40 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
           <button
@@ -188,7 +188,7 @@ export default function Planner() {
       {/* Task List */}
       {dayTasks.length === 0 ? (
         <div className="glass rounded-2xl p-12 text-center">
-          <p className="text-gray-400">No tasks scheduled for {selectedDate}</p>
+          <p className="text-stone-400">No tasks scheduled for {selectedDate}</p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -239,7 +239,7 @@ function TaskCard({
       </span>
 
       {/* Time range */}
-      <span className="text-sm text-gray-500 dark:text-gray-400 min-w-[80px]">
+      <span className="text-sm text-stone-500 dark:text-gray-400 min-w-[80px]">
         {task.startTime} – {task.endTime}
       </span>
 
@@ -258,7 +258,7 @@ function TaskCard({
 
       {/* Expanded notes */}
       {showNotes && task.notes && (
-        <p className="text-sm text-gray-600 dark:text-gray-400 mt-2 w-full">
+        <p className="text-sm text-stone-600 dark:text-gray-400 mt-2 w-full">
           {task.notes}
         </p>
       )}

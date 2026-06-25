@@ -94,41 +94,41 @@ export default function Dashboard() {
   const daysLeft = getDaysUntil(countdownDate)
 
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="glass rounded-2xl p-6">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+    <div className="space-y-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="glass rounded-2xl p-8 lg:col-span-2">
+          <h1 className="text-2xl font-bold text-stone-900 dark:text-gray-100">
             {greeting}, Placement Seeker
           </h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-2 italic">
+          <p className="text-sm text-stone-500 dark:text-gray-400 mt-2 italic">
             &ldquo;{quotes[quoteIndex]}&rdquo;
           </p>
         </div>
 
-        <div className="glass rounded-2xl p-6">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+        <div className="glass rounded-2xl p-8 lg:col-span-1">
+          <h2 className="text-lg font-semibold text-stone-900 dark:text-gray-100">
             Placement Countdown
           </h2>
           <p className="text-3xl font-bold text-indigo-500 mt-2">
             {daysLeft}{' '}
-            <span className="text-base font-normal text-gray-400">days</span>
+            <span className="text-base font-normal text-stone-400">days</span>
           </p>
-          <p className="text-xs text-gray-400 mt-1">until Placement Season</p>
+          <p className="text-xs text-stone-400 mt-1">until Placement Season</p>
           <input
             type="date"
             value={countdownDate}
             onChange={(e) => setCountdownDate(e.target.value)}
-            className="mt-3 px-3 py-1.5 rounded-lg bg-white/50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 text-sm w-full focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="mt-3 px-3 py-1.5 rounded-lg bg-white/50 dark:bg-gray-800/50 border border-stone-200 dark:border-gray-700 text-sm w-full focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="glass rounded-2xl p-6">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+        <div className="glass rounded-2xl p-8">
+          <h2 className="text-lg font-semibold text-stone-900 dark:text-gray-100">
             DSA Progress
           </h2>
-          <p className="text-sm text-gray-400 mt-1">
+          <p className="text-sm text-stone-500 mt-1">
             {dsaStats.totalSolved}/{dsaStats.totalProblems} problems solved
           </p>
           <ProgressBar
@@ -148,11 +148,11 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className="glass rounded-2xl p-6">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+        <div className="glass rounded-2xl p-8">
+          <h2 className="text-lg font-semibold text-stone-900 dark:text-gray-100">
             Roadmap Progress
           </h2>
-          <p className="text-sm text-gray-400 mt-1">
+          <p className="text-sm text-stone-500 mt-1">
             {roadmapStats.completed}/{roadmapStats.total} technologies completed
           </p>
           <ProgressBar
@@ -173,12 +173,12 @@ export default function Dashboard() {
           <div
             key={title}
             style={{ animationDelay: `${index * 40}ms` }}
-            className="glass rounded-2xl p-6 opacity-60 grayscale animate-fade-in-up"
+            className="glass rounded-2xl p-8 opacity-60 grayscale animate-fade-in-up"
           >
-            <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">
+            <h3 className="text-sm font-medium text-stone-500 dark:text-gray-400">
               {title}
             </h3>
-            <p className="text-xs text-gray-400 mt-4">Coming Soon</p>
+            <p className="text-xs text-stone-400 mt-4">Coming Soon</p>
           </div>
         ))}
       </div>

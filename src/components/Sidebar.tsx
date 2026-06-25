@@ -71,12 +71,12 @@ export default function Sidebar() {
 
   return (
     <aside
-      className={`fixed top-0 left-0 h-full z-40 flex flex-col bg-white/80 dark:bg-[#0a0a0c]/80 backdrop-blur-xl border-r border-gray-200/50 dark:border-[#ffffff14] transition-all duration-300 ${
+      className={`fixed top-0 left-0 h-full z-40 flex flex-col sidebar-glass transition-all duration-300 ${
         sidebarOpen ? 'w-60' : 'w-16'
       }`}
     >
       {/* Header */}
-      <div className="flex items-center justify-between p-4 h-16 border-b border-gray-200/50 dark:border-[#ffffff14]">
+      <div className="flex items-center justify-between p-4 h-16 border-b border-stone-200/50 dark:border-[#ffffff14]">
         {sidebarOpen && (
           <span className="font-heading font-bold text-lg bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent">
             Placement OS
@@ -84,7 +84,7 @@ export default function Sidebar() {
         )}
         <button
           onClick={toggleSidebar}
-          className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+          className="p-2 rounded-lg hover:bg-stone-200 dark:hover:bg-gray-800 transition-colors"
           aria-label={sidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
         >
           <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -108,9 +108,9 @@ export default function Sidebar() {
               onClick={(e) => !isActive && e.preventDefault()}
               aria-current={isActive ? 'page' : undefined}
               className={`flex items-center gap-3 px-4 py-2.5 mx-2 rounded-xl transition-all duration-200 ${
-                 isActive
-                   ? 'bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-medium'
-                   : 'text-gray-400 dark:text-gray-600 cursor-not-allowed'
+               isActive
+                    ? 'bg-indigo-100 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-medium border-b border-b-indigo-400/30 dark:border-b-indigo-400/20 shadow-[0_1px_0_0_rgba(99,102,241,0.15)] dark:shadow-[0_1px_0_0_rgba(99,102,241,0.1)]'
+                    : 'text-stone-400 dark:text-gray-600 cursor-not-allowed'
                }`}
             >
               <span className="flex-shrink-0">{item.icon}</span>
@@ -118,7 +118,7 @@ export default function Sidebar() {
                 <span className="truncate text-sm flex-1">{item.label}</span>
               )}
               {sidebarOpen && !isActive && (
-                <span className="text-[10px] px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-gray-400 uppercase tracking-wider">
+                <span className="text-[10px] px-1.5 py-0.5 rounded bg-stone-200 dark:bg-gray-800 text-stone-500 uppercase tracking-wider">
                   Soon
                 </span>
               )}
@@ -128,10 +128,10 @@ export default function Sidebar() {
       </nav>
 
       {/* Theme toggle */}
-      <div className="p-4 border-t border-gray-200/50 dark:border-[#ffffff14]">
+      <div className="p-4 border-t border-stone-200/50 dark:border-[#ffffff14]">
         <button
           onClick={toggleTheme}
-          className="flex items-center gap-3 w-full px-3 py-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-sm text-gray-600 dark:text-gray-400"
+          className="flex items-center gap-3 w-full px-3 py-2 rounded-xl hover:bg-stone-200 dark:hover:bg-gray-800 transition-colors text-sm text-stone-600 dark:text-gray-400"
           aria-label={theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}
         >
           {theme === 'light' ? (

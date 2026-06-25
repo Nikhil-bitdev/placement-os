@@ -23,13 +23,13 @@ export default function Roadmap() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Full Stack Roadmap</h1>
-        <p className="text-sm text-gray-400 mt-1">
+        <h1 className="text-2xl font-bold text-stone-900 dark:text-gray-100">Full Stack Roadmap</h1>
+        <p className="text-sm text-stone-500 mt-1">
           {completed}/{nonCheckpoints.length} completed • {learning} in progress
         </p>
       </div>
 
-      <div className="relative space-y-3 animate-fade-in-up">
+      <div className="relative space-y-4 animate-fade-in-up">
         {roadmapTechs.map((tech, index) => {
           const unlocked = isTechUnlocked(tech)
           const progress = getProgress(tech.id)
@@ -37,7 +37,7 @@ export default function Roadmap() {
           return (
             <div key={tech.id} className="relative" style={{ animationDelay: `${index * 30}ms` }}>
               {index < roadmapTechs.length - 1 && (
-                <div className="absolute left-5 top-14 bottom-0 w-0.5 bg-gray-200 dark:bg-gray-700" />
+                <div className="absolute left-5 top-14 bottom-0 w-0.5 bg-stone-200 dark:bg-gray-700" />
               )}
               <TechCard
                 tech={tech}
@@ -56,8 +56,8 @@ export default function Roadmap() {
                 onUpdateEstimatedHours={(hours) => updateEstimatedHours(tech.id, hours)}
               />
               {!unlocked && !tech.isCheckpoint && (
-                <div className="absolute inset-0 bg-white/40 dark:bg-gray-900/40 backdrop-blur-[2px] rounded-2xl flex items-center justify-center z-10">
-                  <span className="text-xs text-gray-400 bg-white dark:bg-gray-900 px-3 py-1 rounded-full shadow">
+                <div className="absolute inset-0 bg-stone-50/40 dark:bg-gray-900/40 backdrop-blur-[2px] rounded-2xl flex items-center justify-center z-10">
+                  <span className="text-xs text-stone-400 bg-stone-100 dark:bg-gray-900 px-3 py-1 rounded-full shadow">
                     Complete prerequisites first
                   </span>
                 </div>

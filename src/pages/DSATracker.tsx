@@ -28,8 +28,8 @@ export default function DSATracker() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">DSA Tracker</h1>
-          <p className="text-sm text-gray-400 mt-1">
+          <h1 className="text-2xl font-bold text-stone-900 dark:text-gray-100">DSA Tracker</h1>
+          <p className="text-sm text-stone-500 mt-1">
             {totalSolved}/{totalProblems} problems solved • Striver's A2Z DSA Sheet
           </p>
         </div>
@@ -40,12 +40,12 @@ export default function DSATracker() {
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search problems..."
             aria-label="Search problems"
-            className="px-4 py-2 rounded-xl bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border border-gray-200 dark:border-gray-700 text-sm w-full sm:w-64 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="px-4 py-2 rounded-xl bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border border-stone-200 dark:border-gray-700 text-sm w-full sm:w-64 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
         </div>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-4">
         {filteredSections.map((section, index) => (
           <div key={section.id} style={{ animationDelay: `${index * 30}ms` }} className="animate-fade-in-up">
           <SectionCard
@@ -77,7 +77,7 @@ export default function DSATracker() {
       </div>
 
       {filteredSections.length === 0 && search && (
-        <div className="text-center py-20 text-gray-400">
+        <div className="text-center py-20 text-stone-400">
           No problems found matching "{search}"
         </div>
       )}
