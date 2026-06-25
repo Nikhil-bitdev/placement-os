@@ -70,7 +70,10 @@ function SectionFlowCard({ section, index, total }: { section: typeof allSection
         <div className="absolute left-8 top-full w-0.5 h-6 bg-gradient-to-b from-indigo-500/40 to-transparent z-0" />
       )}
       <div className={`relative z-10 card-premium p-5 ${isComplete ? 'ring-1 ring-green-500/30' : ''} ${isExpanded ? 'ring-1 ring-indigo-500/30' : ''}`}>
-        <div className="flex items-start gap-5">
+        <div
+          className="flex items-start gap-5 cursor-pointer"
+          onClick={() => setSectionExpanded(section.id, !isExpanded)}
+        >
           <div className="relative w-14 h-14 flex-shrink-0">
             <svg className="w-14 h-14 -rotate-90" viewBox="0 0 56 56">
               <circle cx="28" cy="28" r="24" fill="none" stroke="#27272a" strokeWidth="3" />
@@ -103,7 +106,6 @@ function SectionFlowCard({ section, index, total }: { section: typeof allSection
             </div>
           </div>
           <button
-            onClick={() => setSectionExpanded(section.id, !isExpanded)}
             className="text-xs text-zinc-400 hover:text-white transition-colors p-1"
             aria-label={isExpanded ? 'Collapse section' : 'Expand section'}
           >
@@ -147,14 +149,13 @@ function SectionFlowCard({ section, index, total }: { section: typeof allSection
                       }`}>
                         {problem.difficulty}
                       </span>
-                      <button
-                        onClick={e => { e.preventDefault(); e.stopPropagation(); toggleProblem(section.id, problem.id) }}
-                        className={`text-[10px] px-2 py-1 rounded ${
-                          isSolved ? 'bg-zinc-800 text-zinc-400' : 'bg-indigo-500/20 text-indigo-400 hover:bg-indigo-500/30'
-                        }`}
-                      >
-                        {isSolved ? 'Undo' : 'Done'}
-                      </button>
+                      <input
+                        type="checkbox"
+                        checked={isSolved}
+                        onChange={() => toggleProblem(section.id, problem.id)}
+                        onClick={e => e.stopPropagation()}
+                        className="w-4 h-4 rounded border-zinc-600 bg-zinc-800 text-indigo-500 focus:ring-indigo-500 focus:ring-offset-0 cursor-pointer"
+                      />
                     </a>
                   )
                 })}
