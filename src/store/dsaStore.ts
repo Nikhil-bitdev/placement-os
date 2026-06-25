@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import type { DSAProblemProgress, SectionStats } from '../types'
 import allSections from '../data/dsa'
+import { useGamificationStore } from './gamificationStore'
 
 interface DSAState {
   progress: Record<string, DSAProblemProgress>
@@ -90,6 +91,20 @@ export const useDSAStore = create<DSAState>()(
           get().markUnsolved(problemId)
         } else {
           get().markSolved(problemId)
+          useGamificationStore.getState().addXP(10)
+
+          const streakKey = 'placement-os-streak'
+          const lastActivity = localStorage.getItem('placement-os-streak-last')
+          const today = new Date().toISOString().slice(0, 10)
+          if (lastActivity !== today) {
+            const yesterday = new Date()
+            yesterday.setDate(yesterday.getDate() - 1)
+            const yesterdayStr = yesterday.toISOString().slice(0, 10)
+            const currentStreak = parseInt(localStorage.getItem(streakKey) || '0', 10)
+            const newStreak = lastActivity === yesterdayStr ? currentStreak + 1 : 1
+            localStorage.setItem(streakKey, String(newStreak))
+            localStorage.setItem('placement-os-streak-last', today)
+          }
         }
       },
 

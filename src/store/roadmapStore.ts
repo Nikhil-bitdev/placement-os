@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import type { TechProgress } from '../types'
+import { useGamificationStore } from './gamificationStore'
 
 interface RoadmapState {
   techProgress: Record<string, TechProgress>
@@ -39,17 +40,24 @@ export const useRoadmapStore = create<RoadmapState>()(
         return get().techProgress[techId] || defaultTechProgress()
       },
 
-      updateStatus: (techId, status) =>
-        set((state) => ({
-          techProgress: {
-            ...state.techProgress,
-            [techId]: {
-              ...(state.techProgress[techId] || defaultTechProgress()),
-              status,
-              completionDate: status === 'completed' ? new Date().toISOString() : (state.techProgress[techId]?.completionDate || null),
+      updateStatus: (techId, status) => {
+        const prev = get().techProgress[techId]?.status
+        return set((state) => {
+          if (status === 'completed' && prev !== 'completed') {
+            useGamificationStore.getState().addXP(100)
+          }
+          return {
+            techProgress: {
+              ...state.techProgress,
+              [techId]: {
+                ...(state.techProgress[techId] || defaultTechProgress()),
+                status,
+                completionDate: status === 'completed' ? new Date().toISOString() : (state.techProgress[techId]?.completionDate || null),
+              },
             },
-          },
-        })),
+          }
+        })
+      },
 
       updateHours: (techId, hours) =>
         set((state) => ({
@@ -139,17 +147,24 @@ export const useRoadmapStore = create<RoadmapState>()(
           },
         })),
 
-      markComplete: (techId) =>
-        set((state) => ({
-          techProgress: {
-            ...state.techProgress,
-            [techId]: {
-              ...(state.techProgress[techId] || defaultTechProgress()),
-              status: 'completed',
-              completionDate: new Date().toISOString(),
+      markComplete: (techId) => {
+        const prev = get().techProgress[techId]?.status
+        return set((state) => {
+          if (prev !== 'completed') {
+            useGamificationStore.getState().addXP(100)
+          }
+          return {
+            techProgress: {
+              ...state.techProgress,
+              [techId]: {
+                ...(state.techProgress[techId] || defaultTechProgress()),
+                status: 'completed',
+                completionDate: new Date().toISOString(),
+              },
             },
-          },
-        })),
+          }
+        })
+      },
 
       resetAll: () => set({ techProgress: {} }),
     }),
