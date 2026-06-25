@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { memo, useState } from 'react'
 import type { DSAProblem, DSAProblemProgress } from '../types'
 
 interface ProblemRowProps {
@@ -17,7 +17,7 @@ const difficultyColors = {
   hard: 'text-red-500 bg-red-50 dark:bg-red-500/10',
 }
 
-export default function ProblemRow({
+function ProblemRow({
   problem,
   progress,
   onToggleSolved,
@@ -50,6 +50,7 @@ export default function ProblemRow({
         <span className="text-xs text-gray-400">{problem.platform}</span>
         <button
           onClick={(e) => { e.stopPropagation(); onToggleFavorite() }}
+          aria-label={progress.favorite ? 'Remove from favorites' : 'Add to favorites'}
           className={`text-sm ${progress.favorite ? 'text-yellow-400' : 'text-gray-300 dark:text-gray-600'}`}
         >
           ★
@@ -110,3 +111,5 @@ export default function ProblemRow({
     </div>
   )
 }
+
+export default memo(ProblemRow)

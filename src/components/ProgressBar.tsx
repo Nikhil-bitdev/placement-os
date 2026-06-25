@@ -1,10 +1,12 @@
+import { memo } from 'react'
+
 interface ProgressBarProps {
   value: number
   className?: string
   animated?: boolean
 }
 
-export default function ProgressBar({ value, className = '', animated = true }: ProgressBarProps) {
+function ProgressBar({ value, className = '', animated = true }: ProgressBarProps) {
   const clamped = Math.min(100, Math.max(0, value))
   return (
     <div className={`w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 overflow-hidden ${className}`}>
@@ -17,3 +19,5 @@ export default function ProgressBar({ value, className = '', animated = true }: 
     </div>
   )
 }
+
+export default memo(ProgressBar)

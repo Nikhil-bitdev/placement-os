@@ -98,7 +98,7 @@ export default function Sidebar() {
       </div>
 
       {/* Nav items */}
-      <nav className="flex-1 overflow-y-auto py-2 scrollbar-thin">
+      <nav role="navigation" aria-label="Main navigation" className="flex-1 overflow-y-auto py-2 scrollbar-thin">
         {navItems.map((item) => {
           const isActive = activePages.includes(item.to)
           return (
@@ -106,11 +106,12 @@ export default function Sidebar() {
               key={item.to}
               to={isActive ? item.to : '#'}
               onClick={(e) => !isActive && e.preventDefault()}
+              aria-current={isActive ? 'page' : undefined}
               className={`flex items-center gap-3 px-4 py-2.5 mx-2 rounded-xl transition-all duration-200 ${
-                isActive
-                  ? 'bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-medium'
-                  : 'text-gray-400 dark:text-gray-600 cursor-not-allowed'
-              }`}
+                 isActive
+                   ? 'bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-medium'
+                   : 'text-gray-400 dark:text-gray-600 cursor-not-allowed'
+               }`}
             >
               <span className="flex-shrink-0">{item.icon}</span>
               {sidebarOpen && (

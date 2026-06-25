@@ -29,13 +29,13 @@ export default function Roadmap() {
         </p>
       </div>
 
-      <div className="relative space-y-3">
+      <div className="relative space-y-3 animate-fade-in-up">
         {roadmapTechs.map((tech, index) => {
           const unlocked = isTechUnlocked(tech)
           const progress = getProgress(tech.id)
 
           return (
-            <div key={tech.id} className="relative">
+            <div key={tech.id} className="relative" style={{ animationDelay: `${index * 30}ms` }}>
               {index < roadmapTechs.length - 1 && (
                 <div className="absolute left-5 top-14 bottom-0 w-0.5 bg-gray-200 dark:bg-gray-700" />
               )}

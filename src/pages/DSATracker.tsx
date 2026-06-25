@@ -33,17 +33,21 @@ export default function DSATracker() {
             {totalSolved}/{totalProblems} problems solved • Striver's A2Z DSA Sheet
           </p>
         </div>
-        <input
-          type="text"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search problems..."
-          className="px-4 py-2 rounded-xl bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border border-gray-200 dark:border-gray-700 text-sm w-full sm:w-64 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        />
+        <div role="search">
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search problems..."
+            aria-label="Search problems"
+            className="px-4 py-2 rounded-xl bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border border-gray-200 dark:border-gray-700 text-sm w-full sm:w-64 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          />
+        </div>
       </div>
 
       <div className="space-y-3">
-        {filteredSections.map((section) => (
+        {filteredSections.map((section, index) => (
+          <div key={section.id} style={{ animationDelay: `${index * 30}ms` }} className="animate-fade-in-up">
           <SectionCard
             key={section.id}
             section={section}
@@ -68,6 +72,7 @@ export default function DSATracker() {
               )
             })}
           </SectionCard>
+          </div>
         ))}
       </div>
 

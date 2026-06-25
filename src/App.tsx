@@ -2,6 +2,8 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import Layout from './components/Layout'
 import DSATracker from './pages/DSATracker'
 import Roadmap from './pages/Roadmap'
+import Dashboard from './pages/Dashboard'
+import Planner from './pages/Planner'
 
 const Placeholder = ({ title }: { title: string }) => (
   <div className="flex items-center justify-center h-full min-h-[60vh]">
@@ -16,8 +18,8 @@ export default function App() {
         <Route index element={<Navigate to="/dsa-tracker" replace />} />
         <Route path="/dsa-tracker" element={<DSATracker />} />
         <Route path="/roadmap" element={<Roadmap />} />
-        <Route path="/dashboard" element={<Placeholder title="Dashboard" />} />
-        <Route path="/planner" element={<Placeholder title="Today's Planner" />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/planner" element={<Planner />} />
         <Route path="/calendar" element={<Placeholder title="Study Calendar" />} />
         <Route path="/projects" element={<Placeholder title="Projects" />} />
         <Route path="/subjects" element={<Placeholder title="Core Subjects" />} />

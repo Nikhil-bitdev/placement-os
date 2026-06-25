@@ -123,7 +123,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="glass rounded-2xl p-6">
           <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
             DSA Progress
@@ -162,17 +162,18 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {[
           "Today's Progress",
           'Weekly Goal',
           'Monthly Goal',
           'XP / Level',
           'Total Study Hours',
-        ].map((title) => (
+        ].map((title, index) => (
           <div
             key={title}
-            className="glass rounded-2xl p-6 opacity-60 grayscale"
+            style={{ animationDelay: `${index * 40}ms` }}
+            className="glass rounded-2xl p-6 opacity-60 grayscale animate-fade-in-up"
           >
             <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">
               {title}

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { memo, useState } from 'react'
 import type { RoadmapTech, TechProgress } from '../types'
 
 interface TechCardProps {
@@ -12,7 +12,7 @@ interface TechCardProps {
   onUpdateEstimatedHours: (hours: number) => void
 }
 
-export default function TechCard({ tech, progress, onUpdateStatus, onUpdateHours, onUpdateNotes, onToggleComplete, onUpdateConfidence, onUpdateEstimatedHours }: TechCardProps) {
+function TechCard({ tech, progress, onUpdateStatus, onUpdateHours, onUpdateNotes, onToggleComplete, onUpdateConfidence, onUpdateEstimatedHours }: TechCardProps) {
   const [expanded, setExpanded] = useState(false)
   const isCheckpoint = tech.isCheckpoint
 
@@ -148,3 +148,5 @@ export default function TechCard({ tech, progress, onUpdateStatus, onUpdateHours
     </div>
   )
 }
+
+export default memo(TechCard)

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { memo, useState } from 'react'
 import type { DSASection, SectionStats } from '../types'
 import ProgressBar from './ProgressBar'
 
@@ -8,7 +8,7 @@ interface SectionCardProps {
   children: React.ReactNode
 }
 
-export default function SectionCard({ section, stats, children }: SectionCardProps) {
+function SectionCard({ section, stats, children }: SectionCardProps) {
   const [open, setOpen] = useState(false)
   const percent = stats.total > 0 ? Math.round((stats.solved / stats.total) * 100) : 0
 
@@ -16,6 +16,8 @@ export default function SectionCard({ section, stats, children }: SectionCardPro
     <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl rounded-2xl border border-white/20 dark:border-gray-700/20 shadow-lg overflow-hidden transition-all duration-300 animate-fade-in">
       <button
         onClick={() => setOpen(!open)}
+        aria-expanded={open}
+        aria-controls={`section-content-${section.id}`}
         className="w-full flex items-center gap-4 p-5 hover:bg-gray-50/50 dark:hover:bg-gray-800/50 transition-colors"
       >
         <span className={`text-gray-400 transition-transform duration-200 ${open ? 'rotate-90' : ''}`}>▶</span>
@@ -36,10 +38,12 @@ export default function SectionCard({ section, stats, children }: SectionCardPro
         </div>
       </button>
       {open && (
-        <div className="border-t border-gray-100 dark:border-gray-800 transition-all">
+        <div id={`section-content-${section.id}`} className="border-t border-gray-100 dark:border-gray-800 transition-all">
           {children}
         </div>
       )}
     </div>
   )
 }
+
+export default memo(SectionCard)
