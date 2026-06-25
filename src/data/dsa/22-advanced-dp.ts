@@ -1,0 +1,91 @@
+import type { DSASection } from '../../types'
+
+const advancedDp: DSASection = {
+  id: '22-advanced-dp',
+  title: 'Advanced DP',
+  order: 22,
+  problems: [
+    {
+      id: 'advanced-dp-01',
+      name: 'Count Palindromic Subsequences',
+      difficulty: 'medium',
+      platform: 'GFG',
+      solutionUrl: 'https://www.geeksforgeeks.org/count-palindromic-subsequences-given-string/',
+      companyTags: ['Amazon', 'Google', 'Microsoft'],
+    },
+    {
+      id: 'advanced-dp-02',
+      name: 'Egg Dropping Problem',
+      difficulty: 'hard',
+      platform: 'GFG',
+      solutionUrl: 'https://www.geeksforgeeks.org/egg-dropping-puzzle-dp-11/',
+      companyTags: ['Amazon', 'Google', 'Microsoft'],
+    },
+    {
+      id: 'advanced-dp-03',
+      name: 'Optimal Strategy for a Game',
+      difficulty: 'hard',
+      platform: 'GFG',
+      solutionUrl: 'https://www.geeksforgeeks.org/optimal-strategy-for-a-game-dp-31/',
+      companyTags: ['Amazon', 'Google'],
+    },
+    {
+      id: 'advanced-dp-04',
+      name: 'Word Break II',
+      difficulty: 'hard',
+      platform: 'LeetCode',
+      solutionUrl: 'https://leetcode.com/problems/word-break-ii/',
+      companyTags: ['Amazon', 'Google', 'Microsoft'],
+    },
+    {
+      id: 'advanced-dp-05',
+      name: 'Minimum Insertion Steps to Make a String Palindrome',
+      difficulty: 'hard',
+      platform: 'LeetCode',
+      solutionUrl: 'https://leetcode.com/problems/minimum-insertion-steps-to-make-a-string-palindrome/',
+      companyTags: ['Amazon', 'Google'],
+    },
+    {
+      id: 'advanced-dp-06',
+      name: 'Distinct Subsequences',
+      difficulty: 'hard',
+      platform: 'LeetCode',
+      solutionUrl: 'https://leetcode.com/problems/distinct-subsequences/',
+      companyTags: ['Amazon', 'Google', 'Microsoft'],
+    },
+    {
+      id: 'advanced-dp-07',
+      name: 'Interleaving String',
+      difficulty: 'medium',
+      platform: 'LeetCode',
+      solutionUrl: 'https://leetcode.com/problems/interleaving-string/',
+      companyTags: ['Amazon', 'Google'],
+    },
+    {
+      id: 'advanced-dp-08',
+      name: 'Dungeon Game',
+      difficulty: 'hard',
+      platform: 'LeetCode',
+      solutionUrl: 'https://leetcode.com/problems/dungeon-game/',
+      companyTags: ['Amazon', 'Google', 'Microsoft'],
+    },
+    {
+      id: 'advanced-dp-09',
+      name: 'Scramble String',
+      difficulty: 'hard',
+      platform: 'LeetCode',
+      solutionUrl: 'https://leetcode.com/problems/scramble-string/',
+      companyTags: ['Amazon', 'Google'],
+    },
+    {
+      id: 'advanced-dp-10',
+      name: 'Paint House II',
+      difficulty: 'hard',
+      platform: 'LeetCode',
+      solutionUrl: 'https://leetcode.com/problems/paint-house-ii/',
+      companyTags: ['Amazon', 'Google'],
+    },
+  ],
+}
+
+export default advancedDp
