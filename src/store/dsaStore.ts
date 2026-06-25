@@ -5,9 +5,12 @@ import allSections from '../data/dsa'
 
 interface DSAState {
   progress: Record<string, DSAProblemProgress>
+  expandedSections: Record<string, boolean>
   getSectionStats: (sectionId: string) => SectionStats
   markSolved: (problemId: string) => void
   markUnsolved: (problemId: string) => void
+  toggleProblem: (sectionId: string, problemId: string) => void
+  setSectionExpanded: (sectionId: string, expanded: boolean) => void
   incrementAttempts: (problemId: string) => void
   toggleFavorite: (problemId: string) => void
   updateNotes: (problemId: string, notes: string) => void
@@ -30,6 +33,7 @@ export const useDSAStore = create<DSAState>()(
   persist(
     (set, get) => ({
       progress: {},
+      expandedSections: {},
 
       getSectionStats: (sectionId: string): SectionStats => {
         const section = allSections.find((s) => s.id === sectionId)
@@ -77,6 +81,21 @@ export const useDSAStore = create<DSAState>()(
               completedAt: null,
             },
           },
+        })),
+
+      toggleProblem: (sectionId, problemId) => {
+        const { progress } = get()
+        const isSolved = !!progress[problemId]?.solved
+        if (isSolved) {
+          get().markUnsolved(problemId)
+        } else {
+          get().markSolved(problemId)
+        }
+      },
+
+      setSectionExpanded: (sectionId, expanded) =>
+        set((state) => ({
+          expandedSections: { ...state.expandedSections, [sectionId]: expanded },
         })),
 
       incrementAttempts: (problemId) =>

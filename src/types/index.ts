@@ -11,6 +11,7 @@ export interface DSASection {
   id: string
   title: string
   order: number
+  description?: string
   problems: DSAProblem[]
 }
 
