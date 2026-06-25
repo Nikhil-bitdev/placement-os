@@ -11,6 +11,9 @@ import Roadmap from './pages/Roadmap'
 import Dashboard from './pages/Dashboard'
 import Planner from './pages/Planner'
 import Statistics from './pages/Statistics'
+import LeetCode from './pages/LeetCode'
+import CalendarPage from './pages/Calendar'
+import CoreSubjects from './pages/CoreSubjects'
 
 const Placeholder = ({ title }: { title: string }) => (
   <PageTransition>
@@ -52,10 +55,10 @@ export default function App() {
             <Route path="/roadmap" element={<WrappedPage><Roadmap /></WrappedPage>} />
             <Route path="/dashboard" element={<WrappedPage><Dashboard /></WrappedPage>} />
             <Route path="/planner" element={<WrappedPage><Planner /></WrappedPage>} />
-            <Route path="/calendar" element={<Placeholder title="Study Calendar" />} />
+            <Route path="/calendar" element={<WrappedPage><CalendarPage /></WrappedPage>} />
             <Route path="/projects" element={<Placeholder title="Projects" />} />
-            <Route path="/subjects" element={<Placeholder title="Core Subjects" />} />
-            <Route path="/leetcode" element={<Placeholder title="LeetCode" />} />
+            <Route path="/subjects" element={<WrappedPage><CoreSubjects /></WrappedPage>} />
+            <Route path="/leetcode" element={<WrappedPage><LeetCode /></WrappedPage>} />
             <Route path="/contests" element={<Placeholder title="Contests" />} />
             <Route path="/revision" element={<Placeholder title="Revision" />} />
             <Route path="/notes" element={<Placeholder title="Notes" />} />

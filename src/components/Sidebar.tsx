@@ -28,14 +28,6 @@ const navGroups = [
     ],
   },
   {
-    label: 'Management',
-    items: [
-      { to: '/revision', label: 'Revision', icon: 'M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15' },
-      { to: '/notes', label: 'Notes', icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' },
-      { to: '/habits', label: 'Habits', icon: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z' },
-    ],
-  },
-  {
     label: 'Analytics',
     items: [
       { to: '/statistics', label: 'Statistics', icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z' },
@@ -51,7 +43,7 @@ const navGroups = [
   },
 ]
 
-const activePages = ['/dashboard', '/planner', '/calendar', '/dsa-tracker', '/roadmap', '/projects', '/leetcode', '/subjects', '/revision', '/notes', '/habits', '/statistics', '/achievements', '/contests', '/settings']
+const activePages = ['/dashboard', '/planner', '/calendar', '/dsa-tracker', '/roadmap', '/projects', '/leetcode', '/subjects', '/statistics', '/achievements', '/contests', '/settings']
 
 export default function Sidebar() {
   const { sidebarOpen, toggleSidebar, theme, toggleTheme } = useUIStore()
@@ -62,11 +54,11 @@ export default function Sidebar() {
   const xpProgress = Math.min(100, Math.round((xpInLevel / XP_PER_LEVEL) * 100))
 
   return (
-    <aside className={`fixed top-0 left-0 h-full z-40 flex flex-col bg-white dark:bg-[#09090B] border-r border-stone-200/50 dark:border-[#ffffff08] transition-all duration-300 ${sidebarOpen ? 'w-60' : 'w-16'}`}>
+    <aside className={`fixed top-0 left-0 h-full z-40 flex flex-col bg-white dark:bg-[#09090B] border-r border-stone-200/50 dark:border-[#ffffff08] transition-all duration-300 ${sidebarOpen ? 'w-52' : 'w-16'}`}>
       {/* Logo */}
       <div className="flex items-center justify-between px-4 h-14 border-b border-stone-200/50 dark:border-[#ffffff08]">
         {sidebarOpen && (
-          <span className="font-bold text-base bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent tracking-tight">
+          <span className="font-bold text-base bg-gradient-to-r from-blue-400 to-blue-300 bg-clip-text text-transparent tracking-tight">
             Placement OS
           </span>
         )}
@@ -81,17 +73,17 @@ export default function Sidebar() {
       <div className="px-3 py-3 border-b border-stone-200/50 dark:border-[#ffffff08]">
         {sidebarOpen ? (
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-sm font-bold text-white flex-shrink-0">
+            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-sm font-bold text-white flex-shrink-0">
               NK
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-xs font-semibold text-zinc-300">Nikhil</p>
-              <p className="text-[10px] text-indigo-400">Level {level}</p>
+              <p className="text-[10px] text-blue-400">Level {level}</p>
             </div>
           </div>
         ) : (
           <div className="flex justify-center">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-xs font-bold text-white">
+            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-xs font-bold text-white">
               NK
             </div>
           </div>
@@ -102,9 +94,9 @@ export default function Sidebar() {
               <span>XP</span>
               <span className="font-mono">{xpInLevel}/{XP_PER_LEVEL}</span>
             </div>
-            <div className="h-1.5 bg-zinc-800 rounded-full overflow-hidden">
-              <div className="h-full rounded-full bg-gradient-to-r from-indigo-500 to-purple-500" style={{ width: `${xpProgress}%` }} />
-            </div>
+              <div className="h-1.5 bg-zinc-800 rounded-full overflow-hidden">
+                <div className="h-full rounded-full bg-gradient-to-r from-blue-500 to-blue-400" style={{ width: `${xpProgress}%` }} />
+              </div>
           </div>
         )}
       </div>
@@ -127,7 +119,7 @@ export default function Sidebar() {
                   className={`sidebar-item relative ${isActive ? 'sidebar-item-active' : isDisabled ? 'text-zinc-600 cursor-not-allowed' : 'sidebar-item-inactive'}`}
                 >
                   {isActive && (
-                    <motion.div layoutId="sidebar-indicator" className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 bg-indigo-500 rounded-full" transition={{ type: 'spring', stiffness: 300, damping: 30 }} />
+                    <motion.div layoutId="sidebar-indicator" className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 bg-blue-500 rounded-full" transition={{ type: 'spring', stiffness: 300, damping: 30 }} />
                   )}
                   <svg className="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                     <path d={item.icon} />

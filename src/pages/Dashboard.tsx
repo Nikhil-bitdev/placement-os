@@ -1,34 +1,13 @@
 import { useState, useEffect, useMemo, useRef } from 'react'
 import { NavLink } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
+import { CheckCircle, Target, TrendingUp, Flame, Award, BookOpen, Clock, Brain, Code2, BarChart3 } from 'lucide-react'
 import allSections from '../data/dsa'
 import roadmapTechs from '../data/roadmap'
 import { useDSAStore } from '../store/dsaStore'
 import { useRoadmapStore } from '../store/roadmapStore'
 import { usePlannerStore } from '../store/plannerStore'
-
-const quotes = [
-  "Code is like humor. When you have to explain it, it's bad. – Cory House",
-  'First, solve the problem. Then, write the code. – John Johnson',
-  "Experience is the name everyone gives to their mistakes. – Oscar Wilde",
-  'In order to be irreplaceable, one must always be different. – Coco Chanel',
-  'Java is to JavaScript what car is to carpet. – Chris Heilmann',
-  'The best way to predict the future is to invent it. – Alan Kay',
-  'Simplicity is the soul of efficiency. – Austin Freeman',
-  'Make it work, make it right, make it fast. – Kent Beck',
-  'Programming is the art of telling another human what one wants the computer to do. – Donald Knuth',
-  'Any fool can write code that a computer can understand. Good programmers write code that humans can understand. – Martin Fowler',
-  'Premature optimization is the root of all evil. – Donald Knuth',
-  'The only way to learn a new programming language is by writing programs in it. – Dennis Ritchie',
-  'Talk is cheap. Show me the code. – Linus Torvalds',
-  'Programs must be written for people to read, and only incidentally for machines to execute. – Harold Abelson',
-  'Always code as if the guy who ends up maintaining your code will be a violent psychopath who knows where you live. – John Woods',
-  'Debugging is twice as hard as writing the code in the first place. – Brian Kernighan',
-  'The function of good software is to make the complex appear to be simple. – Grady Booch',
-  'Without requirements or design, programming is the art of adding bugs to an empty text file. – Louis Srygley',
-  'Walking on water and developing software from a specification are easy if both are frozen. – Edward V. Berard',
-  'It works on my machine. – Every developer ever',
-]
+import { useGamificationStore } from '../store/gamificationStore'
 
 function getTodayStr(): string {
   const d = new Date()
@@ -61,7 +40,7 @@ function HeroSection() {
     [getProgress],
   )
 
-  const quote = useRef(quotes[Math.floor(Math.random() * quotes.length)])
+  const { xp, level } = useGamificationStore()
 
   return (
     <motion.div
@@ -73,7 +52,7 @@ function HeroSection() {
         <div className="space-y-4">
           <div>
             <h1 className="text-2xl lg:text-3xl font-bold text-stone-900 dark:text-white tracking-tight">
-              {greeting}, Nikhil 👋
+              {greeting}, Nikhil
             </h1>
             <p className="text-sm text-stone-500 dark:text-zinc-400 mt-1">
               Current Goal: Become a Full Stack Software Engineer
@@ -82,7 +61,7 @@ function HeroSection() {
           <div className="space-y-2">
             <div className="flex items-center gap-4 text-sm">
               <span className="text-stone-600 dark:text-zinc-300">Today's Progress</span>
-              <span className="font-mono text-indigo-400 font-semibold">{todayProgress}%</span>
+              <span className="font-mono text-blue-400 font-semibold">{todayProgress}%</span>
               <span className="text-stone-400">•</span>
               <span className="text-stone-500">{completedTasks.length} of {todayTasks.length} Tasks Completed</span>
             </div>
@@ -91,18 +70,25 @@ function HeroSection() {
                 initial={{ width: 0 }}
                 animate={{ width: `${todayProgress}%` }}
                 transition={{ duration: 1, ease: 'easeOut' }}
-                className="h-full rounded-full bg-gradient-to-r from-indigo-500 to-purple-500"
+                className="h-full rounded-full bg-gradient-to-r from-blue-500 to-blue-400"
               />
             </div>
           </div>
           <div className="flex items-center gap-6 text-sm">
-            <span className="text-stone-600 dark:text-zinc-300">Current Streak 🔥 {streak} days</span>
-            <span className="text-stone-600 dark:text-zinc-300">Study Time Today • {totalHours}h total</span>
+            <span className="flex items-center gap-1.5 text-stone-600 dark:text-zinc-300"><Flame size={14} className="text-orange-400" /> {streak} days</span>
+            <span className="flex items-center gap-1.5 text-stone-600 dark:text-zinc-300"><Clock size={14} className="text-blue-400" /> {totalHours}h total</span>
           </div>
         </div>
-        <div className="space-y-2 text-right">
-          <p className="text-xs text-stone-400 italic max-w-xs">"{quote.current}"</p>
-          <NavLink to="/dsa-tracker" className="btn-primary inline-block">Continue Learning →</NavLink>
+        <div className="flex items-center gap-4">
+          <div className="text-right">
+            <p className="text-xs text-zinc-400">XP</p>
+            <p className="text-lg font-bold text-stone-900 dark:text-white">{xp.toLocaleString()}</p>
+          </div>
+          <div className="text-right">
+            <p className="text-xs text-zinc-400">Level</p>
+            <p className="text-lg font-bold text-blue-400">{level}</p>
+          </div>
+          <NavLink to="/dsa-tracker" className="btn-primary">Continue Learning</NavLink>
         </div>
       </div>
     </motion.div>
@@ -130,18 +116,13 @@ function QuickStatsGrid() {
     const overallPct = Math.round((dsaPct + roadmapPct) / 2)
     const totalHours = nonCheckpoints.reduce((sum, t) => sum + getProgress(t.id).hoursSpent, 0)
 
-    return [
-      { label: 'Overall Progress', value: `${overallPct}%`, progress: overallPct },
-      { label: 'DSA Progress', value: `${dsaSolved}/${dsaTotal}`, progress: dsaPct },
-      { label: 'Development', value: `${roadmapCompleted}/${nonCheckpoints.length}`, progress: roadmapPct },
-      { label: 'Core Subjects', value: '0%', progress: 0 },
-      { label: 'Study Hours', value: `${totalHours}h`, progress: undefined },
-      { label: 'XP', value: '0', progress: undefined },
-      { label: 'Level', value: '1', progress: undefined },
-      { label: 'Problems Solved', value: `${dsaSolved}`, progress: undefined },
-      { label: 'Projects', value: '0', progress: undefined },
-      { label: 'GitHub Streak', value: '0', progress: undefined },
-    ]
+    const cards: { label: string; value: string; progress?: number; icon: typeof CheckCircle }[] = []
+    cards.push({ label: 'Overall Progress', value: `${overallPct}%`, progress: overallPct, icon: BarChart3 })
+    if (dsaSolved > 0) cards.push({ label: 'DSA Progress', value: `${dsaSolved}/${dsaTotal}`, progress: dsaPct, icon: Code2 })
+    if (roadmapCompleted > 0) cards.push({ label: 'Development', value: `${roadmapCompleted}/${nonCheckpoints.length}`, progress: roadmapPct, icon: TrendingUp })
+    cards.push({ label: 'Study Hours', value: `${totalHours}h`, icon: Clock })
+    if (dsaSolved > 0) cards.push({ label: 'Problems Solved', value: `${dsaSolved}`, icon: CheckCircle })
+    return cards
   }, [getSectionStats, getProgress])
 
   return (
@@ -152,13 +133,16 @@ function QuickStatsGrid() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: i * 0.05 }}
-          className="card-premium p-4 hover:border-indigo-500/20 transition-all duration-300"
+          className="card-premium p-4 hover:border-blue-500/20 transition-all duration-300"
         >
-          <p className="text-xs text-zinc-400">{stat.label}</p>
-          <p className="stat-value text-stone-900 dark:text-white mt-1">{stat.value}</p>
+          <div className="flex items-center gap-2 mb-1">
+            <stat.icon size={14} className="text-blue-400" />
+            <p className="text-xs text-zinc-400">{stat.label}</p>
+          </div>
+          <p className="stat-value text-stone-900 dark:text-white">{stat.value}</p>
           {stat.progress !== undefined && (
             <div className="mt-2 h-1 bg-stone-200 dark:bg-zinc-800 rounded-full overflow-hidden">
-              <div className="h-full rounded-full bg-indigo-500" style={{ width: `${stat.progress}%` }} />
+              <div className="h-full rounded-full bg-blue-500" style={{ width: `${stat.progress}%` }} />
             </div>
           )}
         </motion.div>
@@ -209,11 +193,11 @@ function TodayTimeline() {
                 className={`flex items-center gap-4 py-3 border-l-2 pl-4 -ml-[1px] ${
                   task.status === 'done'
                     ? 'border-green-500/50 opacity-60'
-                    : 'border-indigo-500/50'
+                    : 'border-blue-500/50'
                 }`}
               >
                 <span className="text-xs font-mono text-zinc-500 w-12">{task.startTime}</span>
-                <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400">
+                <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400">
                   {task.category}
                 </span>
                 <span
@@ -281,15 +265,15 @@ function ContinueLearning() {
           <NavLink
             key={item.title}
             to={item.link}
-            className="p-4 rounded-xl bg-stone-100 dark:bg-zinc-800/50 hover:bg-stone-200 dark:hover:bg-zinc-800 transition-all duration-200 border border-transparent hover:border-indigo-500/20"
+            className="p-4 rounded-xl bg-stone-100 dark:bg-zinc-800/50 hover:bg-stone-200 dark:hover:bg-zinc-800 transition-all duration-200 border border-transparent hover:border-blue-500/20"
           >
             <p className="text-xs text-zinc-400 uppercase tracking-wider">{item.type}</p>
             <p className="text-sm font-medium text-stone-800 dark:text-zinc-200 mt-1">{item.title}</p>
             <div className="mt-3 flex items-center gap-3">
               <div className="flex-1 h-1.5 bg-stone-200 dark:bg-zinc-700/50 rounded-full overflow-hidden">
-                <div className="h-full rounded-full bg-indigo-500" style={{ width: `${item.progress}%` }} />
+                <div className="h-full rounded-full bg-blue-500" style={{ width: `${item.progress}%` }} />
               </div>
-              <span className="text-xs font-mono text-indigo-400">{item.progress}%</span>
+              <span className="text-xs font-mono text-blue-400">{item.progress}%</span>
             </div>
           </NavLink>
         ))}
@@ -320,7 +304,7 @@ function UpcomingRevisions() {
         {revisionItems.map(item => (
           <div key={item.title} className="flex items-center justify-between py-2">
             <span className="text-sm text-stone-700 dark:text-zinc-300">{item.title}</span>
-            <span className="text-xs font-mono text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded-full">
+            <span className="text-xs font-mono text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded-full">
               {item.due}
             </span>
           </div>
@@ -353,9 +337,9 @@ function WeeklyHeatmap() {
 
   const getColor = (count: number) => {
     if (count === 0) return 'bg-zinc-800'
-    if (count <= 1) return 'bg-indigo-900/60'
-    if (count <= 3) return 'bg-indigo-700/60'
-    return 'bg-indigo-500/60'
+    if (count <= 1) return 'bg-blue-900/60'
+    if (count <= 3) return 'bg-blue-700/60'
+    return 'bg-blue-500/60'
   }
 
   const hasActivity = tasks.some(t => t.status === 'done')
@@ -387,18 +371,27 @@ function WeeklyHeatmap() {
   )
 }
 
-const defaultAchievements = [
-  { label: 'First 10 Problems', icon: '🎯', unlocked: false },
-  { label: 'Completed Arrays', icon: '📚', unlocked: false },
-  { label: '7-Day Streak', icon: '🔥', unlocked: false },
-  { label: 'Quick Learner', icon: '⚡', unlocked: false },
-  { label: 'Problem Solver', icon: '💡', unlocked: false },
-  { label: 'Consistent', icon: '📅', unlocked: false },
+const achievementIcons: Record<string, typeof Award> = {
+  'First 10 Problems': Target,
+  'Completed Arrays': BookOpen,
+  '7-Day Streak': Flame,
+  'Quick Learner': Brain,
+  'Problem Solver': Code2,
+  'Consistent': BarChart3,
+}
+
+const defaultAchievements: { label: string; unlocked: boolean }[] = [
+  { label: 'First 10 Problems', unlocked: false },
+  { label: 'Completed Arrays', unlocked: false },
+  { label: '7-Day Streak', unlocked: false },
+  { label: 'Quick Learner', unlocked: false },
+  { label: 'Problem Solver', unlocked: false },
+  { label: 'Consistent', unlocked: false },
 ]
 
 function RecentAchievements() {
   const stored = localStorage.getItem('placement-os-achievements')
-  const achievements = stored ? JSON.parse(stored) : defaultAchievements
+  const achievements: { label: string; unlocked: boolean }[] = stored ? JSON.parse(stored) : defaultAchievements
 
   return (
     <motion.div
@@ -408,15 +401,18 @@ function RecentAchievements() {
     >
       <h2 className="section-title mb-4">Achievements</h2>
       <div className="grid grid-cols-3 gap-2">
-        {achievements.map((a: { label: string; icon: string; unlocked: boolean }) => (
-          <div
-            key={a.label}
-            className={`text-center p-2 rounded-xl ${a.unlocked ? 'bg-indigo-500/10' : 'bg-zinc-800/30'} ${!a.unlocked ? 'opacity-40' : ''}`}
-          >
-            <span className="text-lg">{a.icon}</span>
-            <p className="text-[10px] text-zinc-400 mt-1 leading-tight">{a.label}</p>
-          </div>
-        ))}
+        {achievements.map(a => {
+          const Icon = achievementIcons[a.label] || Award
+          return (
+            <div
+              key={a.label}
+              className={`text-center p-3 rounded-xl ${a.unlocked ? 'bg-blue-500/10' : 'bg-zinc-800/30'} ${!a.unlocked ? 'opacity-40' : ''}`}
+            >
+              <Icon size={18} className={a.unlocked ? 'text-blue-400 mx-auto' : 'text-zinc-600 mx-auto'} />
+              <p className="text-[10px] text-zinc-400 mt-1.5 leading-tight">{a.label}</p>
+            </div>
+          )
+        })}
       </div>
     </motion.div>
   )
@@ -469,7 +465,7 @@ function PomodoroWidget() {
         <svg className="w-32 h-32 -rotate-90" viewBox="0 0 120 120">
           <circle cx="60" cy="60" r="54" fill="none" stroke="#27272a" strokeWidth="4" />
           <circle
-            cx="60" cy="60" r="54" fill="none" stroke="#6366f1" strokeWidth="4"
+            cx="60" cy="60" r="54" fill="none" stroke="#3B82F6" strokeWidth="4"
             strokeDasharray={`${2 * Math.PI * 54}`}
             strokeDashoffset={`${2 * Math.PI * 54 * (1 - progress / 100)}`}
             strokeLinecap="round"
@@ -503,7 +499,7 @@ function QuickNotesWidget() {
         value={note}
         onChange={e => setNote(e.target.value)}
         placeholder="Type a quick note..."
-        className="w-full h-24 px-3 py-2 rounded-xl bg-stone-100 dark:bg-zinc-800/50 border border-stone-200 dark:border-zinc-700/50 text-sm resize-none focus:outline-none focus:ring-1 focus:ring-indigo-500 placeholder:text-zinc-500"
+        className="w-full h-24 px-3 py-2 rounded-xl bg-stone-100 dark:bg-zinc-800/50 border border-stone-200 dark:border-zinc-700/50 text-sm resize-none focus:outline-none focus:ring-1 focus:ring-blue-500 placeholder:text-zinc-500"
       />
     </div>
   )

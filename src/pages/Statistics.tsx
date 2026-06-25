@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import { motion } from 'framer-motion'
+import { CheckCircle, BookOpen, Award, Flame } from 'lucide-react'
 import {
   AreaChart, Area, PieChart, Pie, BarChart, Bar, LineChart, Line,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, Legend,
@@ -14,7 +15,7 @@ const chartTheme = {
   grid: '#27272a',
   text: '#a1a1aa',
   axis: '#a1a1aa',
-  primary: '#6366f1',
+  primary: '#3B82F6',
   success: '#22c55e',
   warning: '#f59e0b',
   danger: '#ef4444',
@@ -36,16 +37,16 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   return null
 }
 
-function StatCard({ label, value, icon }: { label: string; value: string; icon?: string }) {
+function StatCard({ label, value, icon: Icon }: { label: string; value: string; icon: typeof CheckCircle }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       className="card-premium p-4"
     >
-      {icon && <span className="text-lg">{icon}</span>}
-      <p className="text-2xl font-bold font-mono text-white mt-1">{value}</p>
-      <p className="text-xs text-zinc-400 mt-1">{label}</p>
+      <Icon size={18} className="text-blue-400 mb-1" />
+      <p className="text-2xl font-bold font-mono text-white">{value}</p>
+      <p className="text-xs text-zinc-400 mt-0.5">{label}</p>
     </motion.div>
   )
 }
@@ -208,10 +209,10 @@ export default function Statistics() {
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <StatCard label="Problems Solved" value={`${totalSolved}/${totalProblems}`} icon="✅" />
-        <StatCard label="Study Hours" value={totalHours.toFixed(1)} icon="📚" />
-        <StatCard label="Categories Mastered" value={`${masteredCategories}/${allSections.length}`} icon="🏆" />
-        <StatCard label="Longest Streak" value={`${longestStreak} days`} icon="🔥" />
+        <StatCard label="Problems Solved" value={`${totalSolved}/${totalProblems}`} icon={CheckCircle} />
+        <StatCard label="Study Hours" value={totalHours.toFixed(1)} icon={BookOpen} />
+        <StatCard label="Categories Mastered" value={`${masteredCategories}/${allSections.length}`} icon={Award} />
+        <StatCard label="Longest Streak" value={`${longestStreak} days`} icon={Flame} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

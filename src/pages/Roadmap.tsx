@@ -88,7 +88,7 @@ function RoadmapPage() {
   }, [allTechs, getProgress])
 
   return (
-    <div className="space-y-6 max-w-7xl">
+    <div className="space-y-6">
       {/* HEADER */}
       <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}
         className="rounded-xl border border-[#1E293B] bg-[#111827] p-5"
@@ -159,7 +159,7 @@ function RoadmapPage() {
       {/* MAIN: Roadmap + Details Panel — side by side with proper grid */}
       <div className="grid grid-cols-1 xl:grid-cols-[1fr_320px] gap-6">
         {/* ROADMAP FLOW */}
-        <div className="min-w-0">
+        <div className="min-w-0 pl-6">
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-8">
             {rowsConfig.map((row, ri) => {
               const visibleTechs = row
@@ -185,7 +185,7 @@ function RoadmapPage() {
                       const Icon = techIcons[tech.id] || Box
 
                       return (
-                        <div key={tech.id} className="flex items-center flex-shrink-0">
+                        <div key={tech.id} className={`flex items-center flex-shrink-0${ti === 0 ? ' ml-3' : ''}`}>
                           {ti > 0 && (
                             <div className={`h-0.5 w-6 sm:w-8 md:w-10 flex-shrink-0 ${
                               status === 'completed' || progress.status === 'completed'
@@ -200,18 +200,18 @@ function RoadmapPage() {
                             whileHover={{ scale: 1.08, y: -2 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={() => setSelectedTechId(tech.id)}
-                            className={`flex flex-col items-center gap-1.5 p-2 rounded-xl transition-all min-w-[80px] ${
-                              isSelected ? 'bg-blue-500/10 ring-2 ring-blue-500/40' : 'hover:bg-[#111827]/50'
+                            className={`flex flex-col items-center gap-1.5 p-2 rounded-xl transition-all min-w-[72px] ${
+                              isSelected ? 'bg-blue-500/10 ring-2 ring-blue-500/40 ring-inset' : 'hover:bg-[#111827]/50'
                             }`}
                           >
-                            <div className={`w-[72px] h-[72px] md:w-[84px] md:h-[84px] rounded-full flex items-center justify-center transition-all duration-300 ${
+                            <div className={`w-[64px] h-[64px] md:w-[76px] md:h-[76px] rounded-full flex items-center justify-center transition-all duration-300 ${
                               status === 'completed'
                                 ? 'bg-green-500 text-white shadow-md shadow-green-500/20'
                                 : status === 'learning'
                                 ? 'bg-blue-500 text-white shadow-md shadow-blue-500/20'
                                 : 'bg-[#1E293B] text-slate-500'
                             }`}>
-                              {status === 'completed' ? <CheckCircle size={28} /> : <Icon size={28} />}
+                              {status === 'completed' ? <CheckCircle size={24} /> : <Icon size={24} />}
                             </div>
                             <span className={`text-xs font-medium text-center leading-tight max-w-[90px] ${
                               status === 'completed' ? 'text-green-400' :

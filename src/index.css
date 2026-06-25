@@ -5,9 +5,9 @@
 @tailwind utilities;
 
 :root {
-  --accent: #6366F1;
-  --accent-light: #818CF8;
-  --accent-dark: #4F46E5;
+  --accent: #3B82F6;
+  --accent-light: #60A5FA;
+  --accent-dark: #2563EB;
 }
 
 body {
@@ -38,13 +38,13 @@ code, .font-mono, .mono-numbers {
     @apply flex items-center gap-3 px-3 py-2 mx-2 rounded-xl text-sm font-medium transition-all duration-200;
   }
   .sidebar-item-active {
-    @apply bg-indigo-500/10 text-indigo-400;
+    @apply bg-blue-500/10 text-blue-400;
   }
   .sidebar-item-inactive {
     @apply text-zinc-500 hover:text-zinc-300 hover:bg-white/5;
   }
   .btn-primary {
-    @apply px-4 py-2 rounded-xl bg-indigo-500 text-white text-sm font-medium hover:bg-indigo-600 active:scale-[0.98] transition-all duration-150;
+    @apply px-4 py-2 rounded-xl bg-blue-500 text-white text-sm font-medium hover:bg-blue-600 active:scale-[0.98] transition-all duration-150;
   }
   .btn-ghost {
     @apply px-3 py-1.5 rounded-xl text-sm text-zinc-400 hover:text-zinc-200 hover:bg-white/5 transition-all duration-150;
@@ -79,7 +79,7 @@ code, .font-mono, .mono-numbers {
 
 /* Focus */
 *:focus-visible {
-  @apply outline-none ring-2 ring-indigo-500 ring-offset-2 ring-offset-stone-50 dark:ring-offset-[#09090B];
+  @apply outline-none ring-2 ring-blue-500 ring-offset-2 ring-offset-stone-50 dark:ring-offset-[#09090B];
 }
 
 /* Reduced motion */
