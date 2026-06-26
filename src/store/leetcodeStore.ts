@@ -336,6 +336,62 @@ export const useLeetCodeStore = create<LeetCodeState>()(
         set({ isSyncing: true, syncError: null })
         try {
           const data = await fetchLeetCodeProfile(state.username)
+
+          const tagMap: Record<string, string> = {
+            array: 'Arrays', string: 'Strings', 'dynamic-programming': 'Dynamic Programming',
+            graph: 'Graphs', tree: 'Trees', 'binary-search-tree': 'BST',
+            'binary-search': 'Binary Search', 'linked-list': 'Linked List',
+            stack: 'Stack', queue: 'Queue', heap: 'Heap',
+            greedy: 'Greedy', 'sliding-window': 'Sliding Window',
+            'two-pointers': 'Two Pointer', backtracking: 'Backtracking',
+            'bit-manipulation': 'Bit Manipulation', trie: 'Tries',
+            'segment-tree': 'Segment Tree', 'union-find': 'DSU',
+            sorting: 'Sorting', recursion: 'Recursion',
+            'depth-first-search': 'Graphs', 'breadth-first-search': 'Graphs',
+          }
+          const totalEstimates: Record<string, number> = {
+            Arrays: 48, Strings: 32, 'Dynamic Programming': 42,
+            Graphs: 38, Trees: 28, BST: 22, 'Binary Search': 20,
+            'Linked List': 25, Stack: 18, Queue: 16, Heap: 18,
+            Greedy: 22, 'Sliding Window': 16, 'Two Pointer': 14,
+            Backtracking: 20, 'Bit Manipulation': 15, Tries: 14,
+            'Segment Tree': 12, DSU: 10, Sorting: 15, Recursion: 20,
+          }
+          const solvedFromTag: Record<string, number> = {}
+          for (const tag of data.tagProgress) {
+            const mapped = tagMap[tag.tagName.toLowerCase()]
+            if (mapped) {
+              solvedFromTag[mapped] = (solvedFromTag[mapped] || 0) + tag.problemsSolved
+            }
+          }
+
+          const topicProgress: TopicProgress[] = state.topicProgress
+            ? state.topicProgress.map(tp => {
+                const solved = solvedFromTag[tp.topic] ?? tp.solved
+                const total = totalEstimates[tp.topic] || tp.total
+                const confidence = total > 0 ? Math.round((solved / total) * 100) : tp.confidence
+                return { ...tp, solved: Math.min(solved, total), total, confidence: Math.min(100, Math.max(5, confidence)) }
+              })
+            : state.topicProgress
+
+          const weakTopics = topicProgress
+            .filter(t => t.confidence < 60 || t.solved / t.total < 0.4)
+            .slice(0, 6)
+            .map(t => ({
+              topic: t.topic, solved: t.solved, total: t.total, confidence: t.confidence,
+              recommended: `Solve ${Math.max(3, Math.round(t.total * 0.3 - t.solved))} more ${t.topic} problems.`,
+            }))
+
+          const studyInsights: { text: string; type: 'positive' | 'negative' | 'neutral' }[] = []
+          const weak = topicProgress.filter(t => t.confidence < 40)
+          if (weak.length > 0) weak.slice(0, 2).forEach(t =>
+            studyInsights.push({ text: `Your ${t.topic} success rate is only ${t.confidence}%.`, type: 'negative' })
+          )
+          const best = topicProgress.reduce((a, b) => a.confidence > b.confidence ? a : b)
+          studyInsights.push({ text: `${best.topic} is your strongest topic at ${best.confidence}% confidence.`, type: 'positive' })
+          if (data.currentStreak > 3) studyInsights.push({ text: `Solving streak is ${data.currentStreak} days!`, type: 'positive' })
+          studyInsights.push({ text: `Total solved: ${data.totalSolved} problems across all topics.`, type: 'neutral' })
+
           set({
             stats: {
               ...state.stats,
@@ -348,6 +404,9 @@ export const useLeetCodeStore = create<LeetCodeState>()(
               globalRanking: data.globalRanking,
             },
             activity: data.activity,
+            topicProgress,
+            weakTopics,
+            studyInsights,
             isSyncing: false,
             lastSynced: new Date().toISOString(),
           })

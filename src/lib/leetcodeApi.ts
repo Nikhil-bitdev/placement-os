@@ -41,6 +41,7 @@ export interface LeetCodeApiResult {
   globalRanking: number
   contestRating: number
   activity: { date: string; level: 0 | 1 | 2 | 3 | 4; problemsSolved: number; hoursStudied: number; notes: string }[]
+  tagProgress: { tagName: string; problemsSolved: number }[]
 }
 
 export async function fetchLeetCodeProfile(username: string): Promise<LeetCodeApiResult> {
@@ -53,6 +54,11 @@ export async function fetchLeetCodeProfile(username: string): Promise<LeetCodeAp
         }
         profile { ranking }
         userCalendar { streak totalActiveDays submissionCalendar }
+        tagProblemCounts {
+          advanced { tagName problemsSolved }
+          intermediate { tagName problemsSolved }
+          fundamental { tagName problemsSolved }
+        }
       }
     }`
 
@@ -76,6 +82,17 @@ export async function fetchLeetCodeProfile(username: string): Promise<LeetCodeAp
   const currentStreak = calendar.streak || 0
   const globalRanking = user.profile?.ranking || 0
 
+  const tagCounts = user.tagProblemCounts || {}
+  const allTags = [
+    ...(tagCounts.advanced || []),
+    ...(tagCounts.intermediate || []),
+    ...(tagCounts.fundamental || []),
+  ]
+  const tagProgress = allTags.map((t: { tagName: string; problemsSolved: number }) => ({
+    tagName: t.tagName,
+    problemsSolved: t.problemsSolved,
+  }))
+
   return {
     totalSolved,
     easySolved,
@@ -86,5 +103,6 @@ export async function fetchLeetCodeProfile(username: string): Promise<LeetCodeAp
     globalRanking,
     contestRating: 0,
     activity: buildActivity(calendar.submissionCalendar || '{}'),
+    tagProgress,
   }
 }
