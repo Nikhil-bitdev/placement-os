@@ -282,7 +282,7 @@ function getInitialState(): LeetCodeState {
   const recentActivity = generateRecentActivity()
   const badges = generateBadges()
   return {
-    username: 'nikhil282',
+    username: '',
     isSyncing: false,
     lastSynced: null,
     syncError: null,
@@ -291,13 +291,13 @@ function getInitialState(): LeetCodeState {
     topicProgress,
     weakTopics,
     studyInsights,
-    contest: { rating: 1542, peakRating: 1620, attended: 38, bestRank: 125, worstRank: 3452, averageRank: 892 },
+    contest: { rating: 0, peakRating: 0, attended: 0, bestRank: 0, worstRank: 0, averageRank: 0 },
     problemHistory,
     recentActivity,
     badges,
     goals: { easy: 2, medium: 2, hard: 1 },
     dailyGoalCompleted: false,
-    profile: { username: 'nikhil282', rating: 1542, contestBadge: 'Guardian' },
+    profile: { username: '', rating: 0, contestBadge: '' },
     setDailyGoalCompleted: () => {},
     updateStats: () => {},
     addActivity: () => {},
