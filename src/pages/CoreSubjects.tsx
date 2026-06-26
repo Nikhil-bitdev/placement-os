@@ -91,7 +91,7 @@ function ProgressRing({ pct, size = 48, strokeWidth = 3, color }: { pct: number;
   const stroke = color || (pct >= 80 ? '#16A34A' : pct >= 50 ? '#2563EB' : pct >= 20 ? '#D97706' : '#DC2626')
   return (
     <svg width={size} height={size} className="-rotate-90" viewBox={`0 0 ${size} ${size}`}>
-      <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="#27272a" strokeWidth={strokeWidth} />
+      <circle cx={size / 2} cy={size / 2} r={r} fill="none" className="stroke-[#E2E8F0] dark:stroke-zinc-700" strokeWidth={strokeWidth} />
       <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke={stroke} strokeWidth={strokeWidth}
         strokeDasharray={circumference} strokeDashoffset={offset} strokeLinecap="round" className="transition-all duration-1000" />
     </svg>
@@ -640,7 +640,7 @@ function AnalyticsTab({ subject }: { subject: CoreSubjectProgress }) {
           <p className="text-[10px] text-zinc-500 mb-2 uppercase tracking-wider">Status Breakdown</p>
           <ResponsiveContainer width="100%" height="85%">
             <BarChart data={completionData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#27272a" />
+              <CartesianGrid strokeDasharray="3 3" className="stroke-[#E2E8F0] dark:stroke-zinc-700" />
               <XAxis dataKey="name" stroke="#a1a1aa" fontSize={10} />
               <YAxis stroke="#a1a1aa" fontSize={10} />
               <Tooltip content={chartTooltip} />
@@ -655,11 +655,11 @@ function AnalyticsTab({ subject }: { subject: CoreSubjectProgress }) {
           <p className="text-[10px] text-zinc-500 mb-2 uppercase tracking-wider">Confidence</p>
           <ResponsiveContainer width="100%" height="85%">
             <AreaChart data={confidenceData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#27272a" />
+              <CartesianGrid strokeDasharray="3 3" className="stroke-[#E2E8F0] dark:stroke-zinc-700" />
               <XAxis dataKey="level" stroke="#a1a1aa" fontSize={10} />
               <YAxis stroke="#a1a1aa" fontSize={10} />
               <Tooltip content={chartTooltip} />
-              <Area type="monotone" dataKey="count" stroke="#3B82F6" fill="#3B82F6" fillOpacity={0.2} name="Topics" />
+              <Area type="monotone" dataKey="count" className="stroke-[#2563EB] dark:stroke-blue-500" fill="#2563EB" fillOpacity={0.2} name="Topics" />
             </AreaChart>
           </ResponsiveContainer>
         </div>

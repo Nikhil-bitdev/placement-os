@@ -50,9 +50,9 @@ export default function Pomodoro() {
   }
 
   return (
-    <div className="card-premium p-6">
+    <div className="card p-6">
       <h2 className="section-title mb-4">Pomodoro Timer</h2>
-      <div className="text-4xl font-bold text-center text-white font-mono">
+      <div className="text-4xl font-bold text-center text-[#0F172A] dark:text-white font-mono">
         {String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}
       </div>
       <div className="flex gap-3 justify-center mt-4">
@@ -64,7 +64,7 @@ export default function Pomodoro() {
         </button>
         <button
           onClick={resetTimer}
-          className="px-4 py-1.5 rounded-lg bg-zinc-800 text-zinc-300 text-sm hover:bg-zinc-700 transition-colors"
+          className="btn-secondary text-sm"
         >
           Reset
         </button>

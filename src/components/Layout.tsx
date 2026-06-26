@@ -9,9 +9,9 @@ function FABItem({ icon: Icon, label, onClick }: { icon: typeof FileText; label:
   return (
     <motion.button
       onClick={onClick}
-      className="flex items-center gap-2 bg-zinc-900 border border-zinc-700/50 rounded-xl px-4 py-2.5 text-sm text-zinc-300 hover:bg-zinc-800 shadow-xl"
+      className="flex items-center gap-2 bg-white border border-[#E2E8F0] rounded-[12px] px-4 py-2.5 text-sm text-[#0F172A] hover:bg-[#F8FAFC] shadow-card"
     >
-      <Icon size={14} />
+      <Icon size={14} className="text-[#64748B]" />
       <span>{label}</span>
     </motion.button>
   )
@@ -40,7 +40,7 @@ function FAB() {
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         onClick={() => setOpen(!open)}
-        className="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg shadow-blue-500/25 flex items-center justify-center text-xl"
+        className="w-11 h-11 rounded-[14px] bg-[#2563EB] text-white shadow-lg shadow-blue-500/20 flex items-center justify-center text-lg"
       >
         <motion.span animate={{ rotate: open ? 45 : 0 }}>+</motion.span>
       </motion.button>
@@ -52,14 +52,14 @@ export default function Layout() {
   const { sidebarOpen } = useUIStore()
 
   return (
-    <div className="min-h-dvh bg-stone-50 dark:bg-[#09090B]">
-      <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-indigo-500 focus:text-white focus:rounded-lg">
+    <div className="min-h-dvh bg-[#F8FAFC] dark:bg-[#09090B]">
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-[#2563EB] focus:text-white focus:rounded-[10px]">
         Skip to main content
       </a>
       <Sidebar />
       <div role="banner" className="sr-only">Placement OS</div>
       <main id="main-content" className={`transition-all duration-300 min-h-dvh ${sidebarOpen ? 'ml-52' : 'ml-16'}`}>
-        <div className="p-6 lg:p-8 pl-8 lg:pl-10 max-w-7xl mx-auto animate-fade-in">
+        <div className="p-6 lg:p-8 max-w-7xl mx-auto">
           <Outlet />
         </div>
       </main>

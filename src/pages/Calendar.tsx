@@ -31,8 +31,8 @@ type Filter = typeof FILTERS[number]
 const chartTooltip = ({ active, payload, label }: any) => {
   if (active && payload?.length) {
     return (
-      <div className="bg-zinc-900 border border-zinc-700/50 rounded-xl px-3 py-2 text-xs shadow-xl">
-        <p className="text-zinc-400 mb-1">{label}</p>
+      <div className="bg-white dark:bg-zinc-900 border border-[#E2E8F0] dark:border-zinc-700/50 rounded-xl px-3 py-2 text-xs shadow-card">
+        <p className="text-[#64748B] mb-1">{label}</p>
         {payload.map((p: any, i: number) => (
           <p key={i} style={{ color: p.color }} className="font-mono">{p.name}: {p.value}</p>
         ))}
@@ -56,15 +56,15 @@ function getProductivity(date: Date): { score: number; label: string; color: str
   const hr = activity?.hoursStudied ?? 0
 
   const now = getToday()
-  if (isSameDay(date, now)) return { score: 100, label: 'Today', color: 'bg-blue-500/20 text-blue-400' }
-  if (done === 0 && solved === 0 && hr === 0 && date < now) return { score: 0, label: 'Missed', color: 'bg-red-500/20 text-red-400' }
-  if (total > 0 && done === total && solved > 0) return { score: 100, label: 'Completed', color: 'bg-emerald-500/20 text-emerald-400' }
+  if (isSameDay(date, now)) return { score: 100, label: 'Today', color: 'bg-[#DBEAFE] text-[#2563EB] dark:bg-blue-500/20 dark:text-blue-400' }
+  if (done === 0 && solved === 0 && hr === 0 && date < now) return { score: 0, label: 'Missed', color: 'bg-[#FEE2E2] text-[#DC2626] dark:bg-red-500/20 dark:text-red-400' }
+  if (total > 0 && done === total && solved > 0) return { score: 100, label: 'Completed', color: 'bg-[#DCFCE7] text-[#16A34A] dark:bg-emerald-500/20 dark:text-emerald-400' }
   if (done > 0 || solved > 0) {
     const pct = total > 0 ? Math.round((done / total) * 100) : solved > 0 ? 100 : 0
-    if (pct >= 50) return { score: pct, label: 'Partial', color: 'bg-amber-500/20 text-amber-400' }
-    return { score: pct, label: 'Below Goal', color: 'bg-orange-500/20 text-orange-400' }
+    if (pct >= 50) return { score: pct, label: 'Partial', color: 'bg-[#FEF3C7] text-[#D97706] dark:bg-amber-500/20 dark:text-amber-400' }
+    return { score: pct, label: 'Below Goal', color: 'bg-[#FFEDD5] text-[#EA580C] dark:bg-orange-500/20 dark:text-orange-400' }
   }
-  return { score: 0, label: 'No Activity', color: 'text-zinc-600' }
+  return { score: 0, label: 'No Activity', color: 'text-[#94A3B8] dark:text-zinc-600' }
 }
 
 function CalendarHeader({
@@ -79,28 +79,28 @@ function CalendarHeader({
   const goToday = () => { const t = getToday(); setCurrentDate(t); setSelectedDate(t) }
 
   return (
-    <div className="card-premium p-3 space-y-2">
+    <div className="card p-3 space-y-2">
       <div className="flex items-center gap-2">
         <div className="flex items-center gap-0.5">
-          <button onClick={goPrev} className="p-1 rounded-lg hover:bg-zinc-800/50 text-zinc-400"><ChevronLeft size={16} /></button>
-          <h1 className="text-sm font-bold text-white min-w-[140px] text-center">
+          <button onClick={goPrev} className="p-1 rounded-lg text-[#64748B] hover:text-[#0F172A] hover:bg-[#F1F5F9] dark:text-zinc-400 dark:hover:text-zinc-300 dark:hover:bg-zinc-800/50"><ChevronLeft size={16} /></button>
+          <h1 className="text-sm font-bold text-[#0F172A] dark:text-white min-w-[140px] text-center">
             {getMonthName(currentDate.getMonth())} {currentDate.getFullYear()}
           </h1>
-          <button onClick={goNext} className="p-1 rounded-lg hover:bg-zinc-800/50 text-zinc-400"><ChevronRight size={16} /></button>
+          <button onClick={goNext} className="p-1 rounded-lg text-[#64748B] hover:text-[#0F172A] hover:bg-[#F1F5F9] dark:text-zinc-400 dark:hover:text-zinc-300 dark:hover:bg-zinc-800/50"><ChevronRight size={16} /></button>
         </div>
-        <button onClick={goToday} className="px-2 py-0.5 rounded-lg bg-blue-500/20 text-blue-400 text-xs hover:bg-blue-500/30 transition-colors">Today</button>
+        <button onClick={goToday} className="px-2 py-0.5 rounded-[8px] bg-[#DBEAFE] text-[#2563EB] text-xs hover:bg-[#BFDBFE] dark:bg-blue-500/20 dark:text-blue-400 dark:hover:bg-blue-500/30 transition-colors">Today</button>
         <div className="flex-1 max-w-[160px] relative">
-          <Search size={12} className="absolute left-2 top-1/2 -translate-y-1/2 text-zinc-500" />
+          <Search size={12} className="absolute left-2 top-1/2 -translate-y-1/2 text-[#94A3B8]" />
           <input
             value={search} onChange={e => setSearch(e.target.value)}
-            placeholder="Search..." className="w-full bg-zinc-800/50 border border-zinc-700/50 rounded-lg pl-6 pr-2 py-1 text-xs text-zinc-300 focus:outline-none focus:ring-1 focus:ring-blue-500 placeholder:text-zinc-600"
+            placeholder="Search..." className="w-full bg-[#F8FAFC] border border-[#E2E8F0] dark:bg-zinc-800/50 dark:border-zinc-700/50 rounded-lg pl-6 pr-2 py-1 text-xs text-[#0F172A] dark:text-zinc-300 focus:outline-none focus:ring-1 focus:ring-[#93C5FD] placeholder:text-[#94A3B8]"
           />
         </div>
-        <div className="flex bg-zinc-800/50 rounded-lg p-0.5">
+        <div className="flex bg-[#F1F5F9] dark:bg-zinc-800/50 rounded-lg p-0.5">
           {['month', 'week', 'agenda'].map(v => (
             <button
               key={v} onClick={() => setView(v)}
-              className={`p-1 rounded-md transition-all ${view === v ? 'bg-zinc-700 text-white' : 'text-zinc-500 hover:text-zinc-300'}`}
+              className={`p-1 rounded-md transition-all ${view === v ? 'bg-white dark:bg-zinc-700 text-[#0F172A] dark:text-white shadow-sm' : 'text-[#64748B] dark:text-zinc-500 hover:text-[#0F172A] dark:hover:text-zinc-300'}`}
             >
               {v === 'month' ? <CalendarDays size={13} /> : v === 'week' ? <Columns size={13} /> : <List size={13} />}
             </button>
@@ -108,12 +108,12 @@ function CalendarHeader({
         </div>
       </div>
       <div className="flex items-center gap-1.5">
-        <Filter size={12} className="text-zinc-500" />
+        <Filter size={12} className="text-[#64748B]" />
         {FILTERS.map(f => (
           <button
             key={f} onClick={() => toggleFilter(f)}
             className={`px-2 py-0.5 rounded-lg text-[10px] font-medium transition-all ${
-              filters.includes(f) ? 'bg-blue-500/20 text-blue-400' : 'bg-zinc-800/50 text-zinc-500 hover:text-zinc-300'
+              filters.includes(f) ? 'bg-[#DBEAFE] text-[#2563EB] dark:bg-blue-500/20 dark:text-blue-400' : 'bg-[#F1F5F9] text-[#64748B] hover:text-[#0F172A] dark:bg-zinc-800/50 dark:text-zinc-500 dark:hover:text-zinc-300'
             }`}
           >
             {f}
@@ -136,10 +136,10 @@ function DayCell({ date, selected, onClick }: { date: Date; selected: boolean; o
       whileHover={{ scale: 1.05 }}
       onClick={onClick}
       className={`h-7 rounded-md flex items-center justify-center text-xs font-mono transition-all ${
-        selected ? 'ring-1 ring-blue-500 bg-blue-500/20' : color || ''
-      } ${isToday ? 'ring-1 ring-blue-500/50 bg-blue-500/10' : ''} hover:bg-zinc-700/30`}
+        selected ? 'ring-1 ring-[#93C5FD] bg-[#DBEAFE] dark:ring-blue-500 dark:bg-blue-500/20' : color || ''
+      } ${isToday ? 'ring-1 ring-[#93C5FD]/50 bg-[#DBEAFE]/50 dark:ring-blue-500/50 dark:bg-blue-500/10' : ''} hover:bg-[#F1F5F9] dark:hover:bg-zinc-700/30`}
     >
-      <span className={`${isToday ? 'text-blue-400 font-bold' : label === 'No Activity' ? 'text-zinc-600' : 'text-zinc-300'}`}>
+      <span className={`${isToday ? 'text-[#2563EB] dark:text-blue-400 font-bold' : label === 'No Activity' ? 'text-[#94A3B8] dark:text-zinc-600' : 'text-[#0F172A] dark:text-zinc-300'}`}>
         {date.getDate()}
       </span>
     </motion.button>
@@ -149,9 +149,9 @@ function DayCell({ date, selected, onClick }: { date: Date; selected: boolean; o
 function MonthView({ currentDate, selectedDate, setSelectedDate }: { currentDate: Date; selectedDate: Date; setSelectedDate: (d: Date) => void }) {
   const weeks = useMemo(() => getMonthDays(currentDate.getFullYear(), currentDate.getMonth()), [currentDate])
   return (
-    <div className="card-premium p-3">
+    <div className="card p-3">
       <div className="grid grid-cols-7 gap-0.5">
-        {dayHeaders.map(d => <div key={d} className="text-center text-[9px] font-semibold text-zinc-500 uppercase py-0.5">{d}</div>)}
+        {dayHeaders.map(d => <div key={d} className="text-center text-[9px] font-semibold text-[#64748B] uppercase py-0.5">{d}</div>)}
         {weeks.flat().map((d, i) => (
           <DayCell key={i} date={d} selected={isSameDay(d, selectedDate)} onClick={() => setSelectedDate(d)} />
         ))}
@@ -174,23 +174,23 @@ function WeekView({ currentDate, selectedDate, setSelectedDate }: { currentDate:
   }, [weekDates, tasks])
 
   return (
-    <div className="card-premium p-4 overflow-x-auto">
+    <div className="card p-4 overflow-x-auto">
       <div className="grid grid-cols-7 gap-1 min-w-[600px]">
         {weekDates.map((d, i) => (
           <div key={i} className="space-y-1">
             <button
               onClick={() => setSelectedDate(d)}
               className={`w-full text-center py-1.5 rounded-lg text-xs font-mono transition-all ${
-                isSameDay(d, selectedDate) ? 'bg-blue-500/20 text-blue-400 ring-1 ring-blue-500/50' :
-                isSameDay(d, getToday()) ? 'text-blue-400' : 'text-zinc-400'
+                isSameDay(d, selectedDate) ? 'bg-[#DBEAFE] text-[#2563EB] ring-1 ring-[#93C5FD] dark:bg-blue-500/20 dark:text-blue-400 dark:ring-blue-500/50' :
+                isSameDay(d, getToday()) ? 'text-[#2563EB] dark:text-blue-400' : 'text-[#64748B]'
               }`}
             >
               <div>{d.getDate()}</div>
-              <div className="text-[10px] text-zinc-500">{dayHeaders[d.getDay()]}</div>
+              <div className="text-[10px] text-[#64748B]">{dayHeaders[d.getDay()]}</div>
             </button>
             <div className="space-y-0.5 min-h-[200px]">
               {(taskMap.get(toPlannerKey(d)) || []).filter(t => t.status !== 'done').slice(0, 4).map(t => (
-                <div key={t.id} className="text-[9px] px-1 py-0.5 rounded bg-zinc-800/50 truncate text-zinc-400">{t.startTime} {t.category}</div>
+                <div key={t.id} className="text-[9px] px-1 py-0.5 rounded bg-[#F1F5F9] dark:bg-zinc-800/50 truncate text-[#64748B]">{t.startTime} {t.category}</div>
               ))}
             </div>
           </div>
@@ -217,24 +217,24 @@ function AgendaView({ currentDate, selectedDate, setSelectedDate }: { currentDat
   }, [monthTasks])
 
   return (
-    <div className="card-premium p-4">
-      <p className="text-sm text-zinc-400 mb-4">{toDisplayFull(currentDate)}</p>
+    <div className="card p-4">
+      <p className="text-sm text-[#64748B] mb-4">{toDisplayFull(currentDate)}</p>
       {Object.keys(grouped).length === 0 ? (
-        <p className="text-sm text-zinc-500 py-8 text-center">No tasks</p>
+        <p className="text-sm text-[#64748B] py-8 text-center">No tasks</p>
       ) : (
         <div className="space-y-4">
           {Object.entries(grouped).map(([cat, catTasks]) => (
             <div key={cat}>
-              <p className="text-xs font-semibold text-zinc-300 mb-1">{cat} ({catTasks.length})</p>
+              <p className="text-xs font-semibold text-[#334155] dark:text-zinc-300 mb-1">{cat} ({catTasks.length})</p>
               <div className="space-y-1">
                 {catTasks.map(t => (
-                  <div key={t.id} className="flex items-center gap-3 px-3 py-1.5 rounded-lg bg-zinc-800/20 text-xs">
-                    <span className="text-zinc-500 font-mono w-12">{t.startTime}–{t.endTime}</span>
-                    <span className={`flex-1 ${t.status === 'done' ? 'line-through text-zinc-600' : 'text-zinc-300'}`}>
+                  <div key={t.id} className="flex items-center gap-3 px-3 py-1.5 rounded-lg bg-[#F1F5F9] dark:bg-zinc-800/20 text-xs">
+                    <span className="text-[#64748B] font-mono w-12">{t.startTime}–{t.endTime}</span>
+                    <span className={`flex-1 ${t.status === 'done' ? 'line-through text-[#94A3B8]' : 'text-[#334155] dark:text-zinc-300'}`}>
                       {t.category} — {t.startTime}–{t.endTime}
                     </span>
                     <span className={`text-[10px] px-1.5 py-0.5 rounded ${
-                      t.status === 'done' ? 'text-emerald-400 bg-emerald-500/10' : 'text-zinc-500 bg-zinc-800/50'
+                      t.status === 'done' ? 'text-emerald-400 bg-emerald-500/10' : 'text-[#64748B] bg-[#E2E8F0] dark:text-zinc-500 dark:bg-zinc-800/50'
                     }`}>{t.status}</span>
                   </div>
                 ))}
@@ -272,36 +272,36 @@ function SelectedDayDetails({ date, onClose }: { date: Date | null; onClose: () 
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
-      className="card-premium p-5 space-y-5"
+      className="card p-5 space-y-5"
     >
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-lg font-bold text-white">{toDisplayFull(date)}</h2>
-          {isToday && <span className="text-xs text-blue-400">Today</span>}
+          <h2 className="text-lg font-bold text-[#0F172A] dark:text-white">{toDisplayFull(date)}</h2>
+          {isToday && <span className="text-xs text-[#2563EB] dark:text-blue-400">Today</span>}
         </div>
         <div className="flex items-center gap-3">
           <div className={`px-2.5 py-1 rounded-lg text-xs font-mono font-semibold ${
-            score >= 80 ? 'bg-emerald-500/20 text-emerald-400' :
-            score >= 50 ? 'bg-amber-500/20 text-amber-400' :
-            score >= 20 ? 'bg-orange-500/20 text-orange-400' :
-            date < getToday() ? 'bg-red-500/20 text-red-400' : 'bg-zinc-800/50 text-zinc-500'
+            score >= 80 ? 'bg-[#DCFCE7] text-[#16A34A] dark:bg-emerald-500/20 dark:text-emerald-400' :
+            score >= 50 ? 'bg-[#FEF3C7] text-[#D97706] dark:bg-amber-500/20 dark:text-amber-400' :
+            score >= 20 ? 'bg-[#FFEDD5] text-[#EA580C] dark:bg-orange-500/20 dark:text-orange-400' :
+            date < getToday() ? 'bg-[#FEE2E2] text-[#DC2626] dark:bg-red-500/20 dark:text-red-400' : 'bg-[#F1F5F9] text-[#64748B] dark:bg-zinc-800/50 dark:text-zinc-500'
           }`}>
             Productivity: {isFuture ? '—' : `${score}%`}
           </div>
-          <button onClick={onClose} className="text-zinc-500 hover:text-zinc-300"><ChevronRight size={16} /></button>
+          <button onClick={onClose} className="text-[#64748B] hover:text-[#0F172A] dark:hover:text-zinc-300"><ChevronRight size={16} /></button>
         </div>
       </div>
 
       {!hasData && date < getToday() && (
-        <div className="text-center py-6 text-zinc-500">
+        <div className="text-center py-6 text-[#64748B]">
           <p className="text-sm">No activity recorded for this day</p>
         </div>
       )}
 
       {!hasData && (isToday || isFuture) && (
         <div className="text-center py-6">
-          <Sparkles size={32} className="mx-auto text-zinc-500 mb-2" />
-          <p className="text-sm text-zinc-400 mb-3">No study plan yet</p>
+          <Sparkles size={32} className="mx-auto text-[#64748B] mb-2" />
+          <p className="text-sm text-[#64748B] mb-3">No study plan yet</p>
           <button className="btn-primary text-xs">Generate Study Plan</button>
         </div>
       )}
@@ -309,42 +309,42 @@ function SelectedDayDetails({ date, onClose }: { date: Date | null; onClose: () 
       {hasData && (
         <>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            <div className="bg-zinc-800/30 rounded-xl p-3 text-center">
-              <Clock size={14} className="text-blue-400 mx-auto mb-1" />
-              <p className="text-lg font-bold font-mono text-white">{activity?.hoursStudied ?? 0}h</p>
-              <p className="text-[10px] text-zinc-500">Study Hours</p>
+            <div className="bg-[#F1F5F9] dark:bg-zinc-800/30 rounded-xl p-3 text-center">
+              <Clock size={14} className="text-[#2563EB] dark:text-blue-400 mx-auto mb-1" />
+              <p className="text-lg font-bold font-mono text-[#0F172A] dark:text-white">{activity?.hoursStudied ?? 0}h</p>
+              <p className="text-[10px] text-[#64748B]">Study Hours</p>
             </div>
-            <div className="bg-zinc-800/30 rounded-xl p-3 text-center">
+            <div className="bg-[#F1F5F9] dark:bg-zinc-800/30 rounded-xl p-3 text-center">
               <CheckCircle size={14} className="text-emerald-400 mx-auto mb-1" />
-              <p className="text-lg font-bold font-mono text-white">{done}/{tasks.length}</p>
-              <p className="text-[10px] text-zinc-500">Tasks Done</p>
+              <p className="text-lg font-bold font-mono text-[#0F172A] dark:text-white">{done}/{tasks.length}</p>
+              <p className="text-[10px] text-[#64748B]">Tasks Done</p>
             </div>
-            <div className="bg-zinc-800/30 rounded-xl p-3 text-center">
-              <Code2 size={14} className="text-blue-400 mx-auto mb-1" />
-              <p className="text-lg font-bold font-mono text-white">{activity?.problemsSolved ?? 0}</p>
-              <p className="text-[10px] text-zinc-500">LeetCode Solved</p>
+            <div className="bg-[#F1F5F9] dark:bg-zinc-800/30 rounded-xl p-3 text-center">
+              <Code2 size={14} className="text-[#2563EB] dark:text-blue-400 mx-auto mb-1" />
+              <p className="text-lg font-bold font-mono text-[#0F172A] dark:text-white">{activity?.problemsSolved ?? 0}</p>
+              <p className="text-[10px] text-[#64748B]">LeetCode Solved</p>
             </div>
-            <div className="bg-zinc-800/30 rounded-xl p-3 text-center">
+            <div className="bg-[#F1F5F9] dark:bg-zinc-800/30 rounded-xl p-3 text-center">
               <Award size={14} className="text-amber-400 mx-auto mb-1" />
-              <p className="text-lg font-bold font-mono text-white">{xp}</p>
-              <p className="text-[10px] text-zinc-500">Total XP</p>
+              <p className="text-lg font-bold font-mono text-[#0F172A] dark:text-white">{xp}</p>
+              <p className="text-[10px] text-[#64748B]">Total XP</p>
             </div>
           </div>
 
           <div className="space-y-1.5">
-            <p className="text-xs font-semibold text-zinc-300">Study Timeline</p>
+            <p className="text-xs font-semibold text-[#334155] dark:text-zinc-300">Study Timeline</p>
             {tasks.length === 0 ? (
-              <p className="text-xs text-zinc-500">No tasks scheduled</p>
+              <p className="text-xs text-[#64748B]">No tasks scheduled</p>
             ) : (
               tasks.sort((a, b) => a.startTime.localeCompare(b.startTime)).map(t => (
-                <div key={t.id} className="flex items-center gap-3 px-3 py-2 rounded-lg bg-zinc-800/20">
-                  <span className="text-[10px] font-mono text-zinc-500 w-14">{t.startTime}–{t.endTime}</span>
-                  <span className={`text-xs flex-1 ${t.status === 'done' ? 'line-through text-zinc-600' : 'text-zinc-300'}`}>
+                <div key={t.id} className="flex items-center gap-3 px-3 py-2 rounded-lg bg-[#F1F5F9] dark:bg-zinc-800/20">
+                  <span className="text-[10px] font-mono text-[#64748B] w-14">{t.startTime}–{t.endTime}</span>
+                  <span className={`text-xs flex-1 ${t.status === 'done' ? 'line-through text-[#94A3B8]' : 'text-[#334155] dark:text-zinc-300'}`}>
                     {t.category}
                   </span>
                   <span className={`text-[10px] px-1.5 py-0.5 rounded ${
                     t.status === 'done' ? 'text-emerald-400 bg-emerald-500/10' :
-                    t.status === 'in-progress' ? 'text-blue-400 bg-blue-500/10' : 'text-zinc-500 bg-zinc-800/50'
+                    t.status === 'in-progress' ? 'text-[#2563EB] bg-[#DBEAFE] dark:text-blue-400 dark:bg-blue-500/10' : 'text-[#64748B] bg-[#E2E8F0] dark:text-zinc-500 dark:bg-zinc-800/50'
                   }`}>{t.status}</span>
                 </div>
               ))
@@ -352,23 +352,23 @@ function SelectedDayDetails({ date, onClose }: { date: Date | null; onClose: () 
           </div>
 
           <div className="flex flex-wrap gap-2">
-            <div className="bg-zinc-800/30 rounded-lg px-3 py-2 text-xs">
-              <span className="text-zinc-500">DSA: </span><span className="text-blue-400">{dsaSolved} solved</span>
+            <div className="bg-[#F1F5F9] dark:bg-zinc-800/30 rounded-lg px-3 py-2 text-xs">
+              <span className="text-[#64748B]">DSA: </span><span className="text-[#2563EB] dark:text-blue-400">{dsaSolved} solved</span>
             </div>
-            <div className="bg-zinc-800/30 rounded-lg px-3 py-2 text-xs">
-              <span className="text-zinc-500">FS Roadmap: </span><span className="text-emerald-400">{roadmapDone} completed</span>
+            <div className="bg-[#F1F5F9] dark:bg-zinc-800/30 rounded-lg px-3 py-2 text-xs">
+              <span className="text-[#64748B]">FS Roadmap: </span><span className="text-emerald-400">{roadmapDone} completed</span>
             </div>
             {subjects.filter(s => s.status !== 'not-started').map(s => (
-              <div key={s.id} className="bg-zinc-800/30 rounded-lg px-3 py-2 text-xs">
-                <span className="text-zinc-500">{s.name}: </span><span className="text-amber-400">{s.chaptersCompleted}/{s.totalChapters} ch</span>
+              <div key={s.id} className="bg-[#F1F5F9] dark:bg-zinc-800/30 rounded-lg px-3 py-2 text-xs">
+                <span className="text-[#64748B]">{s.name}: </span><span className="text-amber-400">{s.chaptersCompleted}/{s.totalChapters} ch</span>
               </div>
             ))}
           </div>
 
           <div className="flex gap-2 pt-1">
-            <button className="px-3 py-1.5 rounded-lg bg-zinc-800/50 text-zinc-400 text-xs hover:bg-zinc-700/50 transition-colors">Quick Edit</button>
-            <button className="px-3 py-1.5 rounded-lg bg-zinc-800/50 text-zinc-400 text-xs hover:bg-zinc-700/50 transition-colors">Duplicate Day</button>
-            <button className="px-3 py-1.5 rounded-lg bg-blue-500/20 text-blue-400 text-xs hover:bg-blue-500/30 transition-colors">Generate Tomorrow's Plan</button>
+            <button className="px-3 py-1.5 rounded-lg text-[#64748B] text-xs hover:text-[#0F172A] hover:bg-[#F1F5F9] dark:text-zinc-400 dark:hover:text-zinc-300 dark:hover:bg-zinc-700/50 transition-colors">Quick Edit</button>
+            <button className="px-3 py-1.5 rounded-lg text-[#64748B] text-xs hover:text-[#0F172A] hover:bg-[#F1F5F9] dark:text-zinc-400 dark:hover:text-zinc-300 dark:hover:bg-zinc-700/50 transition-colors">Duplicate Day</button>
+            <button className="px-3 py-1.5 rounded-lg bg-[#DBEAFE] text-[#2563EB] text-xs hover:bg-[#BFDBFE] dark:bg-blue-500/20 dark:text-blue-400 dark:hover:bg-blue-500/30 transition-colors">Generate Tomorrow's Plan</button>
           </div>
         </>
       )}
@@ -400,11 +400,11 @@ function StudyHeatmap() {
   for (let i = 0; i < cells.length; i += 7) weeks.push(cells.slice(i, i + 7))
 
   const getColor = (level: number) => {
-    if (level === 0) return 'bg-zinc-800'
-    if (level === 1) return 'bg-blue-900/60'
-    if (level === 2) return 'bg-blue-700/60'
-    if (level === 3) return 'bg-blue-500/60'
-    return 'bg-blue-400/60'
+    if (level === 0) return 'bg-[#E2E8F0] dark:bg-zinc-800'
+    if (level === 1) return 'bg-[#BFDBFE] dark:bg-blue-900/60'
+    if (level === 2) return 'bg-[#60A5FA] dark:bg-blue-700/60'
+    if (level === 3) return 'bg-[#3B82F6] dark:bg-blue-500/60'
+    return 'bg-[#2563EB] dark:bg-blue-400/60'
   }
 
   const monthLabels = useMemo(() => {
@@ -421,10 +421,10 @@ function StudyHeatmap() {
   const hasData = cells.some(c => c.level > 0)
 
   return (
-    <div className="card-premium p-5">
+    <div className="card p-5">
       <h2 className="section-title mb-4">Study Heatmap</h2>
       {!hasData ? (
-        <p className="text-sm text-zinc-500 py-8 text-center">Start solving problems to see your activity heatmap</p>
+        <p className="text-sm text-[#64748B] py-8 text-center">Start solving problems to see your activity heatmap</p>
       ) : (
         <div className="overflow-x-auto pb-2">
           <div className="flex gap-0.5" style={{ minWidth: weeks.length * 12 }}>
@@ -440,7 +440,7 @@ function StudyHeatmap() {
               </div>
             ))}
           </div>
-          <div className="flex items-center gap-1 mt-2 text-[10px] text-zinc-600">
+          <div className="flex items-center gap-1 mt-2 text-[10px] text-[#64748B]">
             <span>Less</span>
             {[0, 1, 2, 3, 4].map(l => <div key={l} className={`w-2.5 h-2.5 rounded-sm ${getColor(l)}`} />)}
             <span>More</span>
@@ -493,56 +493,56 @@ function MonthlyAnalytics() {
   const avgProductivity = tasks.length > 0 ? Math.round((totalTasks / Math.max(1, dayData.filter(d => d.tasks > 0).length)) * 10) : 0
 
   const categoryColors: Record<string, string> = {
-    DSA: '#3B82F6', Development: '#22C55E', 'Core Subjects': '#F59E0B',
+    DSA: '#2563EB', Development: '#22C55E', 'Core Subjects': '#F59E0B',
     Projects: '#A855F7', Revision: '#06B6D4', 'Mock Interview': '#F43F5E',
     Aptitude: '#06B6D4', Behavioral: '#F97316',
   }
 
   return (
-    <div className="card-premium p-5">
+    <div className="card p-5">
       <h2 className="section-title mb-4">Monthly Analytics</h2>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
-        <div className="bg-zinc-800/30 rounded-xl p-3 text-center">
-          <p className="text-lg font-bold font-mono text-white">{totalHours}h</p>
-          <p className="text-[10px] text-zinc-500">Study Hours</p>
+        <div className="bg-[#F1F5F9] dark:bg-zinc-800/30 rounded-xl p-3 text-center">
+          <p className="text-lg font-bold font-mono text-[#0F172A] dark:text-white">{totalHours}h</p>
+          <p className="text-[10px] text-[#64748B]">Study Hours</p>
         </div>
-        <div className="bg-zinc-800/30 rounded-xl p-3 text-center">
-          <p className="text-lg font-bold font-mono text-white">{totalProblems}</p>
-          <p className="text-[10px] text-zinc-500">Problems</p>
+        <div className="bg-[#F1F5F9] dark:bg-zinc-800/30 rounded-xl p-3 text-center">
+          <p className="text-lg font-bold font-mono text-[#0F172A] dark:text-white">{totalProblems}</p>
+          <p className="text-[10px] text-[#64748B]">Problems</p>
         </div>
-        <div className="bg-zinc-800/30 rounded-xl p-3 text-center">
-          <p className="text-lg font-bold font-mono text-white">{xp}</p>
-          <p className="text-[10px] text-zinc-500">XP Earned</p>
+        <div className="bg-[#F1F5F9] dark:bg-zinc-800/30 rounded-xl p-3 text-center">
+          <p className="text-lg font-bold font-mono text-[#0F172A] dark:text-white">{xp}</p>
+          <p className="text-[10px] text-[#64748B]">XP Earned</p>
         </div>
-        <div className="bg-zinc-800/30 rounded-xl p-3 text-center">
-          <p className="text-lg font-bold font-mono text-white">{avgProductivity}%</p>
-          <p className="text-[10px] text-zinc-500">Avg Productivity</p>
+        <div className="bg-[#F1F5F9] dark:bg-zinc-800/30 rounded-xl p-3 text-center">
+          <p className="text-lg font-bold font-mono text-[#0F172A] dark:text-white">{avgProductivity}%</p>
+          <p className="text-[10px] text-[#64748B]">Avg Productivity</p>
         </div>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <div className="h-48">
-          <p className="text-xs text-zinc-500 mb-2">Daily Study Hours</p>
+          <p className="text-xs text-[#64748B] mb-2">Daily Study Hours</p>
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={dayData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#27272a" />
-              <XAxis dataKey="day" stroke="#a1a1aa" fontSize={9} tick={{ angle: -45 }} />
-              <YAxis stroke="#a1a1aa" fontSize={9} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" className="dark:stroke-zinc-700" />
+              <XAxis dataKey="day" stroke="#94A3B8" className="dark:stroke-zinc-500" fontSize={9} tick={{ angle: -45 }} />
+              <YAxis stroke="#94A3B8" className="dark:stroke-zinc-500" fontSize={9} />
               <Tooltip content={chartTooltip} />
-              <Area type="monotone" dataKey="hours" stroke="#3B82F6" fill="#3B82F6" fillOpacity={0.2} name="Hours" />
+              <Area type="monotone" dataKey="hours" stroke="#2563EB" fill="#2563EB" fillOpacity={0.2} name="Hours" />
             </AreaChart>
           </ResponsiveContainer>
         </div>
         <div className="h-48">
-          <p className="text-xs text-zinc-500 mb-2">Problems by Category</p>
+          <p className="text-xs text-[#64748B] mb-2">Problems by Category</p>
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={categoryData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#27272a" />
-              <XAxis dataKey="name" stroke="#a1a1aa" fontSize={8} />
-              <YAxis stroke="#a1a1aa" fontSize={9} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" className="dark:stroke-zinc-700" />
+              <XAxis dataKey="name" stroke="#94A3B8" className="dark:stroke-zinc-500" fontSize={8} />
+              <YAxis stroke="#94A3B8" className="dark:stroke-zinc-500" fontSize={9} />
               <Tooltip content={chartTooltip} />
               <Bar dataKey="value" radius={[3, 3, 0, 0]}>
                 {categoryData.map((entry, i) => (
-                  <Cell key={i} fill={categoryColors[entry.name] || '#3B82F6'} />
+                  <Cell key={i} fill={categoryColors[entry.name] || '#2563EB'} />
                 ))}
               </Bar>
             </BarChart>
@@ -554,7 +554,7 @@ function MonthlyAnalytics() {
             <PieChart>
               <Pie data={categoryData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={60} innerRadius={40} stroke="none">
                 {categoryData.map((entry, i) => (
-                  <Cell key={i} fill={categoryColors[entry.name] || '#3B82F6'} />
+                  <Cell key={i} fill={categoryColors[entry.name] || '#2563EB'} />
                 ))}
               </Pie>
               <Tooltip content={chartTooltip} />
@@ -600,28 +600,28 @@ function WeeklySummary() {
   }, [weekData, today])
 
   return (
-    <div className="card-premium p-5">
+    <div className="card p-5">
       <h2 className="section-title mb-4">Weekly Summary</h2>
       <div className="grid grid-cols-7 gap-2 mb-4">
         {weekData.map((d, i) => (
           <div key={i} className="text-center">
-            <p className="text-[10px] text-zinc-500">{d.day}</p>
-            <p className="text-lg font-bold font-mono text-white mt-1">{d.done}</p>
-            <div className="mt-1 h-12 bg-zinc-800/50 rounded-full overflow-hidden flex items-end justify-center">
+            <p className="text-[10px] text-[#64748B]">{d.day}</p>
+            <p className="text-lg font-bold font-mono text-[#0F172A] dark:text-white mt-1">{d.done}</p>
+            <div className="mt-1 h-12 bg-[#E2E8F0] dark:bg-zinc-800/50 rounded-full overflow-hidden flex items-end justify-center">
               <div
-                className="w-full bg-blue-500 rounded-full transition-all duration-500"
+                className="w-full bg-[#2563EB] rounded-full transition-all duration-500"
                 style={{ height: `${Math.max(5, (d.done / Math.max(1, best?.done || 1)) * 100)}%` }}
               />
             </div>
-            <p className="text-[10px] text-zinc-600 mt-1">{d.tasks} tasks</p>
+            <p className="text-[10px] text-[#64748B] mt-1">{d.tasks} tasks</p>
           </div>
         ))}
       </div>
       <div className="flex flex-wrap items-center gap-4 text-xs">
         {best && <span className="text-emerald-400">Best: {best.day} ({best.done} done)</span>}
         {worst && <span className="text-red-400">Worst: {worst.day} ({worst.done} done)</span>}
-        <span className="text-zinc-500">Total: {weekData.reduce((s, d) => s + d.done, 0)} tasks</span>
-        <button className="ml-auto px-3 py-1 rounded-lg bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 transition-colors">
+        <span className="text-[#64748B]">Total: {weekData.reduce((s, d) => s + d.done, 0)} tasks</span>
+        <button className="ml-auto px-3 py-1 rounded-lg bg-[#DBEAFE] text-[#2563EB] hover:bg-[#BFDBFE] dark:bg-blue-500/20 dark:text-blue-400 dark:hover:bg-blue-500/30 transition-colors">
           Generate Weekly Report
         </button>
       </div>
@@ -702,16 +702,16 @@ function SmartInsights() {
   }, [activity, tasks, subjects, getSectionStats, lcStats])
 
   return (
-    <div className="card-premium p-5">
+    <div className="card p-5">
       <h2 className="section-title mb-4">Smart Insights</h2>
       <div className="space-y-2">
         {insights.map((insight, i) => (
           <div
             key={i}
             className={`flex items-start gap-2 px-3 py-2 rounded-lg text-xs ${
-              insight.type === 'success' ? 'bg-emerald-500/10 text-emerald-300' :
-              insight.type === 'warning' ? 'bg-orange-500/10 text-orange-300' :
-              'bg-blue-500/10 text-blue-300'
+               insight.type === 'success' ? 'bg-[#DCFCE7] text-[#16A34A] dark:bg-emerald-500/10 dark:text-emerald-300' :
+              insight.type === 'warning' ? 'bg-[#FFEDD5] text-[#EA580C] dark:bg-orange-500/10 dark:text-orange-300' :
+              'bg-[#DBEAFE] text-[#2563EB] dark:bg-blue-500/10 dark:text-blue-300'
             }`}
           >
             {insight.type === 'success' ? <CheckCircle size={12} className="mt-0.5 flex-shrink-0" /> :
@@ -746,7 +746,7 @@ function CalendarFAB() {
             exit={{ opacity: 0, scale: 0.8, y: 10 }}
             transition={{ delay: i * 0.05 }}
             onClick={() => { item.onClick(); setOpen(false) }}
-            className="flex items-center gap-2 bg-zinc-900 border border-zinc-700/50 rounded-xl px-4 py-2.5 text-sm text-zinc-300 hover:bg-zinc-800 shadow-xl"
+            className="flex items-center gap-2 bg-white dark:bg-zinc-900 border border-[#E2E8F0] dark:border-zinc-700/50 rounded-xl px-4 py-2.5 text-sm text-[#0F172A] dark:text-zinc-300 hover:bg-[#F8FAFC] dark:hover:bg-zinc-800 shadow-card"
           >
             <item.icon size={14} />
             <span>{item.label}</span>
@@ -755,7 +755,7 @@ function CalendarFAB() {
       </AnimatePresence>
       <button
         onClick={() => setOpen(!open)}
-        className="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg shadow-blue-500/25 flex items-center justify-center text-xl hover:scale-105 transition-transform"
+        className="w-12 h-12 rounded-full bg-[#2563EB] text-white shadow-lg shadow-blue-500/25 flex items-center justify-center text-xl hover:scale-105 transition-transform"
       >
         <motion.span animate={{ rotate: open ? 45 : 0 }} className="block">+</motion.span>
       </button>

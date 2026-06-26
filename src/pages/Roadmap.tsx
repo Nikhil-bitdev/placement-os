@@ -33,15 +33,15 @@ const rowLabels = ['Foundations', 'Frontend', 'Backend & Database', 'Capstone']
 
 function ResourceCard({ icon: Icon, label, description, href }: { icon: typeof FileText; label: string; description: string; href?: string }) {
   const c = (
-    <div className="flex items-start gap-3 p-3 rounded-lg bg-[#111827] border border-[#1E293B] transition-all hover:border-blue-500/30 hover:shadow-sm">
-      <div className="w-8 h-8 rounded-lg bg-[#1E293B] flex items-center justify-center flex-shrink-0">
-        <Icon size={14} className="text-blue-400" />
+    <div className="flex items-start gap-3 p-3 rounded-lg bg-[#F8FAFC] dark:bg-zinc-900 border border-[#E2E8F0] dark:border-zinc-800 transition-all hover:border-[#93C5FD] dark:hover:border-blue-500/30">
+      <div className="w-8 h-8 rounded-lg bg-[#F1F5F9] dark:bg-zinc-800 flex items-center justify-center flex-shrink-0">
+        <Icon size={14} className="text-[#2563EB] dark:text-[#2563EB] dark:text-blue-400" />
       </div>
       <div className="min-w-0 flex-1">
-        <p className="text-xs font-medium text-slate-200">{label}</p>
-        <p className="text-[11px] text-slate-500 mt-0.5">{description}</p>
+        <p className="text-xs font-medium text-[#334155] dark:text-slate-200">{label}</p>
+        <p className="text-[11px] text-[#64748B] mt-0.5">{description}</p>
       </div>
-      {href && <ExternalLink size={12} className="text-slate-600 mt-1 flex-shrink-0" />}
+      {href && <ExternalLink size={12} className="text-[#94A3B8] mt-1 flex-shrink-0" />}
     </div>
   )
   if (href) return <a href={href} target="_blank" rel="noopener noreferrer" className="block">{c}</a>
@@ -91,23 +91,23 @@ function RoadmapPage() {
     <div className="space-y-6">
       {/* HEADER */}
       <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}
-        className="rounded-xl border border-[#1E293B] bg-[#111827] p-5"
+        className="card p-5"
       >
         <div className="flex flex-col lg:flex-row lg:items-center gap-4">
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-3">
-              <h1 className="text-xl lg:text-2xl font-bold text-slate-100 tracking-tight">Full Stack Roadmap</h1>
+              <h1 className="text-xl lg:text-2xl font-bold text-[#0F172A] dark:text-slate-100 tracking-tight">Full Stack Roadmap</h1>
               <span className="text-lg">🚀</span>
             </div>
-            <p className="text-sm text-slate-500 mt-0.5">Track your journey from HTML to Full Stack Engineer</p>
+            <p className="text-sm text-[#64748B] mt-0.5">Track your journey from HTML to Full Stack Engineer</p>
           </div>
 
           <div className="flex items-center gap-4">
             <div className="relative w-full lg:w-44">
-              <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+              <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#64748B]" />
               <input value={search} onChange={e => setSearch(e.target.value)}
                 placeholder="Search..."
-                className="w-full pl-9 pr-3 py-1.5 text-xs rounded-lg bg-[#0F172A] border border-[#1E293B] text-slate-200 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+                className="w-full pl-9 pr-3 py-1.5 text-xs rounded-lg bg-[#F8FAFC] dark:bg-zinc-900 border border-[#E2E8F0] dark:border-zinc-800 text-[#334155] dark:text-slate-200 placeholder:text-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-blue-500/30"
               />
             </div>
 
@@ -118,9 +118,9 @@ function RoadmapPage() {
                     filter === f
                       ? f === 'completed' ? 'bg-green-500 text-white' :
                         f === 'learning' ? 'bg-blue-500 text-white' :
-                        f === 'not-started' ? 'bg-slate-600 text-white' :
-                        'bg-slate-700 text-slate-200'
-                      : 'bg-[#1E293B] text-slate-500 hover:text-slate-300'
+                        f === 'not-started' ? 'bg-[#94A3B8] dark:bg-slate-600 text-white' :
+                        'bg-[#CBD5E1] dark:bg-slate-700 text-[#334155] dark:text-slate-200'
+                      : 'bg-[#F1F5F9] dark:bg-zinc-800 text-[#64748B] hover:text-[#334155] dark:text-slate-300'
                   }`}
                 >
                   {f === 'all' ? 'All' : f === 'not-started' ? 'New' : f.charAt(0).toUpperCase() + f.slice(1)}
@@ -130,9 +130,9 @@ function RoadmapPage() {
 
             <div className="relative w-9 h-9 flex-shrink-0">
               <svg className="-rotate-90" width="36" height="36" viewBox="0 0 36 36">
-                <circle cx="18" cy="18" r="15" fill="none" stroke="#1E293B" strokeWidth="3" />
+                <circle cx="18" cy="18" r="15" fill="none" className="stroke-[#E2E8F0] dark:stroke-zinc-700" strokeWidth="3" />
                 <circle cx="18" cy="18" r="15" fill="none"
-                  className={stats.pct >= 100 ? 'stroke-green-500' : 'stroke-blue-500'} strokeWidth="3"
+                  className={stats.pct >= 100 ? 'stroke-[#16A34A] dark:stroke-green-500' : 'stroke-[#2563EB] dark:stroke-blue-500'} strokeWidth="3"
                   strokeDasharray={2 * Math.PI * 15}
                   strokeDashoffset={2 * Math.PI * 15 * (1 - Math.min(100, Math.max(0, stats.pct)) / 100)}
                   strokeLinecap="round"
@@ -140,17 +140,17 @@ function RoadmapPage() {
                 />
               </svg>
               <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-[8px] font-bold font-mono text-slate-200">{stats.pct}%</span>
+                <span className="text-[8px] font-bold font-mono text-[#334155] dark:text-slate-200">{stats.pct}%</span>
               </div>
             </div>
           </div>
         </div>
 
         {/* Compact stats row */}
-        <div className="flex items-center gap-6 mt-3 pt-3 border-t border-[#1E293B]">
+        <div className="flex items-center gap-6 mt-3 pt-3 border-t border-[#E2E8F0] dark:border-zinc-800">
           <MiniStat label="Overall" value={`${stats.pct}%`} />
-          <MiniStat label="Completed" value={`${stats.completed}/${stats.total}`} color="text-green-400" />
-          <MiniStat label="Current" value={stats.activeName} color="text-blue-400" />
+          <MiniStat label="Completed" value={`${stats.completed}/${stats.total}`} color="text-[#16A34A]" />
+          <MiniStat label="Current" value={stats.activeName} color="text-[#2563EB] dark:text-blue-400" />
           <MiniStat label="Hours" value={`${stats.totalHours}`} />
           <MiniStat label="XP" value={`${stats.xp}`} color="text-amber-400" />
         </div>
@@ -174,7 +174,7 @@ function RoadmapPage() {
 
               return (
                 <div key={ri}>
-                  <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 mb-3">{rowLabels[ri]}</p>
+                  <p className="text-[10px] font-semibold uppercase tracking-wider text-[#64748B] mb-3">{rowLabels[ri]}</p>
                   <div className="flex items-center gap-0 overflow-x-auto pb-2">
                     {visibleTechs.map((tech, ti) => {
                       const progress = getProgress(tech.id)
@@ -190,7 +190,7 @@ function RoadmapPage() {
                             <div className={`h-0.5 w-6 sm:w-8 md:w-10 flex-shrink-0 ${
                               status === 'completed' || progress.status === 'completed'
                                 ? 'bg-green-500/60' : status === 'learning' || progress.status === 'learning'
-                                ? 'bg-blue-500/60' : 'bg-slate-700'
+                                ? 'bg-blue-500/60' : 'bg-[#CBD5E1] dark:bg-slate-700'
                             }`} />
                           )}
                           <motion.button
@@ -201,7 +201,7 @@ function RoadmapPage() {
                             whileTap={{ scale: 0.95 }}
                             onClick={() => setSelectedTechId(tech.id)}
                             className={`flex flex-col items-center gap-1.5 p-2 rounded-xl transition-all min-w-[72px] ${
-                              isSelected ? 'bg-blue-500/10 ring-2 ring-blue-500/40 ring-inset' : 'hover:bg-[#111827]/50'
+                              isSelected ? 'bg-[#DBEAFE] dark:bg-blue-500/10 ring-2 ring-[#93C5FD]/40 dark:ring-blue-500/40 ring-inset' : 'hover:bg-[#F1F5F9] dark:hover:bg-zinc-800/50'
                             }`}
                           >
                             <div className={`w-[64px] h-[64px] md:w-[76px] md:h-[76px] rounded-full flex items-center justify-center transition-all duration-300 ${
@@ -209,19 +209,19 @@ function RoadmapPage() {
                                 ? 'bg-green-500 text-white shadow-md shadow-green-500/20'
                                 : status === 'learning'
                                 ? 'bg-blue-500 text-white shadow-md shadow-blue-500/20'
-                                : 'bg-[#1E293B] text-slate-500'
+                                : 'bg-[#F1F5F9] dark:bg-zinc-800 text-[#64748B]'
                             }`}>
                               {status === 'completed' ? <CheckCircle size={24} /> : <Icon size={24} />}
                             </div>
                             <span className={`text-xs font-medium text-center leading-tight max-w-[90px] ${
-                              status === 'completed' ? 'text-green-400' :
-                              status === 'learning' ? 'text-blue-400' :
-                              'text-slate-500'
+                              status === 'completed' ? 'text-[#16A34A]' :
+                              status === 'learning' ? 'text-[#2563EB] dark:text-blue-400' :
+                              'text-[#64748B]'
                             }`}>
                               {tech.name}
                             </span>
                             {progress.hoursSpent > 0 && (
-                              <span className="text-[9px] font-mono text-slate-600">{progress.hoursSpent}h</span>
+                              <span className="text-[9px] font-mono text-[#94A3B8]">{progress.hoursSpent}h</span>
                             )}
                           </motion.button>
                         </div>
@@ -245,7 +245,7 @@ function RoadmapPage() {
                 if (hasVisible) break
               }
               return hasVisible ? null : (
-                <p className="text-sm text-slate-500 text-center py-12">No technologies match your search or filter.</p>
+                <p className="text-sm text-[#64748B] text-center py-12">No technologies match your search or filter.</p>
               )
             })()}
           </motion.div>
@@ -269,10 +269,10 @@ function RoadmapPage() {
             />
           ) : (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-              className="rounded-xl border border-[#1E293B] bg-[#111827] p-6 text-center"
+              className="card p-6 text-center"
             >
-              <Target size={28} className="mx-auto text-slate-700 mb-3" />
-              <p className="text-sm text-slate-500">Select a technology to view details</p>
+              <Target size={28} className="mx-auto text-[#CBD5E1] dark:text-slate-700 mb-3" />
+              <p className="text-sm text-[#64748B]">Select a technology to view details</p>
             </motion.div>
           )}
         </div>
@@ -281,17 +281,17 @@ function RoadmapPage() {
       {/* RECOMMENDED NEXT */}
       {recommendedNext && (
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
-          className="rounded-xl border border-[#1E293B] bg-[#111827] p-5"
+          className="card p-5"
         >
           <div className="flex flex-col sm:flex-row sm:items-center gap-4">
             <div className="flex items-center gap-4 flex-1">
-              <div className="w-12 h-12 rounded-full bg-blue-500/10 flex items-center justify-center flex-shrink-0">
-                <Zap size={20} className="text-blue-400" />
+              <div className="w-12 h-12 rounded-full bg-[#DBEAFE] dark:bg-blue-500/10 flex items-center justify-center flex-shrink-0">
+                <Zap size={20} className="text-[#2563EB] dark:text-blue-400" />
               </div>
               <div>
-                <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">Recommended Next</p>
-                <p className="text-sm font-semibold text-slate-200 mt-0.5">{recommendedNext.name}</p>
-                <p className="text-xs text-slate-500 mt-0.5">
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-[#64748B]">Recommended Next</p>
+                <p className="text-sm font-semibold text-[#334155] dark:text-slate-200 mt-0.5">{recommendedNext.name}</p>
+                <p className="text-xs text-[#64748B] mt-0.5">
                   {recommendedNext.prerequisites.length > 0
                     ? `Requires: ${recommendedNext.prerequisites.map(p => techMap.get(p)?.name || p).join(', ')}`
                     : 'No prerequisites needed'}
@@ -299,7 +299,7 @@ function RoadmapPage() {
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <span className="text-xs text-slate-500">{recommendedNext.isCheckpoint ? 'Portfolio project' : '~20 hours'}</span>
+              <span className="text-xs text-[#64748B]">{recommendedNext.isCheckpoint ? 'Portfolio project' : '~20 hours'}</span>
               <button onClick={() => { setSelectedTechId(recommendedNext.id); updateStatus(recommendedNext.id, 'learning') }}
                 className="flex items-center gap-1.5 text-xs font-medium px-4 py-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600 transition-colors"
               >
@@ -312,9 +312,9 @@ function RoadmapPage() {
 
       {/* RESOURCES */}
       <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
-        className="rounded-xl border border-[#1E293B] bg-[#111827] p-5"
+        className="card p-5"
       >
-        <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-3">Resources</p>
+        <p className="text-xs font-semibold uppercase tracking-wider text-[#64748B] mb-3">Resources</p>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           <ResourceCard icon={FileText} label="Documentation" description="Official docs and references" />
           <ResourceCard icon={Video} label="YouTube" description="Best video tutorials" />
@@ -326,10 +326,10 @@ function RoadmapPage() {
   )
 }
 
-function MiniStat({ label, value, color = 'text-slate-200' }: { label: string; value: string; color?: string }) {
+function MiniStat({ label, value, color = 'text-[#334155] dark:text-slate-200' }: { label: string; value: string; color?: string }) {
   return (
     <div className="flex items-center gap-2">
-      <span className="text-xs text-slate-500">{label}</span>
+      <span className="text-xs text-[#64748B]">{label}</span>
       <span className={`text-sm font-semibold font-mono ${color}`}>{value}</span>
     </div>
   )
@@ -378,21 +378,21 @@ function TechDetailsPanel({
 
   return (
     <motion.div initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }}
-      className="rounded-xl border border-[#1E293B] bg-[#111827] overflow-hidden"
+      className="card overflow-hidden"
     >
       {/* Header */}
-      <div className="p-4 border-b border-[#1E293B]">
+      <div className="p-4 border-b border-[#E2E8F0] dark:border-zinc-800">
         <div className="flex items-center gap-3">
           <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-            progress.status === 'completed' ? 'bg-green-500/10 text-green-400' :
-            progress.status === 'learning' ? 'bg-blue-500/10 text-blue-400' :
-            'bg-[#1E293B] text-slate-500'
+            progress.status === 'completed' ? 'bg-green-500/10 text-[#16A34A]' :
+            progress.status === 'learning' ? 'bg-[#DBEAFE] dark:bg-blue-500/10 text-[#2563EB] dark:text-blue-400' :
+            'bg-[#F1F5F9] dark:bg-zinc-800 text-[#64748B]'
           }`}>
             <Icon size={18} />
           </div>
           <div className="min-w-0 flex-1">
-            <h3 className="text-sm font-semibold text-slate-200">{tech.name}</h3>
-            <span className="text-[10px] font-medium text-slate-500 capitalize">{tech.category}</span>
+            <h3 className="text-sm font-semibold text-[#334155] dark:text-slate-200">{tech.name}</h3>
+            <span className="text-[10px] font-medium text-[#64748B] capitalize">{tech.category}</span>
           </div>
         </div>
       </div>
@@ -402,9 +402,9 @@ function TechDetailsPanel({
         <div className="flex items-center gap-4">
           <div className="relative w-14 h-14 flex-shrink-0">
             <svg className="-rotate-90" width="56" height="56" viewBox="0 0 56 56">
-              <circle cx="28" cy="28" r="24" fill="none" stroke="#1E293B" strokeWidth="4" />
+              <circle cx="28" cy="28" r="24" fill="none" className="stroke-[#E2E8F0] dark:stroke-zinc-700" strokeWidth="4" />
               <circle cx="28" cy="28" r="24" fill="none"
-                className={progress.status === 'completed' ? 'stroke-green-500' : 'stroke-blue-500'} strokeWidth="4"
+                className={progress.status === 'completed' ? 'stroke-[#16A34A] dark:stroke-green-500' : 'stroke-[#2563EB] dark:stroke-blue-500'} strokeWidth="4"
                 strokeDasharray={2 * Math.PI * 24}
                 strokeDashoffset={2 * Math.PI * 24 * (1 - pct / 100)}
                 strokeLinecap="round"
@@ -412,32 +412,32 @@ function TechDetailsPanel({
               />
             </svg>
             <div className="absolute inset-0 flex items-center justify-center">
-              <span className="text-[10px] font-bold font-mono text-slate-200">{progress.status === 'completed' ? '✓' : `${pct}%`}</span>
+              <span className="text-[10px] font-bold font-mono text-[#334155] dark:text-slate-200">{progress.status === 'completed' ? '✓' : `${pct}%`}</span>
             </div>
           </div>
           <div className="grid grid-cols-2 gap-x-3 gap-y-1 flex-1">
             <div>
-              <p className="text-[10px] text-slate-500">Status</p>
+              <p className="text-[10px] text-[#64748B]">Status</p>
               <p className={`text-xs font-medium capitalize ${
-                progress.status === 'completed' ? 'text-green-400' :
-                progress.status === 'learning' ? 'text-blue-400' : 'text-slate-500'
+                progress.status === 'completed' ? 'text-[#16A34A]' :
+                progress.status === 'learning' ? 'text-[#2563EB] dark:text-blue-400' : 'text-[#64748B]'
               }`}>{progress.status.replace('-', ' ')}</p>
             </div>
             <div>
-              <p className="text-[10px] text-slate-500">Hours</p>
-              <p className="text-xs font-mono text-slate-200">{progress.hoursSpent}</p>
+              <p className="text-[10px] text-[#64748B]">Hours</p>
+              <p className="text-xs font-mono text-[#334155] dark:text-slate-200">{progress.hoursSpent}</p>
             </div>
             <div>
-              <p className="text-[10px] text-slate-500">Confidence</p>
+              <p className="text-[10px] text-[#64748B]">Confidence</p>
               <div className="flex items-center gap-0.5">
                 {[1, 2, 3, 4, 5].map(i => (
-                  <Star key={i} size={10} className={i <= progress.confidence ? 'text-amber-400 fill-amber-400' : 'text-slate-700'} />
+                  <Star key={i} size={10} className={i <= progress.confidence ? 'text-amber-400 fill-amber-400' : 'text-[#CBD5E1] dark:text-slate-700'} />
                 ))}
               </div>
             </div>
             <div>
-              <p className="text-[10px] text-slate-500">Est. remaining</p>
-              <p className="text-xs font-mono text-slate-200">{estRemaining}h</p>
+              <p className="text-[10px] text-[#64748B]">Est. remaining</p>
+              <p className="text-xs font-mono text-[#334155] dark:text-slate-200">{estRemaining}h</p>
             </div>
           </div>
         </div>
@@ -450,8 +450,8 @@ function TechDetailsPanel({
                 progress.status === s
                   ? s === 'completed' ? 'bg-green-500 text-white' :
                     s === 'learning' ? 'bg-blue-500 text-white' :
-                    'bg-slate-600 text-white'
-                  : 'bg-[#1E293B] text-slate-500 hover:text-slate-300'
+                    'bg-[#94A3B8] dark:bg-slate-600 text-white'
+                  : 'bg-[#F1F5F9] dark:bg-zinc-800 text-[#64748B] hover:text-[#334155] dark:text-slate-300'
               }`}
             >
               {s === 'not-started' ? 'Not Started' : s === 'learning' ? 'Learning' : 'Done'}
@@ -462,11 +462,11 @@ function TechDetailsPanel({
         {/* Prerequisites */}
         {prerequisites.length > 0 && (
           <div>
-            <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Prerequisites</p>
+            <p className="text-[10px] font-semibold uppercase tracking-wider text-[#64748B] mb-1.5">Prerequisites</p>
             <div className="flex flex-wrap gap-1.5">
               {prerequisites.map(p => (
                 <button key={p.id} onClick={() => onSelectTech(p.id)}
-                  className="text-[10px] px-2 py-1 rounded-md bg-[#1E293B] text-slate-400 hover:text-slate-200 hover:bg-slate-700 transition-colors"
+                  className="text-[10px] px-2 py-1 rounded-md bg-[#F1F5F9] dark:bg-zinc-800 text-[#64748B] hover:text-[#334155] dark:text-slate-200 hover:bg-[#CBD5E1] dark:bg-slate-700 transition-colors"
                 >
                   {p.name}
                 </button>
@@ -478,7 +478,7 @@ function TechDetailsPanel({
         {/* Resources */}
         {(tech.resources.officialDocs || tech.resources.bestVideo) && (
           <div>
-            <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 mb-2">Resources</p>
+            <p className="text-[10px] font-semibold uppercase tracking-wider text-[#64748B] mb-2">Resources</p>
             <div className="space-y-1.5">
               {tech.resources.officialDocs && (
                 <ResourceCard icon={FileText} label="Official Documentation" description="Read the official docs" href={tech.resources.officialDocs} />
@@ -492,21 +492,21 @@ function TechDetailsPanel({
 
         {/* Mini Projects */}
         <div>
-          <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 mb-2">Mini Projects</p>
+          <p className="text-[10px] font-semibold uppercase tracking-wider text-[#64748B] mb-2">Mini Projects</p>
           <div className="space-y-1">
             {progress.miniProjects.map((project, i) => (
-              <div key={i} className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-[#0F172A]">
-                <button onClick={() => onRemoveProject(i)} className="text-slate-600 hover:text-red-400 transition-colors">
+              <div key={i} className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-[#F8FAFC] dark:bg-zinc-900">
+                <button onClick={() => onRemoveProject(i)} className="text-[#94A3B8] hover:text-red-400 transition-colors">
                   <Circle size={10} />
                 </button>
-                <span className="text-xs text-slate-300 flex-1">{project}</span>
+                <span className="text-xs text-[#334155] dark:text-slate-300 flex-1">{project}</span>
               </div>
             ))}
             <div className="flex items-center gap-2">
               <input value={projectInput} onChange={e => setProjectInput(e.target.value)}
                 onKeyDown={e => e.key === 'Enter' && handleAddProject()}
                 placeholder="Add project..."
-                className="flex-1 text-xs px-2.5 py-1.5 bg-[#0F172A] border border-[#1E293B] rounded-lg text-slate-200 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+                className="flex-1 text-xs px-2.5 py-1.5 bg-[#F8FAFC] dark:bg-zinc-900 border border-[#E2E8F0] dark:border-zinc-800 rounded-lg text-[#334155] dark:text-slate-200 placeholder:text-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-blue-500/30"
               />
               <button onClick={handleAddProject} className="text-xs px-2 py-1.5 rounded-lg bg-blue-500 text-white hover:bg-blue-600 transition-colors">Add</button>
             </div>
@@ -515,17 +515,17 @@ function TechDetailsPanel({
 
         {/* Notes */}
         <div>
-          <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Notes</p>
+          <p className="text-[10px] font-semibold uppercase tracking-wider text-[#64748B] mb-1.5">Notes</p>
           <textarea value={notes} onChange={e => handleNotes(e.target.value)}
             placeholder="Take notes..."
             rows={2}
-            className="w-full text-xs px-2.5 py-1.5 bg-[#0F172A] border border-[#1E293B] rounded-lg text-slate-200 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500/30 resize-none"
+            className="w-full text-xs px-2.5 py-1.5 bg-[#F8FAFC] dark:bg-zinc-900 border border-[#E2E8F0] dark:border-zinc-800 rounded-lg text-[#334155] dark:text-slate-200 placeholder:text-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-blue-500/30 resize-none"
           />
         </div>
       </div>
 
       {/* Action */}
-      <div className="p-4 border-t border-[#1E293B] space-y-2">
+      <div className="p-4 border-t border-[#E2E8F0] dark:border-zinc-800 space-y-2">
         {progress.status !== 'completed' && (
           <button onClick={onMarkComplete}
             className="w-full flex items-center justify-center gap-1.5 text-xs font-medium px-3 py-2 rounded-lg bg-green-500 text-white hover:bg-green-600 transition-colors"

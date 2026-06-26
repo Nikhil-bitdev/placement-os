@@ -12,20 +12,20 @@ import allSections from '../data/dsa'
 import roadmapTechs from '../data/roadmap'
 
 const chartTheme = {
-  grid: '#27272a',
-  text: '#a1a1aa',
-  axis: '#a1a1aa',
-  primary: '#3B82F6',
-  success: '#22c55e',
-  warning: '#f59e0b',
-  danger: '#ef4444',
+  grid: '#E2E8F0',
+  text: '#64748B',
+  axis: '#64748B',
+  primary: '#2563EB',
+  success: '#16A34A',
+  warning: '#D97706',
+  danger: '#DC2626',
 }
 
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload?.length) {
     return (
-      <div className="bg-zinc-900 border border-zinc-700/50 rounded-xl px-3 py-2 text-xs shadow-xl">
-        <p className="text-zinc-400 mb-1">{label}</p>
+      <div className="bg-white dark:bg-zinc-900 border border-[#E2E8F0] dark:border-zinc-700/50 rounded-xl px-3 py-2 text-xs shadow-card">
+        <p className="text-[#64748B] mb-1">{label}</p>
         {payload.map((p: any, i: number) => (
           <p key={i} style={{ color: p.color }} className="font-mono">
             {p.name}: {p.value}
@@ -42,11 +42,11 @@ function StatCard({ label, value, icon: Icon }: { label: string; value: string; 
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="card-premium p-4"
+      className="card p-4"
     >
-      <Icon size={18} className="text-blue-400 mb-1" />
-      <p className="text-2xl font-bold font-mono text-white">{value}</p>
-      <p className="text-xs text-zinc-400 mt-0.5">{label}</p>
+      <Icon size={18} className="text-[#2563EB] mb-1" />
+      <p className="text-2xl font-bold font-mono text-[#0F172A] dark:text-white">{value}</p>
+      <p className="text-xs text-[#64748B] mt-0.5">{label}</p>
     </motion.div>
   )
 }
@@ -56,7 +56,7 @@ function ChartCard({ title, children }: { title: string; children: React.ReactNo
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="card-premium p-6"
+      className="card p-6"
     >
       <h2 className="section-title mb-4">{title}</h2>
       <div className="h-64">
@@ -293,7 +293,7 @@ export default function Statistics() {
         </ChartCard>
       </div>
 
-      <div className="card-premium p-6">
+      <div className="card p-6">
         <h2 className="section-title mb-4">DSA Section Progress</h2>
         <SectionProgressChart />
       </div>

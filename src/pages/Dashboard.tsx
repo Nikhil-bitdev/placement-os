@@ -46,47 +46,47 @@ function HeroSection() {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="card-premium p-6 lg:p-8"
+      className="card p-6 lg:p-8"
     >
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
         <div className="space-y-4">
           <div>
-            <h1 className="text-2xl lg:text-3xl font-bold text-stone-900 dark:text-white tracking-tight">
+            <h1 className="text-2xl lg:text-3xl font-bold text-[#0F172A] dark:text-white tracking-tight">
               {greeting}, {displayName}
             </h1>
-            <p className="text-sm text-stone-500 dark:text-zinc-400 mt-1">
+            <p className="text-sm text-[#64748B] dark:text-zinc-400 mt-1">
               Current Goal: Become a Full Stack Software Engineer
             </p>
           </div>
           <div className="space-y-2">
             <div className="flex items-center gap-4 text-sm">
-              <span className="text-stone-600 dark:text-zinc-300">Today's Progress</span>
-              <span className="font-mono text-blue-400 font-semibold">{todayProgress}%</span>
-              <span className="text-stone-400">•</span>
-              <span className="text-stone-500">{completedTasks.length} of {todayTasks.length} Tasks Completed</span>
+              <span className="text-[#334155] dark:text-zinc-300">Today's Progress</span>
+              <span className="font-mono text-[#2563EB] dark:text-blue-400 font-semibold">{todayProgress}%</span>
+              <span className="text-[#94A3B8]">•</span>
+              <span className="text-[#64748B]">{completedTasks.length} of {todayTasks.length} Tasks Completed</span>
             </div>
-            <div className="w-full max-w-md h-2 bg-stone-200 dark:bg-zinc-800 rounded-full overflow-hidden">
+            <div className="w-full max-w-md h-2 bg-[#E2E8F0] dark:bg-zinc-800 rounded-full overflow-hidden">
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: `${todayProgress}%` }}
                 transition={{ duration: 1, ease: 'easeOut' }}
-                className="h-full rounded-full bg-gradient-to-r from-blue-500 to-blue-400"
+                className="h-full rounded-full bg-[#2563EB]"
               />
             </div>
           </div>
           <div className="flex items-center gap-6 text-sm">
-            <span className="flex items-center gap-1.5 text-stone-600 dark:text-zinc-300"><Flame size={14} className="text-orange-400" /> {streak} days</span>
-            <span className="flex items-center gap-1.5 text-stone-600 dark:text-zinc-300"><Clock size={14} className="text-blue-400" /> {totalHours}h total</span>
+            <span className="flex items-center gap-1.5 text-[#334155] dark:text-zinc-300"><Flame size={14} className="text-orange-400" /> {streak} days</span>
+            <span className="flex items-center gap-1.5 text-[#334155] dark:text-zinc-300"><Clock size={14} className="text-[#2563EB]" /> {totalHours}h total</span>
           </div>
         </div>
         <div className="flex items-center gap-4">
           <div className="text-right">
-            <p className="text-xs text-zinc-400">XP</p>
-            <p className="text-lg font-bold text-stone-900 dark:text-white">{xp.toLocaleString()}</p>
+            <p className="text-xs text-[#64748B]">XP</p>
+            <p className="text-lg font-bold text-[#0F172A] dark:text-white">{xp.toLocaleString()}</p>
           </div>
           <div className="text-right">
-            <p className="text-xs text-zinc-400">Level</p>
-            <p className="text-lg font-bold text-blue-400">{level}</p>
+            <p className="text-xs text-[#64748B]">Level</p>
+            <p className="text-lg font-bold text-[#2563EB] dark:text-blue-400">{level}</p>
           </div>
           <NavLink to="/dsa-tracker" className="btn-primary">Continue Learning</NavLink>
         </div>
@@ -133,16 +133,16 @@ function QuickStatsGrid() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: i * 0.05 }}
-          className="card-premium p-4 hover:border-blue-500/20 transition-all duration-300"
+          className="card p-4"
         >
           <div className="flex items-center gap-2 mb-1">
-            <stat.icon size={14} className="text-blue-400" />
-            <p className="text-xs text-zinc-400">{stat.label}</p>
+            <stat.icon size={14} className="text-[#2563EB]" />
+            <p className="text-xs text-[#64748B]">{stat.label}</p>
           </div>
-          <p className="stat-value text-stone-900 dark:text-white">{stat.value}</p>
+          <p className="stat-value text-[#0F172A] dark:text-white">{stat.value}</p>
           {stat.progress !== undefined && (
-            <div className="mt-2 h-1 bg-stone-200 dark:bg-zinc-800 rounded-full overflow-hidden">
-              <div className="h-full rounded-full bg-blue-500" style={{ width: `${stat.progress}%` }} />
+            <div className="mt-2 h-1 bg-[#E2E8F0] dark:bg-zinc-800 rounded-full overflow-hidden">
+              <div className="h-full rounded-full bg-[#2563EB]" style={{ width: `${stat.progress}%` }} />
             </div>
           )}
         </motion.div>
@@ -164,11 +164,11 @@ function TodayTimeline() {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="card-premium p-6"
+      className="card p-6"
     >
       <div className="flex items-center justify-between mb-4">
         <h2 className="section-title">Today's Planner</h2>
-        <span className="text-xs text-zinc-400">{today}</span>
+        <span className="text-xs text-[#64748B]">{today}</span>
       </div>
       <div className="space-y-0">
         <AnimatePresence>
@@ -178,7 +178,7 @@ function TodayTimeline() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="text-sm text-zinc-500 py-4"
+              className="text-sm text-[#64748B] py-4"
             >
               No tasks scheduled for today
             </motion.p>
@@ -192,24 +192,24 @@ function TodayTimeline() {
                 transition={{ delay: i * 0.05 }}
                 className={`flex items-center gap-4 py-3 border-l-2 pl-4 -ml-[1px] ${
                   task.status === 'done'
-                    ? 'border-green-500/50 opacity-60'
-                    : 'border-blue-500/50'
+                    ? 'border-[#16A34A]/50 opacity-60'
+                    : 'border-[#2563EB]/50'
                 }`}
               >
-                <span className="text-xs font-mono text-zinc-500 w-12">{task.startTime}</span>
-                <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400">
+                <span className="text-xs font-mono text-[#64748B] w-12">{task.startTime}</span>
+                <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-[#DBEAFE] text-[#2563EB] dark:bg-blue-500/10 dark:text-blue-400">
                   {task.category}
                 </span>
                 <span
                   className={`text-sm flex-1 ${
                     task.status === 'done'
-                      ? 'line-through text-zinc-600'
-                      : 'text-stone-700 dark:text-zinc-300'
+                      ? 'line-through text-[#94A3B8]'
+                      : 'text-[#334155] dark:text-zinc-300'
                   }`}
                 >
                   {task.category} — {task.startTime}–{task.endTime}
                 </span>
-                {task.status === 'done' && <span className="text-green-400 text-xs">✓</span>}
+                {task.status === 'done' && <span className="text-[#16A34A] text-xs">✓</span>}
               </motion.div>
             ))
           )}
@@ -257,7 +257,7 @@ function ContinueLearning() {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="card-premium p-6"
+      className="card p-6"
     >
       <h2 className="section-title mb-4">Continue Learning</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -265,20 +265,20 @@ function ContinueLearning() {
           <NavLink
             key={item.title}
             to={item.link}
-            className="p-4 rounded-xl bg-stone-100 dark:bg-zinc-800/50 hover:bg-stone-200 dark:hover:bg-zinc-800 transition-all duration-200 border border-transparent hover:border-blue-500/20"
+            className="p-4 rounded-xl bg-[#F1F5F9] dark:bg-zinc-800/50 hover:bg-[#E2E8F0] dark:hover:bg-zinc-800 transition-all duration-200"
           >
-            <p className="text-xs text-zinc-400 uppercase tracking-wider">{item.type}</p>
-            <p className="text-sm font-medium text-stone-800 dark:text-zinc-200 mt-1">{item.title}</p>
+            <p className="text-xs text-[#64748B] uppercase tracking-wider">{item.type}</p>
+            <p className="text-sm font-medium text-[#0F172A] dark:text-zinc-200 mt-1">{item.title}</p>
             <div className="mt-3 flex items-center gap-3">
-              <div className="flex-1 h-1.5 bg-stone-200 dark:bg-zinc-700/50 rounded-full overflow-hidden">
-                <div className="h-full rounded-full bg-blue-500" style={{ width: `${item.progress}%` }} />
+              <div className="flex-1 h-1.5 bg-[#CBD5E1] dark:bg-zinc-700/50 rounded-full overflow-hidden">
+                <div className="h-full rounded-full bg-[#2563EB]" style={{ width: `${item.progress}%` }} />
               </div>
-              <span className="text-xs font-mono text-blue-400">{item.progress}%</span>
+              <span className="text-xs font-mono text-[#2563EB] dark:text-blue-400">{item.progress}%</span>
             </div>
           </NavLink>
         ))}
         {items.length === 0 && (
-          <p className="text-sm text-zinc-500 col-span-2 py-4">Start learning to see progress here</p>
+          <p className="text-sm text-[#64748B] col-span-2 py-4">Start learning to see progress here</p>
         )}
       </div>
     </motion.div>
@@ -307,10 +307,10 @@ function WeeklyHeatmap() {
   }
 
   const getColor = (count: number) => {
-    if (count === 0) return 'bg-zinc-800'
-    if (count <= 1) return 'bg-blue-900/60'
-    if (count <= 3) return 'bg-blue-700/60'
-    return 'bg-blue-500/60'
+    if (count === 0) return 'bg-[#E2E8F0] dark:bg-zinc-800'
+    if (count <= 1) return 'bg-[#BFDBFE] dark:bg-blue-900/60'
+    if (count <= 3) return 'bg-[#60A5FA] dark:bg-blue-700/60'
+    return 'bg-[#2563EB] dark:bg-blue-500/60'
   }
 
   const hasActivity = tasks.some(t => t.status === 'done')
@@ -319,7 +319,7 @@ function WeeklyHeatmap() {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="card-premium p-6"
+      className="card p-6"
     >
       <h2 className="section-title mb-4">Activity</h2>
       <div className="flex gap-1">
@@ -336,7 +336,7 @@ function WeeklyHeatmap() {
         ))}
       </div>
       {!hasActivity && (
-        <p className="text-xs text-zinc-500 mt-3">No activity yet</p>
+        <p className="text-xs text-[#64748B] mt-3">No activity yet</p>
       )}
     </motion.div>
   )
@@ -368,7 +368,7 @@ function RecentAchievements() {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="card-premium p-6"
+      className="card p-6"
     >
       <h2 className="section-title mb-4">Achievements</h2>
       <div className="grid grid-cols-3 gap-2">
@@ -377,10 +377,10 @@ function RecentAchievements() {
           return (
             <div
               key={a.label}
-              className={`text-center p-3 rounded-xl ${a.unlocked ? 'bg-blue-500/10' : 'bg-zinc-800/30'} ${!a.unlocked ? 'opacity-40' : ''}`}
+              className={`text-center p-3 rounded-xl ${a.unlocked ? 'bg-[#DBEAFE] dark:bg-blue-500/10' : 'bg-[#F1F5F9] dark:bg-zinc-800/30'} ${!a.unlocked ? 'opacity-40' : ''}`}
             >
-              <Icon size={18} className={a.unlocked ? 'text-blue-400 mx-auto' : 'text-zinc-600 mx-auto'} />
-              <p className="text-[10px] text-zinc-400 mt-1.5 leading-tight">{a.label}</p>
+              <Icon size={18} className={a.unlocked ? 'text-[#2563EB] mx-auto' : 'text-[#94A3B8] mx-auto'} />
+              <p className="text-[10px] text-[#64748B] mt-1.5 leading-tight">{a.label}</p>
             </div>
           )
         })}
@@ -430,13 +430,13 @@ function PomodoroWidget() {
   }
 
   return (
-    <div className="card-premium p-6 text-center">
+    <div className="card p-6 text-center">
       <h2 className="section-title mb-4">Pomodoro</h2>
       <div className="relative w-32 h-32 mx-auto">
         <svg className="w-32 h-32 -rotate-90" viewBox="0 0 120 120">
-          <circle cx="60" cy="60" r="54" fill="none" stroke="#27272a" strokeWidth="4" />
+          <circle cx="60" cy="60" r="54" fill="none" stroke="#E2E8F0" strokeWidth="4" />
           <circle
-            cx="60" cy="60" r="54" fill="none" stroke="#3B82F6" strokeWidth="4"
+            cx="60" cy="60" r="54" fill="none" stroke="#2563EB" strokeWidth="4"
             strokeDasharray={`${2 * Math.PI * 54}`}
             strokeDashoffset={`${2 * Math.PI * 54 * (1 - progress / 100)}`}
             strokeLinecap="round"
@@ -444,7 +444,7 @@ function PomodoroWidget() {
           />
         </svg>
         <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-2xl font-mono font-bold text-stone-900 dark:text-white">
+          <span className="text-2xl font-mono font-bold text-[#0F172A] dark:text-white">
             {String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}
           </span>
         </div>
@@ -464,13 +464,13 @@ function QuickNotesWidget() {
   useEffect(() => { localStorage.setItem('placement-os-quick-notes', note) }, [note])
 
   return (
-    <div className="card-premium p-6">
+    <div className="card p-6">
       <h2 className="section-title mb-3">Quick Notes</h2>
       <textarea
         value={note}
         onChange={e => setNote(e.target.value)}
         placeholder="Type a quick note..."
-        className="w-full h-24 px-3 py-2 rounded-xl bg-stone-100 dark:bg-zinc-800/50 border border-stone-200 dark:border-zinc-700/50 text-sm resize-none focus:outline-none focus:ring-1 focus:ring-blue-500 placeholder:text-zinc-500"
+        className="w-full h-24 px-3 py-2 rounded-xl bg-[#F8FAFC] dark:bg-zinc-800/50 border border-[#E2E8F0] dark:border-zinc-700/50 text-sm resize-none focus:outline-none focus:ring-1 focus:ring-[#93C5FD] placeholder:text-[#94A3B8]"
       />
     </div>
   )
@@ -518,17 +518,17 @@ function RecentActivity() {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="card-premium p-6"
+      className="card p-6"
     >
       <h2 className="section-title mb-4">Recent Activity</h2>
       <div className="space-y-3">
         {activities.length === 0 ? (
-          <p className="text-sm text-zinc-500 py-2">No recent activity — start solving problems!</p>
+          <p className="text-sm text-[#64748B] py-2">No recent activity — start solving problems!</p>
         ) : (
           activities.map((act, i) => (
             <div key={i} className="flex items-center justify-between">
-              <span className="text-sm text-stone-700 dark:text-zinc-300">{act.text}</span>
-              <span className="text-xs text-zinc-500">{act.time}</span>
+              <span className="text-sm text-[#334155] dark:text-zinc-300">{act.text}</span>
+              <span className="text-xs text-[#64748B]">{act.time}</span>
             </div>
           ))
         )}

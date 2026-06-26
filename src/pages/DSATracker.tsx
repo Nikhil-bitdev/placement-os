@@ -28,11 +28,11 @@ function LegendBar() {
   }, [progress])
 
   return (
-    <div className="card-premium p-4 flex items-center gap-6 text-sm">
+    <div className="card p-4 flex items-center gap-6 text-sm">
       <span className="flex items-center gap-1.5 text-green-400"><Circle size={10} fill="#4ade80" /> Easy <span className="text-white font-mono">{totals.easySolved}/{totals.easy}</span></span>
       <span className="flex items-center gap-1.5 text-yellow-400"><Circle size={10} fill="#facc15" /> Medium <span className="text-white font-mono">{totals.mediumSolved}/{totals.medium}</span></span>
       <span className="flex items-center gap-1.5 text-red-400"><Circle size={10} fill="#f87171" /> Hard <span className="text-white font-mono">{totals.hardSolved}/{totals.hard}</span></span>
-      <span className="text-zinc-500 text-xs ml-auto">Solving the path to product companies</span>
+      <span className="text-[#64748B] text-xs ml-auto">Solving the path to product companies</span>
     </div>
   )
 }
@@ -58,7 +58,7 @@ function SectionFlowCard({ section, index, total }: { section: typeof allSection
     return { easy, medium, hard }
   }, [section, progress])
 
-  const ringColor = isComplete ? '#22c55e' : pct > 50 ? '#3B82F6' : pct > 0 ? '#f59e0b' : '#27272a'
+  const ringColor = isComplete ? '#22c55e' : pct > 50 ? '#2563EB' : pct > 0 ? '#f59e0b' : "#E2E8F0"
 
   return (
     <motion.div
@@ -70,14 +70,14 @@ function SectionFlowCard({ section, index, total }: { section: typeof allSection
       {index < total - 1 && (
         <div className="absolute left-8 top-full w-0.5 h-6 bg-gradient-to-b from-blue-500/40 to-transparent z-0" />
       )}
-      <div className={`relative z-10 card-premium p-5 ${isComplete ? 'ring-1 ring-green-500/30' : ''} ${isExpanded ? 'ring-1 ring-blue-500/30' : ''}`}>
+      <div className={`relative z-10 card p-5 ${isComplete ? 'ring-1 ring-green-500/30' : ''} ${isExpanded ? 'ring-1 ring-blue-500/30' : ''}`}>
         <div
           className="flex items-start gap-5 cursor-pointer"
           onClick={() => setSectionExpanded(section.id, !isExpanded)}
         >
           <div className="relative w-14 h-14 flex-shrink-0">
             <svg className="w-14 h-14 -rotate-90" viewBox="0 0 56 56">
-              <circle cx="28" cy="28" r="24" fill="none" stroke="#27272a" strokeWidth="3" />
+              <circle cx="28" cy="28" r="24" fill="none" stroke="#E2E8F0" className="dark:stroke-zinc-800" strokeWidth="3" />
               <circle cx="28" cy="28" r="24" fill="none" stroke={ringColor} strokeWidth="3"
                 strokeDasharray={`${2 * Math.PI * 24}`}
                 strokeDashoffset={`${2 * Math.PI * 24 * (1 - pct / 100)}`}
@@ -92,17 +92,17 @@ function SectionFlowCard({ section, index, total }: { section: typeof allSection
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-3">
               <span className="text-xs text-blue-400 font-mono">{String(index + 1).padStart(2, '0')}</span>
-              <h3 className="text-base font-semibold text-stone-800 dark:text-white">{section.title}</h3>
+              <h3 className="text-base font-semibold text-[#0F172A] dark:text-white">{section.title}</h3>
             </div>
             <div className="flex items-center gap-4 mt-2">
-              <span className="text-xs text-zinc-500">Solved: <span className="text-white font-mono">{solvedCount}/{totalCount}</span></span>
+              <span className="text-xs text-[#64748B]">Solved: <span className="text-[#0F172A] dark:text-white font-mono">{solvedCount}/{totalCount}</span></span>
               <span className="text-[10px] text-green-400">{counts.easy.solved}/{counts.easy.total} Easy</span>
               <span className="text-[10px] text-yellow-400">{counts.medium.solved}/{counts.medium.total} Medium</span>
               <span className="text-[10px] text-red-400">{counts.hard.solved}/{counts.hard.total} Hard</span>
               <span className="text-[10px] text-zinc-500">• {totalCount} problems</span>
             </div>
-            <div className="mt-3 h-1.5 bg-zinc-800 rounded-full overflow-hidden">
-              <div className="h-full rounded-full bg-gradient-to-r from-blue-500 to-blue-400 transition-all duration-1000"
+            <div className="mt-3 h-1.5 bg-[#E2E8F0] dark:bg-zinc-800 rounded-full overflow-hidden">
+              <div className="h-full rounded-full bg-[#2563EB] transition-all duration-1000"
                 style={{ width: `${pct}%` }} />
             </div>
           </div>
@@ -123,7 +123,7 @@ function SectionFlowCard({ section, index, total }: { section: typeof allSection
               exit={{ height: 0, opacity: 0 }}
               className="overflow-hidden"
             >
-              <div className="mt-4 pt-4 border-t border-zinc-800/50 space-y-1">
+              <div className="mt-4 pt-4 border-t border-[#E2E8F0] dark:border-zinc-800/50 space-y-1">
                 {section.problems.map((problem) => {
                   const isSolved = !!progress[problem.id]?.solved
                   return (
@@ -193,17 +193,13 @@ export default function DSATracker() {
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="card-premium p-6"
+        className="card p-6"
       >
         <div className="flex items-center gap-6">
           <div className="relative w-20 h-20 flex-shrink-0">
             <svg className="w-20 h-20 -rotate-90" viewBox="0 0 80 80">
-              <circle cx="40" cy="40" r="34" fill="none" stroke="#27272a" strokeWidth="4" />
-              <circle cx="40" cy="40" r="34" fill="none" stroke="#3B82F6" strokeWidth="4"
-                strokeDasharray={`${2 * Math.PI * 34}`}
-                strokeDashoffset={`${2 * Math.PI * 34 * (1 - totalPct / 100)}`}
-                strokeLinecap="round"
-                className="transition-all duration-1000"
+              <circle cx="40" cy="40" r="34" fill="none" stroke="#E2E8F0" className="dark:stroke-zinc-800" strokeWidth="4" />
+              <circle cx="40" cy="40" r="34" fill="none" className="stroke-[#2563EB] dark:stroke-blue-500 transition-all duration-1000" strokeWidth="4"
               />
             </svg>
             <div className="absolute inset-0 flex items-center justify-center">
@@ -211,8 +207,8 @@ export default function DSATracker() {
             </div>
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-stone-900 dark:text-white">DSA Roadmap</h1>
-            <p className="text-sm text-zinc-400 mt-1">
+            <h1 className="text-2xl font-bold text-[#0F172A] dark:text-white">DSA Roadmap</h1>
+            <p className="text-sm text-[#64748B] mt-1">
               {totalSolved} / {totalProblems} problems solved
             </p>
           </div>
@@ -227,7 +223,7 @@ export default function DSATracker() {
         onChange={(e) => setSearch(e.target.value)}
         placeholder="Search sections..."
         aria-label="Search sections"
-        className="w-full bg-[#111827] border border-[#1E293B] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-zinc-500"
+        className="w-full bg-[#F8FAFC] border border-[#E2E8F0] dark:bg-zinc-800/50 dark:border-zinc-700 rounded-xl px-4 py-3 text-sm text-[#0F172A] dark:text-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#93C5FD] dark:focus:ring-blue-500/30 placeholder:text-[#94A3B8] dark:placeholder:text-zinc-500"
       />
 
       <div className="space-y-6">
