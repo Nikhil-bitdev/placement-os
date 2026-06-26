@@ -38,17 +38,27 @@ export interface LeetCodeApiResult {
   hardSolved: number
   acceptanceRate: number
   currentStreak: number
+  longestStreak: number
   globalRanking: number
   contestRating: number
+  contestPeakRating: number
+  attendedContests: number
+  contestTopPercentage: number
+  badges: { id: string; name: string; creationDate: string }[]
+  profileUsername: string
+  contestBadge: string
   activity: { date: string; level: 0 | 1 | 2 | 3 | 4; problemsSolved: number; hoursStudied: number; notes: string }[]
   tagProgress: { tagName: string; problemsSolved: number }[]
   recentSubmissions: { title: string; titleSlug: string; timestamp: number }[]
+  weeklyActivity: { week: string; solved: number }[]
+  monthlyActivity: { month: string; solved: number }[]
 }
 
 export async function fetchLeetCodeProfile(username: string): Promise<LeetCodeApiResult> {
   const profileQuery = `
     query($username:String!) {
       matchedUser(username:$username) {
+        username
         submitStats {
           acSubmissionNum { difficulty count }
           totalSubmissionNum { difficulty count }
@@ -60,11 +70,20 @@ export async function fetchLeetCodeProfile(username: string): Promise<LeetCodeAp
           intermediate { tagName problemsSolved }
           fundamental { tagName problemsSolved }
         }
+        badges { id name creationDate }
       }
       recentAcSubmissionList(username:$username, limit:20) {
         title
         titleSlug
         timestamp
+      }
+      userContestRanking(username:$username) {
+        attendedContestsCount
+        rating
+        globalRanking
+        totalParticipants
+        topPercentage
+        badge { name }
       }
     }`
 
@@ -88,6 +107,45 @@ export async function fetchLeetCodeProfile(username: string): Promise<LeetCodeAp
   const currentStreak = calendar.streak || 0
   const globalRanking = user.profile?.ranking || 0
 
+  let submissionCal: Record<string, number> = {}
+  try { submissionCal = JSON.parse(calendar.submissionCalendar || '{}') } catch {}
+
+  const sortedDays = Object.entries(submissionCal)
+    .map(([ts, count]) => ({ ts: Number(ts), count }))
+    .sort((a, b) => a.ts - b.ts)
+
+  let longestStreak = 0
+  let currentRun = 0
+  let prevDay: number | null = null
+  for (const day of sortedDays) {
+    if (day.count === 0) continue
+    const date = new Date(day.ts * 1000)
+    const dayStart = new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime() / 1000
+    if (prevDay !== null && dayStart - prevDay === 86400) {
+      currentRun++
+    } else {
+      currentRun = 1
+    }
+    if (currentRun > longestStreak) longestStreak = currentRun
+    prevDay = dayStart
+  }
+
+  const weeks: Record<string, number> = {}
+  const months: Record<string, number> = {}
+  for (const [ts, count] of Object.entries(submissionCal)) {
+    const d = new Date(Number(ts) * 1000)
+    const weekStart = new Date(d)
+    weekStart.setDate(d.getDate() - d.getDay())
+    const weekStr = weekStart.toISOString().split('T')[0]
+    const monthStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
+    weeks[weekStr] = (weeks[weekStr] || 0) + count
+    months[monthStr] = (months[monthStr] || 0) + count
+  }
+  const sortedWeeks = Object.entries(weeks).sort(([a], [b]) => a.localeCompare(b))
+  const weeklyActivity = sortedWeeks.slice(-10).map(([week, solved]) => ({ week, solved }))
+  const sortedMonths = Object.entries(months).sort(([a], [b]) => a.localeCompare(b))
+  const monthlyActivity = sortedMonths.slice(-12).map(([month, solved]) => ({ month, solved }))
+
   const tagCounts = user.tagProblemCounts || {}
   const allTags = [
     ...(tagCounts.advanced || []),
@@ -106,6 +164,13 @@ export async function fetchLeetCodeProfile(username: string): Promise<LeetCodeAp
       timestamp: s.timestamp,
     }))
 
+  const contestRanking = data.userContestRanking || {}
+  const badges: { id: string; name: string; creationDate: string }[] = (user.badges || []).map((b: { id: string; name: string; creationDate: string }) => ({
+    id: b.id,
+    name: b.name,
+    creationDate: b.creationDate,
+  }))
+
   return {
     totalSolved,
     easySolved,
@@ -113,11 +178,20 @@ export async function fetchLeetCodeProfile(username: string): Promise<LeetCodeAp
     hardSolved,
     acceptanceRate,
     currentStreak,
+    longestStreak,
     globalRanking,
-    contestRating: 0,
+    contestRating: Math.round(contestRanking.rating || 0),
+    contestPeakRating: Math.round(contestRanking.rating || 0),
+    attendedContests: contestRanking.attendedContestsCount || 0,
+    contestTopPercentage: Math.round(contestRanking.topPercentage || 0),
+    badges,
+    profileUsername: user.username || '',
+    contestBadge: contestRanking.badge?.name || '',
     activity: buildActivity(calendar.submissionCalendar || '{}'),
     tagProgress,
     recentSubmissions,
+    weeklyActivity,
+    monthlyActivity,
   }
 }
 

@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react'
 import { motion } from 'framer-motion'
 import {
-  Search, RefreshCw, Settings, TrendingUp, Target, Clock, Zap,
+  Search, RefreshCw, TrendingUp,
   Trophy, BarChart3, BookOpen, CheckCircle, Circle, Star,
   ExternalLink, ArrowRight, ChevronDown, ChevronUp, Filter,
   Calendar, Flame, Award, Lightbulb, FileText, Video, List,
@@ -276,6 +276,39 @@ export default function LeetCodePage() {
     }, [])
   }, [store.activity])
 
+  const monthlyChartData = useMemo(() => {
+    const months: Record<string, number> = {}
+    for (const day of store.activity) {
+      const m = day.date.slice(0, 7)
+      months[m] = (months[m] || 0) + day.problemsSolved
+    }
+    return Object.entries(months).slice(-6).map(([month, solved]) => {
+      const [, m] = month.split('-')
+      const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+      return { month: monthNames[parseInt(m) - 1] || month, solved }
+    })
+  }, [store.activity])
+
+  const focusItems = useMemo(() => {
+    const items: { label: string; desc: string; icon: typeof List }[] = []
+    const weak = store.weakTopics.slice(0, 3)
+    for (const w of weak) {
+      items.push({ label: `Continue ${w.topic}`, desc: `${w.total - w.solved} problems remaining`, icon: List })
+    }
+    if (items.length < 4) {
+      const practiced = store.topicProgress.filter(t => t.confidence < 50).slice(0, 4 - items.length)
+      for (const p of practiced) {
+        if (!items.find(i => i.label.includes(p.topic))) {
+          items.push({ label: `Practice ${p.topic}`, desc: `${p.total - p.solved} problems remaining`, icon: TrendingUp })
+        }
+      }
+    }
+    if (items.length < 4) {
+      items.push({ label: 'Weekly Contest', desc: 'Participate to boost rating', icon: Trophy })
+    }
+    return items.slice(0, 4)
+  }, [store.weakTopics, store.topicProgress])
+
   return (
     <div className="space-y-6">
       {/* HEADER */}
@@ -344,7 +377,7 @@ export default function LeetCodePage() {
       )}
 
       {/* STATS ROW */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
         <MiniStatCard label="Total Solved" value={stats.totalSolved} color="text-blue-400" icon={CheckCircle} />
         <MiniStatCard label="Easy" value={stats.easySolved} color="text-green-400" icon={CheckCircle} />
         <MiniStatCard label="Medium" value={stats.mediumSolved} color="text-amber-400" icon={CheckCircle} />
@@ -352,11 +385,7 @@ export default function LeetCodePage() {
         <RadialStatCard label="Acceptance" value={stats.acceptanceRate} max={100} color="text-green-400" strokeColor="#16A34A" suffix="%" />
         <MiniStatCard label="Current Streak" value={stats.currentStreak} sub="days" color="text-orange-400" icon={Flame} />
         <MiniStatCard label="Longest Streak" value={stats.longestStreak} sub="days" color="text-orange-400" icon={Flame} />
-        <MiniStatCard label="Contest Rating" value={stats.contestRating} color="text-purple-400" icon={Trophy} />
         <MiniStatCard label="Global Rank" value={`#${stats.globalRanking.toLocaleString()}`} color="text-slate-300" icon={BarChart3} />
-        <MiniStatCard label="Study Hours" value={stats.studyHours} color="text-cyan-400" icon={Clock} />
-        <RadialStatCard label="Weekly Goal" value={stats.weeklyProgress} max={stats.weeklyGoal} color="text-blue-400" strokeColor="#3B82F6" suffix="h" />
-        <RadialStatCard label="Monthly Goal" value={stats.monthlyProgress} max={stats.monthlyGoal} color="text-blue-400" strokeColor="#3B82F6" suffix="h" />
       </div>
 
       {/* MAIN GRID */}
@@ -382,12 +411,7 @@ export default function LeetCodePage() {
           <div className="rounded-xl border border-[#1E293B] bg-[#111827] p-5">
             <p className="text-sm font-semibold text-slate-200 mb-3">Current Focus</p>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              {[
-                { label: 'Continue Arrays', desc: '12 problems remaining', icon: List },
-                { label: 'Continue Graphs', desc: '8 problems remaining', icon: TrendingUp },
-                { label: 'Continue DP', desc: '15 problems remaining', icon: Zap },
-                { label: 'Weekly Contest', desc: 'Next: Saturday', icon: Trophy },
-              ].map(item => (
+              {focusItems.map(item => (
                 <motion.button key={item.label} whileHover={{ y: -2 }}
                   className="flex items-start gap-3 p-3 rounded-lg border border-[#1E293B] bg-[#0F172A] hover:border-blue-500/30 transition-all text-left"
                 >
@@ -409,53 +433,22 @@ export default function LeetCodePage() {
           {/* PROFILE */}
           <div className="rounded-xl border border-[#1E293B] bg-[#111827] p-5 text-center">
             <div className="w-14 h-14 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center mx-auto mb-3">
-              <span className="text-lg font-bold text-white">NK</span>
+              <span className="text-lg font-bold text-white">{displayName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || store.profile.username.slice(0, 2).toUpperCase() || 'U'}</span>
             </div>
-            <p className="text-sm font-semibold text-slate-200">{store.profile.username}</p>
+            <p className="text-sm font-semibold text-slate-200">{store.profile.username || displayName}</p>
             <div className="flex items-center justify-center gap-1 mt-1">
               <Trophy size={12} className="text-amber-400" />
               <span className="text-xs text-slate-400">{stats.contestRating} Rating</span>
             </div>
-            <div className="inline-block px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/20 mt-2">
-              <span className="text-[10px] font-medium text-amber-400">{store.profile.contestBadge}</span>
-            </div>
+            {store.profile.contestBadge && (
+              <div className="inline-block px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/20 mt-2">
+                <span className="text-[10px] font-medium text-amber-400">{store.profile.contestBadge}</span>
+              </div>
+            )}
             <div className="grid grid-cols-2 gap-3 mt-4 pt-4 border-t border-[#1E293B]">
               <div><p className="text-[9px] text-slate-500 uppercase">Global Rank</p><p className="text-xs font-mono text-slate-300 mt-0.5">#{stats.globalRanking.toLocaleString()}</p></div>
-              <div><p className="text-[9px] text-slate-500 uppercase">Country Rank</p><p className="text-xs font-mono text-slate-300 mt-0.5">#{stats.countryRanking.toLocaleString()}</p></div>
               <div><p className="text-[9px] text-slate-500 uppercase">Streak</p><p className="text-xs font-mono text-orange-400 mt-0.5">{stats.currentStreak} days</p></div>
               <div><p className="text-[9px] text-slate-500 uppercase">Solved</p><p className="text-xs font-mono text-blue-400 mt-0.5">{stats.totalSolved}</p></div>
-            </div>
-          </div>
-
-          {/* TODAY'S GOAL */}
-          <div className="rounded-xl border border-[#1E293B] bg-[#111827] p-5">
-            <p className="text-xs font-semibold text-slate-200 mb-3">Today's Goal</p>
-            <p className="text-[10px] text-slate-500 mb-3">Solve {store.goals.easy + store.goals.medium + store.goals.hard} Problems</p>
-            <div className="space-y-2 mb-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
-                  <span className="text-xs text-slate-400">Easy</span>
-                </div>
-                <span className="text-xs font-mono text-slate-300">{store.goals.easy}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
-                  <span className="text-xs text-slate-400">Medium</span>
-                </div>
-                <span className="text-xs font-mono text-slate-300">{store.goals.medium}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-red-500" />
-                  <span className="text-xs text-slate-400">Hard</span>
-                </div>
-                <span className="text-xs font-mono text-slate-300">{store.goals.hard}</span>
-              </div>
-            </div>
-            <div className="h-2 bg-[#1E293B] rounded-full overflow-hidden">
-              <div className="h-full rounded-full bg-gradient-to-r from-blue-500 to-blue-400" style={{ width: `${Math.min(100, Math.round((stats.totalSolved % 5) * 20))}%` }} />
             </div>
           </div>
 
@@ -486,7 +479,7 @@ export default function LeetCodePage() {
             <div className="space-y-2">
               {store.recentActivity.slice(0, 6).map((a, i) => (
                 <div key={i} className="flex items-start gap-2.5">
-                  <div className={`w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0 ${a.type === 'solve' ? 'bg-green-500' : a.type === 'contest' ? 'bg-amber-500' : a.type === 'badge' ? 'bg-blue-500' : 'bg-slate-500'}`} />
+                  <div className={`w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0 ${a.type === 'solve' ? 'bg-green-500' : a.type === 'contest' ? 'bg-amber-500' : a.type === 'badge' ? 'bg-blue-500' : a.type === 'streak' ? 'bg-orange-500' : a.type === 'revision' ? 'bg-purple-500' : 'bg-slate-500'}`} />
                   <div className="min-w-0">
                     <p className="text-[11px] text-slate-400 leading-tight">{a.text}</p>
                     <p className="text-[9px] text-slate-600 mt-0.5">{a.date}</p>
@@ -625,7 +618,7 @@ export default function LeetCodePage() {
         {/* CONTEST ANALYTICS */}
         <div className="rounded-xl border border-[#1E293B] bg-[#111827] p-5">
           <p className="text-sm font-semibold text-slate-200 mb-3">Contest Analytics</p>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
+          <div className="grid grid-cols-3 gap-3 mb-4">
             <div className="p-3 rounded-lg bg-[#0F172A] text-center">
               <p className="text-[9px] text-slate-500 uppercase">Rating</p>
               <p className="text-sm font-bold font-mono text-blue-400 mt-1">{store.contest.rating}</p>
@@ -637,18 +630,6 @@ export default function LeetCodePage() {
             <div className="p-3 rounded-lg bg-[#0F172A] text-center">
               <p className="text-[9px] text-slate-500 uppercase">Attended</p>
               <p className="text-sm font-bold font-mono text-slate-300 mt-1">{store.contest.attended}</p>
-            </div>
-            <div className="p-3 rounded-lg bg-[#0F172A] text-center">
-              <p className="text-[9px] text-slate-500 uppercase">Best Rank</p>
-              <p className="text-sm font-bold font-mono text-green-400 mt-1">#{store.contest.bestRank}</p>
-            </div>
-            <div className="p-3 rounded-lg bg-[#0F172A] text-center">
-              <p className="text-[9px] text-slate-500 uppercase">Worst Rank</p>
-              <p className="text-sm font-bold font-mono text-red-400 mt-1">#{store.contest.worstRank}</p>
-            </div>
-            <div className="p-3 rounded-lg bg-[#0F172A] text-center">
-              <p className="text-[9px] text-slate-500 uppercase">Avg Rank</p>
-              <p className="text-sm font-bold font-mono text-amber-400 mt-1">#{store.contest.averageRank}</p>
             </div>
           </div>
         </div>
@@ -739,10 +720,7 @@ export default function LeetCodePage() {
         <div className="rounded-xl border border-[#1E293B] bg-[#111827] p-5">
           <p className="text-xs font-semibold text-slate-200 mb-3">Monthly Progress</p>
           <ResponsiveContainer width="100%" height={180}>
-            <BarChart data={[
-              { month: 'Jan', solved: 12 }, { month: 'Feb', solved: 18 }, { month: 'Mar', solved: 24 },
-              { month: 'Apr', solved: 16 }, { month: 'May', solved: 28 }, { month: 'Jun', solved: 22 },
-            ]}>
+            <BarChart data={monthlyChartData}>
               <CartesianGrid strokeDasharray="3 3" stroke="#1E293B" />
               <XAxis dataKey="month" tick={{ fontSize: 10, fill: '#64748B' }} axisLine={false} tickLine={false} />
               <YAxis tick={{ fontSize: 10, fill: '#64748B' }} axisLine={false} tickLine={false} />

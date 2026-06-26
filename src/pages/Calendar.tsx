@@ -630,7 +630,7 @@ function WeeklySummary() {
 }
 
 function SmartInsights() {
-  const { activity } = useLeetCodeStore()
+  const { activity, stats: lcStats } = useLeetCodeStore()
   const { tasks } = usePlannerStore()
   const { subjects } = useCoreSubjectsStore()
   const { getSectionStats } = useDSAStore()
@@ -639,7 +639,9 @@ function SmartInsights() {
     const result: { text: string; type: 'info' | 'warning' | 'success' }[] = []
 
     const dsaSolved = allSections.reduce((s, sec) => s + getSectionStats(sec.id).solved, 0)
-    if (dsaSolved > 0) result.push({ text: `You've solved ${dsaSolved} DSA problems so far. Keep going!`, type: 'success' })
+    if (dsaSolved > 0) {
+      result.push({ text: `You've solved ${dsaSolved} DSA problems so far. Keep going!`, type: 'success' })
+    }
 
     const weakTopics = allSections
       .map(s => ({ name: s.title, stats: getSectionStats(s.id) }))
@@ -648,31 +650,56 @@ function SmartInsights() {
       result.push({ text: `${weakTopics[0].name} needs attention — only ${Math.round((weakTopics[0].stats.solved / weakTopics[0].stats.total) * 100)}% solved`, type: 'warning' })
     }
 
+    const today = getToday()
+    const todayKey = toPlannerKey(today)
+    const todayTasks = tasks.filter(t => t.date === todayKey)
+    const doneToday = todayTasks.filter(t => t.status === 'done').length
+    if (todayTasks.length > 0) {
+      if (doneToday === todayTasks.length) {
+        result.push({ text: `All ${todayTasks.length} today's tasks completed!`, type: 'success' })
+      } else if (doneToday > 0) {
+        result.push({ text: `${doneToday}/${todayTasks.length} tasks done today. ${todayTasks.length - doneToday} remaining.`, type: 'info' })
+      } else {
+        result.push({ text: `${todayTasks.length} tasks scheduled today — none started yet.`, type: 'warning' })
+      }
+    }
+
+    if (lcStats.currentStreak > 0) {
+      result.push({ text: `${lcStats.currentStreak}-day LeetCode streak active!`, type: 'success' })
+    }
+    if (lcStats.longestStreak > lcStats.currentStreak) {
+      result.push({ text: `All-time best LeetCode streak: ${lcStats.longestStreak} days.`, type: 'info' })
+    }
+
     const weekAgo = new Date()
     weekAgo.setDate(weekAgo.getDate() - 7)
-    const recentStudyDays = activity.filter(a => {
+    const recentSolveDays = activity.filter(a => {
       const d = new Date(a.date)
-      return d >= weekAgo && a.hoursStudied > 0
+      return d >= weekAgo && a.problemsSolved > 0
     }).length
-    if (recentStudyDays >= 5) {
-      result.push({ text: `Studied on ${recentStudyDays} of the last 7 days. Great consistency!`, type: 'success' })
-    } else if (recentStudyDays > 0) {
-      result.push({ text: `Studied on ${recentStudyDays} of the last 7 days. Try to make it a daily habit.`, type: 'info' })
-    } else {
-      result.push({ text: 'No study activity in the last 7 days. Time to get back on track!', type: 'warning' })
+    if (recentSolveDays >= 5) {
+      result.push({ text: `Solved problems on ${recentSolveDays} of the last 7 days. Great consistency!`, type: 'success' })
+    } else if (recentSolveDays > 0) {
+      result.push({ text: `Solved problems on ${recentSolveDays} of the last 7 days. Try to make it daily.`, type: 'info' })
+    } else if (lcStats.totalSolved > 0) {
+      result.push({ text: 'No problems solved in the last 7 days. Time to get back on track!', type: 'warning' })
+    }
+
+    if (lcStats.contestRating > 0) {
+      result.push({ text: `Contest rating: ${lcStats.contestRating} (attended ${lcStats.contestPeakRating > lcStats.contestRating ? 'peak ' + lcStats.contestPeakRating : lcStats.contestRating}).`, type: 'info' })
     }
 
     const subjectsLearning = subjects.filter(s => s.status === 'learning')
     if (subjectsLearning.length > 0) {
-      result.push({ text: `You're actively studying ${subjectsLearning.length} core subjects.`, type: 'info' })
+      result.push({ text: `Studying ${subjectsLearning.length} core subjects.`, type: 'info' })
     }
 
     if (result.length === 0) {
       result.push({ text: 'Welcome to Placement OS! Start tracking your study to see personalized insights.', type: 'info' })
     }
 
-    return result.slice(0, 5)
-  }, [activity, tasks, subjects, getSectionStats])
+    return result.slice(0, 6)
+  }, [activity, tasks, subjects, getSectionStats, lcStats])
 
   return (
     <div className="card-premium p-5">

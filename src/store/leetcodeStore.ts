@@ -266,8 +266,8 @@ const statsSeed = {
   contestRating: 1542,
   contestPeakRating: 1620,
   globalRanking: 187432,
-  countryRanking: 8421,
-  studyHours: 342,
+  countryRanking: 0,
+  studyHours: 0,
   weeklyGoal: 15,
   monthlyGoal: 60,
   weeklyProgress: 11,
@@ -443,9 +443,36 @@ export const useLeetCodeStore = create<LeetCodeState>()(
             problemHistory = problemHistory.slice(0, 100)
           }
 
-          const recentActivity = problemHistory.slice(0, 8).map(p => {
-            return { type: 'solve' as const, text: `Solved ${p.name} (${p.difficulty})`, date: new Date().toISOString().split('T')[0] }
-          })
+          const recentActivity: { type: string; text: string; date: string }[] = []
+          for (const p of problemHistory.slice(0, 5)) {
+            recentActivity.push({ type: 'solve', text: `Solved ${p.name} (${p.difficulty})`, date: new Date().toISOString().split('T')[0] })
+          }
+          if (data.currentStreak > 0) {
+            recentActivity.push({ type: 'streak', text: `${data.currentStreak}-day streak active!`, date: new Date().toISOString().split('T')[0] })
+          }
+          if (data.attendedContests > 0) {
+            recentActivity.push({ type: 'contest', text: `Participated in ${data.attendedContests} contests (Rating: ${data.contestRating})`, date: new Date().toISOString().split('T')[0] })
+          }
+          const unlockedBadges = data.badges.filter(b => b.id)
+          if (unlockedBadges.length > 0) {
+            recentActivity.push({ type: 'badge', text: `Unlocked ${unlockedBadges.length} LeetCode badges`, date: new Date().toISOString().split('T')[0] })
+          }
+          const weakForRev = topicProgress.filter(t => t.confidence < 40)
+          if (weakForRev.length > 0) {
+            recentActivity.push({ type: 'revision', text: `Review needed: ${weakForRev[0].topic} at ${weakForRev[0].confidence}%`, date: new Date().toISOString().split('T')[0] })
+          }
+
+          const weeklyProgress = data.weeklyActivity && data.weeklyActivity.length > 0
+            ? data.weeklyActivity[data.weeklyActivity.length - 1].solved : 0
+          const monthlyProgress = data.monthlyActivity && data.monthlyActivity.length > 0
+            ? data.monthlyActivity[data.monthlyActivity.length - 1].solved : 0
+
+          const badges: Badge[] = data.badges.map(b => ({
+            id: b.id,
+            name: b.name,
+            unlocked: true,
+            unlockedAt: b.creationDate || null,
+          }))
 
           set({
             stats: {
@@ -456,8 +483,27 @@ export const useLeetCodeStore = create<LeetCodeState>()(
               hardSolved: data.hardSolved,
               acceptanceRate: data.acceptanceRate,
               currentStreak: data.currentStreak,
+              longestStreak: data.longestStreak,
               globalRanking: data.globalRanking,
+              contestRating: data.contestRating,
+              contestPeakRating: data.contestPeakRating,
+              weeklyProgress,
+              monthlyProgress,
             },
+            contest: {
+              rating: data.contestRating,
+              peakRating: data.contestPeakRating,
+              attended: data.attendedContests,
+              bestRank: 0,
+              worstRank: 0,
+              averageRank: 0,
+            },
+            profile: {
+              username: data.profileUsername || state.username,
+              rating: data.contestRating,
+              contestBadge: data.contestBadge,
+            },
+            badges,
             activity: data.activity,
             topicProgress,
             weakTopics,

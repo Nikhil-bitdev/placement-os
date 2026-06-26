@@ -285,35 +285,6 @@ function ContinueLearning() {
   )
 }
 
-const revisionItems = [
-  { title: 'Arrays', due: 'Tomorrow' },
-  { title: 'React Hooks', due: 'In 2 days' },
-  { title: 'Binary Search', due: 'In 5 days' },
-  { title: 'Linked Lists', due: 'Next week' },
-]
-
-function UpcomingRevisions() {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="card-premium p-6"
-    >
-      <h2 className="section-title mb-4">Upcoming Revisions</h2>
-      <div className="space-y-2">
-        {revisionItems.map(item => (
-          <div key={item.title} className="flex items-center justify-between py-2">
-            <span className="text-sm text-stone-700 dark:text-zinc-300">{item.title}</span>
-            <span className="text-xs font-mono text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded-full">
-              {item.due}
-            </span>
-          </div>
-        ))}
-      </div>
-    </motion.div>
-  )
-}
-
 function WeeklyHeatmap() {
   const { tasks } = usePlannerStore()
 
@@ -575,13 +546,12 @@ export default function Dashboard() {
         <div className="lg:col-span-2 space-y-6">
           <TodayTimeline />
           <ContinueLearning />
-          <UpcomingRevisions />
+          <PomodoroWidget />
+          <QuickNotesWidget />
         </div>
         <div className="space-y-6">
           <WeeklyHeatmap />
           <RecentAchievements />
-          <PomodoroWidget />
-          <QuickNotesWidget />
           <RecentActivity />
         </div>
       </div>
