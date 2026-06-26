@@ -40,7 +40,7 @@ function HeroSection() {
     [getProgress],
   )
 
-  const { xp, level } = useGamificationStore()
+  const { xp, level, displayName } = useGamificationStore()
 
   return (
     <motion.div
@@ -52,7 +52,7 @@ function HeroSection() {
         <div className="space-y-4">
           <div>
             <h1 className="text-2xl lg:text-3xl font-bold text-stone-900 dark:text-white tracking-tight">
-              {greeting}, Nikhil
+              {greeting}, {displayName}
             </h1>
             <p className="text-sm text-stone-500 dark:text-zinc-400 mt-1">
               Current Goal: Become a Full Stack Software Engineer

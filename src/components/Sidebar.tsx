@@ -47,7 +47,7 @@ const activePages = ['/dashboard', '/planner', '/calendar', '/dsa-tracker', '/ro
 
 export default function Sidebar() {
   const { sidebarOpen, toggleSidebar, theme, toggleTheme } = useUIStore()
-  const { xp, level } = useGamificationStore()
+  const { xp, level, displayName } = useGamificationStore()
   const location = useLocation()
 
   const xpInLevel = xp % XP_PER_LEVEL
@@ -74,17 +74,17 @@ export default function Sidebar() {
         {sidebarOpen ? (
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-sm font-bold text-white flex-shrink-0">
-              NK
+              {displayName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || 'U'}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-xs font-semibold text-zinc-300">Nikhil</p>
+              <p className="text-xs font-semibold text-zinc-300">{displayName}</p>
               <p className="text-[10px] text-blue-400">Level {level}</p>
             </div>
           </div>
         ) : (
           <div className="flex justify-center">
             <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-xs font-bold text-white">
-              NK
+              {displayName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || 'U'}
             </div>
           </div>
         )}

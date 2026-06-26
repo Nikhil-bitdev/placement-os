@@ -8,6 +8,7 @@ import {
   Play, Sparkles, Lock, Code2, PieChart, Activity,
 } from 'lucide-react'
 import { useLeetCodeStore } from '../store/leetcodeStore'
+import { useGamificationStore } from '../store/gamificationStore'
 import AnimatedCounter from '../components/AnimatedCounter'
 import {
   PieChart as RePieChart, Pie, Cell, Tooltip, ResponsiveContainer,
@@ -238,6 +239,8 @@ function TopicCard({ topic, solved, total, confidence, revisionCount, estimatedC
 
 export default function LeetCodePage() {
   const store = useLeetCodeStore()
+  const { displayName } = useGamificationStore()
+  const [editingUsername, setEditingUsername] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [filterDifficulty, setFilterDifficulty] = useState<string>('all')
   const [filterStatus, setFilterStatus] = useState<string>('all')
@@ -292,7 +295,14 @@ export default function LeetCodePage() {
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#0F172A] border border-[#1E293B]">
               <Code2 size={11} className="text-blue-400" />
-              <span className="text-xs font-mono text-slate-300">{store.username}</span>
+              <input
+                value={editingUsername ?? store.username}
+                onChange={e => setEditingUsername(e.target.value)}
+                onBlur={() => { if (editingUsername?.trim()) store.setUsername(editingUsername.trim()); setEditingUsername(null) }}
+                onKeyDown={e => { if (e.key === 'Enter') { if (editingUsername?.trim()) store.setUsername(editingUsername.trim()); setEditingUsername(null) } }}
+                className="w-20 text-xs font-mono text-slate-300 bg-transparent border-none outline-none focus:ring-0 p-0"
+                placeholder="leetcode_id"
+              />
             </div>
             <div className="relative">
               <Search size={13} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-500" />
@@ -313,7 +323,7 @@ export default function LeetCodePage() {
               <span className="text-[9px] text-slate-600 hidden lg:block">Synced {new Date(store.lastSynced).toLocaleDateString()}</span>
             )}
             <div className="w-7 h-7 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center flex-shrink-0">
-              <span className="text-[10px] font-bold text-white">NK</span>
+              <span className="text-[10px] font-bold text-white">{displayName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || 'U'}</span>
             </div>
           </div>
         </div>
