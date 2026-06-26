@@ -1,6 +1,8 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { fetchLeetCodeProfile, fetchProblemDetails } from '../lib/leetcodeApi'
+import allSections from '../data/dsa'
+import { useDSAStore } from './dsaStore'
 
 export interface ActivityDay {
   date: string
@@ -513,6 +515,20 @@ export const useLeetCodeStore = create<LeetCodeState>()(
             isSyncing: false,
             lastSynced: new Date().toISOString(),
           })
+
+          const solvedSlugs = new Set(data.recentSubmissions.map(s => s.titleSlug))
+          const dsaProgress = useDSAStore.getState().progress
+          for (const section of allSections) {
+            for (const problem of section.problems) {
+              if (problem.platform !== 'LeetCode') continue
+              const match = problem.solutionUrl.match(/problems\/([^/]+)/)
+              if (!match) continue
+              const slug = match[1]
+              if (solvedSlugs.has(slug) && !dsaProgress[problem.id]?.solved) {
+                useDSAStore.getState().markSolved(problem.id)
+              }
+            }
+          }
         } catch (e) {
           set({
             isSyncing: false,

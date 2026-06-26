@@ -44,6 +44,7 @@ export default function IdentityForm() {
     try {
       await fetchLeetCodeProfile(lcUsername.trim())
       setUsername(lcUsername.trim())
+      useLeetCodeStore.getState().syncFromLeetCode()
       setVerifying(false)
       setStep('done')
     } catch {
