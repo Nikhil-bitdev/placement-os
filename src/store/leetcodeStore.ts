@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import { fetchLeetCodeProfile } from '../lib/leetcodeApi'
+import { fetchLeetCodeProfile, fetchProblemDetails } from '../lib/leetcodeApi'
 
 export interface ActivityDay {
   date: string
@@ -406,6 +406,47 @@ export const useLeetCodeStore = create<LeetCodeState>()(
           if (data.currentStreak > 3) studyInsights.push({ text: `Solving streak is ${data.currentStreak} days!`, type: 'positive' })
           studyInsights.push({ text: `Total solved: ${data.totalSolved} problems across all topics.`, type: 'neutral' })
 
+          let problemHistory = state.problemHistory || []
+          if (data.recentSubmissions.length > 0) {
+            const slugs = data.recentSubmissions.map(s => s.titleSlug)
+            const details = await fetchProblemDetails(slugs)
+            const seenSlugs = new Set(state.problemHistory?.map(p => p.name.toLowerCase().replace(/\s+/g, '-')) || [])
+            for (const sub of data.recentSubmissions) {
+              const slug = sub.titleSlug
+              const detail = details.get(slug)
+              if (!seenSlugs.has(slug)) {
+                seenSlugs.add(slug)
+                const d = detail?.difficulty || 'medium'
+                const tags = detail?.tags || []
+                const existingIdx = problemHistory.findIndex(p => p.name.toLowerCase().replace(/\s+/g, '-') === slug)
+                const entry: ProblemEntry = {
+                  id: `lc-${slug}`,
+                  name: sub.title,
+                  difficulty: d as 'easy' | 'medium' | 'hard',
+                  topic: tags[0] || 'Arrays',
+                  companyTags: [],
+                  attempts: existingIdx >= 0 ? problemHistory[existingIdx].attempts + 1 : 1,
+                  solved: true,
+                  timeTaken: 30,
+                  revisionCount: existingIdx >= 0 ? problemHistory[existingIdx].revisionCount : 0,
+                  notes: existingIdx >= 0 ? problemHistory[existingIdx].notes : '',
+                  favorite: existingIdx >= 0 ? problemHistory[existingIdx].favorite : false,
+                  status: 'solved',
+                }
+                if (existingIdx >= 0) {
+                  problemHistory[existingIdx] = entry
+                } else {
+                  problemHistory.unshift(entry)
+                }
+              }
+            }
+            problemHistory = problemHistory.slice(0, 100)
+          }
+
+          const recentActivity = problemHistory.slice(0, 8).map(p => {
+            return { type: 'solve' as const, text: `Solved ${p.name} (${p.difficulty})`, date: new Date().toISOString().split('T')[0] }
+          })
+
           set({
             stats: {
               ...state.stats,
@@ -421,6 +462,8 @@ export const useLeetCodeStore = create<LeetCodeState>()(
             topicProgress,
             weakTopics,
             studyInsights,
+            problemHistory,
+            recentActivity,
             isSyncing: false,
             lastSynced: new Date().toISOString(),
           })

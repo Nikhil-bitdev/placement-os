@@ -42,6 +42,7 @@ export interface LeetCodeApiResult {
   contestRating: number
   activity: { date: string; level: 0 | 1 | 2 | 3 | 4; problemsSolved: number; hoursStudied: number; notes: string }[]
   tagProgress: { tagName: string; problemsSolved: number }[]
+  recentSubmissions: { title: string; titleSlug: string; timestamp: number }[]
 }
 
 export async function fetchLeetCodeProfile(username: string): Promise<LeetCodeApiResult> {
@@ -59,6 +60,11 @@ export async function fetchLeetCodeProfile(username: string): Promise<LeetCodeAp
           intermediate { tagName problemsSolved }
           fundamental { tagName problemsSolved }
         }
+      }
+      recentAcSubmissionList(username:$username, limit:20) {
+        title
+        titleSlug
+        timestamp
       }
     }`
 
@@ -93,6 +99,13 @@ export async function fetchLeetCodeProfile(username: string): Promise<LeetCodeAp
     problemsSolved: t.problemsSolved,
   }))
 
+  const recentSubmissions: { title: string; titleSlug: string; timestamp: number }[] =
+    (data.recentAcSubmissionList || []).map((s: { title: string; titleSlug: string; timestamp: number }) => ({
+      title: s.title,
+      titleSlug: s.titleSlug,
+      timestamp: s.timestamp,
+    }))
+
   return {
     totalSolved,
     easySolved,
@@ -104,5 +117,28 @@ export async function fetchLeetCodeProfile(username: string): Promise<LeetCodeAp
     contestRating: 0,
     activity: buildActivity(calendar.submissionCalendar || '{}'),
     tagProgress,
+    recentSubmissions,
   }
+}
+
+export async function fetchProblemDetails(titleSlugs: string[]): Promise<Map<string, { difficulty: string; tags: string[] }>> {
+  const details = new Map<string, { difficulty: string; tags: string[] }>()
+  const unique = [...new Set(titleSlugs)]
+  for (let i = 0; i < unique.length; i += 10) {
+    const batch = unique.slice(i, i + 10)
+    const results = await Promise.allSettled(batch.map(async slug => {
+      const q = `query($titleSlug:String!){ question(titleSlug:$titleSlug) { difficulty topicTags { name } } }`
+      const data = await graphql(q, { titleSlug: slug })
+      return { slug, ...data.question }
+    }))
+    for (const r of results) {
+      if (r.status === 'fulfilled' && r.value) {
+        details.set(r.value.slug, {
+          difficulty: r.value.difficulty?.toLowerCase() || 'medium',
+          tags: (r.value.topicTags || []).map((t: { name: string }) => t.name),
+        })
+      }
+    }
+  }
+  return details
 }
