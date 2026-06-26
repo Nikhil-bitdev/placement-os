@@ -14,6 +14,7 @@ import Statistics from './pages/Statistics'
 import LeetCode from './pages/LeetCode'
 import CalendarPage from './pages/Calendar'
 import CoreSubjects from './pages/CoreSubjects'
+import IdentityForm from './components/IdentityForm'
 
 const Placeholder = ({ title }: { title: string }) => (
   <PageTransition>
@@ -71,6 +72,7 @@ export default function App() {
       </AnimatePresence>
       <CommandPalette isOpen={paletteOpen} onClose={() => setPaletteOpen(false)} />
       <ToastContainer />
+      <IdentityForm />
     </>
   )
 }

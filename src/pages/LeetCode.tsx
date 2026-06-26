@@ -5,7 +5,7 @@ import {
   Trophy, BarChart3, BookOpen, CheckCircle, Circle, Star,
   ExternalLink, ArrowRight, ChevronDown, ChevronUp, Filter,
   Calendar, Flame, Award, Lightbulb, FileText, Video, List,
-  Play, Sparkles, Lock, Code2, PieChart, Activity,
+  Play, Sparkles, Lock, Code2, PieChart, Activity, X,
 } from 'lucide-react'
 import { useLeetCodeStore } from '../store/leetcodeStore'
 import { useGamificationStore } from '../store/gamificationStore'
@@ -303,6 +303,12 @@ export default function LeetCodePage() {
                 className="w-20 text-xs font-mono text-slate-300 bg-transparent border-none outline-none focus:ring-0 p-0"
                 placeholder="leetcode_id"
               />
+              {store.username && (
+                <button onClick={() => { store.clearUsername(); setEditingUsername('') }}
+                  className="p-0.5 rounded hover:bg-red-500/10 transition-colors" title="Remove LeetCode ID">
+                  <X size={10} className="text-zinc-600 hover:text-red-400" />
+                </button>
+              )}
             </div>
             <div className="relative">
               <Search size={13} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-500" />

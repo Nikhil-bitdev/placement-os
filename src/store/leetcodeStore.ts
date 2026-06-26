@@ -81,6 +81,7 @@ export interface LeetCodeState {
   updateProblem: (id: string, updates: Partial<ProblemEntry>) => void
   toggleFavorite: (id: string) => void
   setUsername: (username: string) => void
+  clearUsername: () => void
   syncFromLeetCode: () => Promise<void>
 }
 
@@ -304,6 +305,7 @@ function getInitialState(): LeetCodeState {
     updateProblem: () => {},
     toggleFavorite: () => {},
     setUsername: () => {},
+    clearUsername: () => {},
     syncFromLeetCode: async () => {},
   }
 }
@@ -328,6 +330,7 @@ export const useLeetCodeStore = create<LeetCodeState>()(
         problemHistory: state.problemHistory.map(p => p.id === id ? { ...p, favorite: !p.favorite } : p)
       })),
       setUsername: (username: string) => set({ username }),
+      clearUsername: () => set({ username: '', profile: { username: '', rating: 0, contestBadge: '' }, stats: { totalSolved: 0, easySolved: 0, mediumSolved: 0, hardSolved: 0, acceptanceRate: 0, currentStreak: 0, longestStreak: 0, contestRating: 0, contestPeakRating: 0, globalRanking: 0, countryRanking: 0, studyHours: 0, weeklyGoal: 15, monthlyGoal: 60, weeklyProgress: 0, monthlyProgress: 0 }, lastSynced: null, syncError: null, isSyncing: false }),
       syncFromLeetCode: async () => {
         const state = get()
         set({ isSyncing: true, syncError: null })
