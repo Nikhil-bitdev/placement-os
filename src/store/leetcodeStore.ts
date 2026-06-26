@@ -337,18 +337,39 @@ export const useLeetCodeStore = create<LeetCodeState>()(
         try {
           const data = await fetchLeetCodeProfile(state.username)
 
+          function normalizeTag(name: string) { return name.toLowerCase().replace(/[-\s]+/g, '') }
           const tagMap: Record<string, string> = {
-            array: 'Arrays', string: 'Strings', 'dynamic-programming': 'Dynamic Programming',
-            graph: 'Graphs', tree: 'Trees', 'binary-search-tree': 'BST',
-            'binary-search': 'Binary Search', 'linked-list': 'Linked List',
+            array: 'Arrays', string: 'Strings', 'dynamicprogramming': 'Dynamic Programming',
+            graph: 'Graphs', tree: 'Trees', 'binarysearchtree': 'BST',
+            'binarysearch': 'Binary Search', 'linkedlist': 'Linked List',
             stack: 'Stack', queue: 'Queue', heap: 'Heap',
-            greedy: 'Greedy', 'sliding-window': 'Sliding Window',
-            'two-pointers': 'Two Pointer', backtracking: 'Backtracking',
-            'bit-manipulation': 'Bit Manipulation', trie: 'Tries',
-            'segment-tree': 'Segment Tree', 'union-find': 'DSU',
+            greedy: 'Greedy', 'slidingwindow': 'Sliding Window',
+            'twopointers': 'Two Pointer', backtracking: 'Backtracking',
+            'bitmanipulation': 'Bit Manipulation', trie: 'Tries',
+            'segmenttree': 'Segment Tree', 'unionfind': 'DSU',
             sorting: 'Sorting', recursion: 'Recursion',
-            'depth-first-search': 'Graphs', 'breadth-first-search': 'Graphs',
+            'depthfirstsearch': 'Graphs', 'breadthfirstsearch': 'Graphs',
+            hash: 'Arrays', matrix: 'Arrays', math: 'Arrays',
+            counting: 'Arrays', prefixsum: 'Arrays', simulation: 'Arrays',
+            enumeration: 'Arrays', combinatorics: 'Arrays',
+            monotonicstack: 'Stack', monotonicqueue: 'Queue', design: 'Recursion',
+            divideandconquer: 'Recursion', merge: 'Sorting', bucket: 'Sorting',
+            radix: 'Sorting', 'doublylinkedlist': 'Linked List',
           }
+          const normalizedTagMap: Record<string, string> = {}
+          for (const [key, val] of Object.entries(tagMap)) {
+            normalizedTagMap[normalizeTag(key)] = val
+          }
+
+          const solvedFromTag: Record<string, number> = {}
+          for (const tag of data.tagProgress) {
+            const key = normalizeTag(tag.tagName)
+            const mapped = normalizedTagMap[key]
+            if (mapped) {
+              solvedFromTag[mapped] = (solvedFromTag[mapped] || 0) + tag.problemsSolved
+            }
+          }
+
           const totalEstimates: Record<string, number> = {
             Arrays: 48, Strings: 32, 'Dynamic Programming': 42,
             Graphs: 38, Trees: 28, BST: 22, 'Binary Search': 20,
@@ -357,19 +378,12 @@ export const useLeetCodeStore = create<LeetCodeState>()(
             Backtracking: 20, 'Bit Manipulation': 15, Tries: 14,
             'Segment Tree': 12, DSU: 10, Sorting: 15, Recursion: 20,
           }
-          const solvedFromTag: Record<string, number> = {}
-          for (const tag of data.tagProgress) {
-            const mapped = tagMap[tag.tagName.toLowerCase()]
-            if (mapped) {
-              solvedFromTag[mapped] = (solvedFromTag[mapped] || 0) + tag.problemsSolved
-            }
-          }
 
           const topicProgress: TopicProgress[] = state.topicProgress
             ? state.topicProgress.map(tp => {
-                const solved = solvedFromTag[tp.topic] ?? tp.solved
+                const solved = solvedFromTag[tp.topic] ?? 0
                 const total = totalEstimates[tp.topic] || tp.total
-                const confidence = total > 0 ? Math.round((solved / total) * 100) : tp.confidence
+                const confidence = total > 0 ? Math.round((solved / total) * 100) : 5
                 return { ...tp, solved: Math.min(solved, total), total, confidence: Math.min(100, Math.max(5, confidence)) }
               })
             : state.topicProgress
