@@ -5,13 +5,13 @@ import {
   Trophy, BarChart3, BookOpen, CheckCircle, Circle, Star,
   ExternalLink, ArrowRight, ChevronDown, ChevronUp, Filter,
   Calendar, Flame, Award, Lightbulb, FileText, Video, List,
-  Play, Sparkles, Lock, Code2, PieChart, Activity, X,
+  Play, Sparkles, Lock, Code2, Activity, X,
 } from 'lucide-react'
 import { useLeetCodeStore } from '../store/leetcodeStore'
 import { useGamificationStore } from '../store/gamificationStore'
 import AnimatedCounter from '../components/AnimatedCounter'
 import {
-  PieChart as RePieChart, Pie, Cell, Tooltip, ResponsiveContainer,
+  Tooltip, ResponsiveContainer,
   AreaChart, Area, XAxis, YAxis, CartesianGrid,
   BarChart, Bar, Legend, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar,
 } from 'recharts'
@@ -157,49 +157,6 @@ function ContributionHeatmap({ data: _data }: { data: { date: string; level: 0 |
             <span>{selected.hoursStudied}h studied</span>
           </div>
         )}
-      </div>
-    </div>
-  )
-}
-
-function DifficultyChart({ easy, medium, hard }: { easy: number; medium: number; hard: number }) {
-  const total = easy + medium + hard
-  const data = [
-    { name: 'Easy', value: easy, color: '#16A34A' },
-    { name: 'Medium', value: medium, color: '#F59E0B' },
-    { name: 'Hard', value: hard, color: '#DC2626' },
-  ]
-  return (
-    <div className="card p-5">
-      <p className="text-sm font-semibold text-[#334155] dark:text-slate-200 mb-3">Difficulty Distribution</p>
-      <div className="flex items-center gap-6">
-        <div className="w-36 h-36 flex-shrink-0">
-          <ResponsiveContainer width={144} height={144}>
-            <RePieChart>
-              <Pie data={data} cx="50%" cy="50%" innerRadius={38} outerRadius={60} dataKey="value" stroke="none">
-                {data.map(e => <Cell key={e.name} fill={e.color} />)}
-              </Pie>
-              <Tooltip contentStyle={{ background: '#111827', border: '1px solid #1E293B', borderRadius: 8, fontSize: 12 }} />
-            </RePieChart>
-          </ResponsiveContainer>
-        </div>
-        <div className="space-y-2">
-          {data.map(d => (
-            <div key={d.name} className="flex items-center justify-between gap-6">
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full" style={{ backgroundColor: d.color }} />
-                <span className="text-xs text-[#64748B]">{d.name}</span>
-              </div>
-              <span className="text-xs font-mono text-[#334155] dark:text-slate-200">{d.value}</span>
-            </div>
-          ))}
-          <div className="pt-2 border-t border-[#E2E8F0] dark:border-zinc-800">
-            <div className="flex items-center justify-between">
-              <span className="text-xs text-[#64748B]">Total</span>
-              <span className="text-xs font-mono text-[#334155] dark:text-slate-200">{total}</span>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   )
@@ -415,21 +372,18 @@ export default function LeetCodePage() {
             </div>
           )}
 
-          {/* DIFFICULTY + TOPIC GRID */}
-          <div className="grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-6">
-            <DifficultyChart easy={isSynced ? stats.easySolved : 0} medium={isSynced ? stats.mediumSolved : 0} hard={isSynced ? stats.hardSolved : 0} />
-            <div className="card p-5">
-              <p className="text-sm font-semibold text-[#334155] dark:text-slate-200 mb-3">Topic Progress</p>
-              {isSynced ? (
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 max-h-[400px] overflow-y-auto scrollbar-thin pr-1">
-                {store.topicProgress.map(t => (
-                  <TopicCard key={t.topic} topic={t.topic} solved={t.solved} total={t.total} confidence={t.confidence} revisionCount={t.revisionCount} />
-                ))}
-              </div>
-              ) : (
-                <p className="text-xs text-[#64748B] text-center py-8">Sync your LeetCode ID to see topic progress.</p>
-              )}
+          {/* TOPIC PROGRESS */}
+          <div className="card p-5">
+            <p className="text-sm font-semibold text-[#334155] dark:text-slate-200 mb-3">Topic Progress</p>
+            {isSynced ? (
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 max-h-[400px] overflow-y-auto scrollbar-thin pr-1">
+              {store.topicProgress.map(t => (
+                <TopicCard key={t.topic} topic={t.topic} solved={t.solved} total={t.total} confidence={t.confidence} revisionCount={t.revisionCount} />
+              ))}
             </div>
+            ) : (
+              <p className="text-xs text-[#64748B] text-center py-8">Sync your LeetCode ID to see topic progress.</p>
+            )}
           </div>
 
           {/* CURRENT FOCUS */}
