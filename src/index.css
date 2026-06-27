@@ -96,7 +96,7 @@ code, .font-mono, .mono-numbers {
 }
 
 /* Input base */
-input[type="text"], input[type="search"], input[type="email"], input[type="url"], input[type="number"], textarea, select {
+input[type="text"], input[type="search"], input[type="email"], input[type="url"], input[type="number"], input[type="time"], input[type="date"], textarea, select {
   @apply rounded-[12px] border border-[#E2E8F0] bg-[#F8FAFC] px-3 py-2 text-sm text-[#0F172A] placeholder:text-[#94A3B8] transition-all duration-150;
   @apply dark:bg-zinc-800/50 dark:border-zinc-700 dark:text-zinc-200 dark:placeholder:text-zinc-500;
 }
