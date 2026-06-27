@@ -447,20 +447,36 @@ export default function LeetCodePage() {
           <div className="card p-5">
             <p className="text-xs font-semibold text-[#334155] dark:text-slate-200 mb-3">Quick Actions</p>
             <div className="space-y-1.5">
-              {[
-                { label: 'Open LeetCode', icon: ExternalLink },
-                { label: 'Daily Challenge', icon: Calendar },
-                { label: 'Random Problem', icon: Sparkles },
-                { label: 'Continue Last Problem', icon: Play },
-                { label: 'Mark Goal Complete', icon: CheckCircle },
-              ].map(a => (
-                <button key={a.label}
-                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-[#F1F5F9] dark:bg-zinc-800 transition-colors text-left"
-                >
-                  <a.icon size={13} className="text-[#64748B] flex-shrink-0" />
-                  <span className="text-xs text-[#64748B]">{a.label}</span>
-                </button>
-              ))}
+              {(() => {
+                const unsolved = store.problemHistory.filter(p => !p.solved)
+                const lastUnsolved = unsolved.length > 0 ? unsolved[0] : null
+                const randomUnsolved = unsolved.length > 0 ? unsolved[Math.floor(Math.random() * unsolved.length)] : null
+                return [
+                  { label: 'Open LeetCode', icon: ExternalLink, onClick: () => window.open('https://leetcode.com', '_blank') },
+                  { label: 'Daily Challenge', icon: Calendar, onClick: () => window.open('https://leetcode.com/problemset/', '_blank') },
+                  { label: 'Random Problem', icon: Sparkles, onClick: () => {
+                    if (randomUnsolved) {
+                      window.open(`https://leetcode.com/search/?q=${encodeURIComponent(randomUnsolved.name)}`, '_blank')
+                    } else {
+                      window.open('https://leetcode.com/problemset/', '_blank')
+                    }
+                  }},
+                  { label: lastUnsolved ? `Continue: ${lastUnsolved.name}` : 'Continue Last Problem', icon: Play, onClick: () => {
+                    if (lastUnsolved) {
+                      window.open(`https://leetcode.com/search/?q=${encodeURIComponent(lastUnsolved.name)}`, '_blank')
+                    } else {
+                      window.open('https://leetcode.com/problemset/', '_blank')
+                    }
+                  }},
+                ].map(a => (
+                  <button key={a.label} onClick={a.onClick}
+                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-[#F1F5F9] dark:bg-zinc-800 transition-colors text-left"
+                  >
+                    <a.icon size={13} className="text-[#64748B] flex-shrink-0" />
+                    <span className="text-xs text-[#64748B] truncate">{a.label}</span>
+                  </button>
+                ))
+              })()}
             </div>
           </div>
 

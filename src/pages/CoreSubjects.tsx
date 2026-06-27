@@ -815,17 +815,16 @@ export default function CoreSubjects() {
   }, [store.subjects, search])
 
   const stats = useMemo(() => {
-    let totalTopics = 0, masteredTopics = 0, totalHours = 0, revisions = 0
+    let totalTopics = 0, masteredTopics = 0, revisions = 0
     for (const sub of store.subjects) {
       for (const t of sub.topics) {
         totalTopics++
         if (t.status === 'mastered') masteredTopics++
         revisions += t.revisionCount
       }
-      totalHours += sub.hoursStudied
     }
     const completedSubjects = store.subjects.filter(s => s.status === 'completed').length
-    return { totalTopics, masteredTopics, totalHours, revisions, completedSubjects }
+    return { totalTopics, masteredTopics, revisions, completedSubjects }
   }, [store.subjects])
 
   const revisionDueCount = useMemo(() => {
@@ -863,10 +862,9 @@ export default function CoreSubjects() {
             )}
           </div>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3 mt-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mt-4">
           <StatCard icon={BookOpen} label="Subjects" value={`${stats.completedSubjects}/${store.subjects.length}`} sub="completed" />
           <StatCard icon={Award} label="Topics Mastered" value={`${stats.masteredTopics}/${stats.totalTopics}`} />
-          <StatCard icon={Clock} label="Study Hours" value={`${stats.totalHours}h`} />
           <StatCard icon={TrendingUp} label="Revisions" value={`${stats.revisions}`} />
           <StatCard icon={Target} label="Readiness" value={`${stats.totalTopics > 0 ? Math.round((stats.masteredTopics / stats.totalTopics) * 100) : 0}%`} />
           <StatCard icon={BarChart3} label="Avg Confidence" value={`${stats.totalTopics > 0 ? Math.round(store.subjects.reduce((s, sub) => s + sub.topics.reduce((a, t) => a + t.confidence, 0), 0) / stats.totalTopics) : 0}/5`} />

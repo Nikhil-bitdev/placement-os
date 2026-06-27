@@ -1,22 +1,11 @@
 import { useState } from 'react'
 import { usePlannerStore, type PlannerCategory, type PlannerTask } from '../store/plannerStore'
 import Pomodoro from '../components/Pomodoro'
+import StudyPlan from '../components/StudyPlan'
 
-const categories: PlannerCategory[] = [
-  'DSA', 'Development', 'Core Subjects', 'Revision',
-  'Projects', 'Mock Interview', 'Aptitude', 'Behavioral',
-]
-
-const categoryColors: Record<PlannerCategory, string> = {
-  'DSA': 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300',
-  'Development': 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300',
-  'Core Subjects': 'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-300',
-  'Revision': 'bg-sky-100 text-sky-700 dark:bg-sky-500/20 dark:text-sky-300',
-  'Projects': 'bg-violet-100 text-violet-700 dark:bg-violet-500/20 dark:text-violet-300',
-  'Mock Interview': 'bg-rose-100 text-rose-700 dark:bg-rose-500/20 dark:text-rose-300',
-  'Aptitude': 'bg-cyan-100 text-cyan-700 dark:bg-cyan-500/20 dark:text-cyan-300',
-  'Behavioral': 'bg-orange-100 text-orange-700 dark:bg-orange-500/20 dark:text-orange-300',
-}
+import { CATEGORIES, CATEGORY_COLORS } from '../store/plannerStore'
+const categories = CATEGORIES
+const categoryColors = CATEGORY_COLORS
 
 const priorityColors: Record<string, string> = {
   low: 'bg-gray-400',
@@ -49,7 +38,7 @@ const formatDate = (date: Date) => {
 export default function Planner() {
   const { tasks, addTask, deleteTask, toggleStatus, updateTask } = usePlannerStore()
   const [selectedDate, setSelectedDate] = useState(today())
-  const [showNotes, setShowNotes] = useState<Record<string, boolean>>({})
+
 
   // Form state
   const [newCategory, setNewCategory] = useState<PlannerCategory>('DSA')
@@ -76,11 +65,14 @@ export default function Planner() {
     addTask({
       date: selectedDate,
       category: newCategory,
+      title: newNotes || `${newCategory} task`,
       startTime: newStart,
       endTime: newEnd,
       status: 'pending',
       priority: newPriority,
+      difficulty: 'medium',
       notes: newNotes,
+      order: 0,
     })
     setNewNotes('')
   }
@@ -88,10 +80,6 @@ export default function Planner() {
   const dayTasks = tasks
     .filter((t) => t.date === selectedDate)
     .sort((a, b) => a.startTime.localeCompare(b.startTime))
-
-  const toggleNotes = (id: string) => {
-    setShowNotes((prev) => ({ ...prev, [id]: !prev[id] }))
-  }
 
   return (
     <div className="space-y-6">
@@ -205,14 +193,15 @@ export default function Planner() {
               task={task}
               onToggle={() => toggleStatus(task.id)}
               onDelete={() => deleteTask(task.id)}
-              showNotes={!!showNotes[task.id]}
-              onToggleNotes={() => toggleNotes(task.id)}
             />
           ))}
         </div>
       )}
 
-      <Pomodoro />
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <Pomodoro />
+        <StudyPlan />
+      </div>
     </div>
   )
 }
@@ -221,14 +210,10 @@ function TaskCard({
   task,
   onToggle,
   onDelete,
-  showNotes,
-  onToggleNotes,
 }: {
   task: PlannerTask
   onToggle: () => void
   onDelete: () => void
-  showNotes: boolean
-  onToggleNotes: () => void
 }) {
   return (
     <div className="card p-4 flex items-start gap-3">
@@ -245,30 +230,19 @@ function TaskCard({
         {task.category}
       </span>
 
-      {/* Time range */}
-      <span className="text-sm text-[#64748B] min-w-[80px]">
-        {task.startTime} – {task.endTime}
-      </span>
+      {/* Time range or notes */}
+      {task.startTime || task.endTime ? (
+        <span className="text-sm text-[#64748B] min-w-[80px]">
+          {task.startTime} – {task.endTime}
+        </span>
+      ) : task.notes ? (
+        <p className="text-sm text-[#334155] dark:text-slate-200 font-medium truncate">
+          {task.notes.replace(/^Auto-generated: /, '')}
+        </p>
+      ) : null}
 
       {/* Priority dot */}
       <span className={`w-2.5 h-2.5 rounded-full mt-1.5 flex-shrink-0 ${priorityColors[task.priority]}`} />
-
-      {/* Notes toggle */}
-      {task.notes && (
-        <button
-          onClick={onToggleNotes}
-          className="text-xs text-[#2563EB] hover:text-[#1D4ED8] dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
-        >
-          {showNotes ? 'Hide notes' : 'Notes'}
-        </button>
-      )}
-
-      {/* Expanded notes */}
-      {showNotes && task.notes && (
-        <p className="text-sm text-[#334155] dark:text-gray-400 mt-2 w-full">
-          {task.notes}
-        </p>
-      )}
 
       {/* Actions */}
       <div className="ml-auto flex gap-2">

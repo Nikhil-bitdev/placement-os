@@ -1,13 +1,14 @@
-import { useState, useEffect, useMemo, useRef } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { NavLink } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { CheckCircle, Target, TrendingUp, Flame, Award, BookOpen, Clock, Brain, Code2, BarChart3 } from 'lucide-react'
+import { CheckCircle, Target, TrendingUp, Flame, Award, BookOpen, Brain, Code2, BarChart3 } from 'lucide-react'
 import allSections from '../data/dsa'
 import roadmapTechs from '../data/roadmap'
 import { useDSAStore } from '../store/dsaStore'
 import { useRoadmapStore } from '../store/roadmapStore'
 import { usePlannerStore } from '../store/plannerStore'
 import { useGamificationStore } from '../store/gamificationStore'
+import Pomodoro from '../components/Pomodoro'
 
 function getTodayStr(): string {
   const d = new Date()
@@ -33,13 +34,6 @@ function HeroSection() {
   const todayProgress = todayTasks.length > 0 ? Math.round((completedTasks.length / todayTasks.length) * 100) : 0
 
   const streak = parseInt(localStorage.getItem('placement-os-streak') || '0', 10)
-
-  const totalHours = useMemo(() =>
-    roadmapTechs
-      .filter(t => !t.isCheckpoint)
-      .reduce((sum, t) => sum + getProgress(t.id).hoursSpent, 0),
-    [getProgress, techProgress],
-  )
 
   const { xp, level, displayName } = useGamificationStore()
 
@@ -77,7 +71,6 @@ function HeroSection() {
           </div>
           <div className="flex items-center gap-6 text-sm">
             <span className="flex items-center gap-1.5 text-[#334155] dark:text-zinc-300"><Flame size={14} className="text-orange-400" /> {streak} days</span>
-            <span className="flex items-center gap-1.5 text-[#334155] dark:text-zinc-300"><Clock size={14} className="text-[#2563EB]" /> {totalHours}h total</span>
           </div>
         </div>
         <div className="flex items-center gap-4">
@@ -117,13 +110,10 @@ function QuickStatsGrid() {
     const roadmapPct = nonCheckpoints.length > 0 ? Math.round((roadmapCompleted / nonCheckpoints.length) * 100) : 0
 
     const overallPct = Math.round((dsaPct + roadmapPct) / 2)
-    const totalHours = nonCheckpoints.reduce((sum, t) => sum + getProgress(t.id).hoursSpent, 0)
-
     const cards: { label: string; value: string; progress?: number; icon: typeof CheckCircle }[] = []
     cards.push({ label: 'Overall Progress', value: `${overallPct}%`, progress: overallPct, icon: BarChart3 })
     if (dsaSolved > 0) cards.push({ label: 'DSA Progress', value: `${dsaSolved}/${dsaTotal}`, progress: dsaPct, icon: Code2 })
     if (roadmapCompleted > 0) cards.push({ label: 'Development', value: `${roadmapCompleted}/${nonCheckpoints.length}`, progress: roadmapPct, icon: TrendingUp })
-    cards.push({ label: 'Study Hours', value: `${totalHours}h`, icon: Clock })
     if (dsaSolved > 0) cards.push({ label: 'Problems Solved', value: `${dsaSolved}`, icon: CheckCircle })
     return cards
   }, [getSectionStats, getProgress, progress, techProgress])
@@ -204,13 +194,15 @@ function TodayTimeline() {
                   {task.category}
                 </span>
                 <span
-                  className={`text-sm flex-1 ${
+                  className={`text-sm flex-1 truncate ${
                     task.status === 'done'
                       ? 'line-through text-[#94A3B8]'
                       : 'text-[#334155] dark:text-zinc-300'
                   }`}
                 >
-                  {task.category} — {task.startTime}–{task.endTime}
+                  {task.startTime || task.endTime
+                    ? `${task.category} — ${task.startTime}–${task.endTime}`
+                    : task.notes.replace(/^Auto-generated: /, '')}
                 </span>
                 {task.status === 'done' && <span className="text-[#16A34A] text-xs">✓</span>}
               </motion.div>
@@ -394,76 +386,6 @@ function RecentAchievements() {
   )
 }
 
-function PomodoroWidget() {
-  const [timeLeft, setTimeLeft] = useState(25 * 60)
-  const [isActive, setIsActive] = useState(false)
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
-
-  useEffect(() => {
-    if (isActive) {
-      intervalRef.current = setInterval(() => {
-        setTimeLeft(t => {
-          if (t <= 1) {
-            setIsActive(false)
-            return 25 * 60
-          }
-          return t - 1
-        })
-      }, 1000)
-    } else {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current)
-        intervalRef.current = null
-      }
-    }
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current)
-        intervalRef.current = null
-      }
-    }
-  }, [isActive])
-
-  const minutes = Math.floor(timeLeft / 60)
-  const seconds = timeLeft % 60
-  const totalSeconds = 25 * 60
-  const progress = ((totalSeconds - timeLeft) / totalSeconds) * 100
-
-  const reset = () => {
-    setTimeLeft(25 * 60)
-    setIsActive(false)
-  }
-
-  return (
-    <div className="card p-6 text-center">
-      <h2 className="section-title mb-4">Pomodoro</h2>
-      <div className="relative w-32 h-32 mx-auto">
-        <svg className="w-32 h-32 -rotate-90" viewBox="0 0 120 120">
-          <circle cx="60" cy="60" r="54" fill="none" stroke="#E2E8F0" strokeWidth="4" />
-          <circle
-            cx="60" cy="60" r="54" fill="none" stroke="#2563EB" strokeWidth="4"
-            strokeDasharray={`${2 * Math.PI * 54}`}
-            strokeDashoffset={`${2 * Math.PI * 54 * (1 - progress / 100)}`}
-            strokeLinecap="round"
-            className="transition-all duration-1000"
-          />
-        </svg>
-        <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-2xl font-mono font-bold text-[#0F172A] dark:text-white">
-            {String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}
-          </span>
-        </div>
-      </div>
-      <div className="flex gap-2 justify-center mt-4">
-        <button onClick={() => setIsActive(!isActive)} className="btn-primary text-xs px-3 py-1.5">
-          {isActive ? 'Pause' : 'Start'}
-        </button>
-        <button onClick={reset} className="btn-ghost text-xs">Reset</button>
-      </div>
-    </div>
-  )
-}
-
 function QuickNotesWidget() {
   const [note, setNote] = useState(() => localStorage.getItem('placement-os-quick-notes') || '')
   useEffect(() => { localStorage.setItem('placement-os-quick-notes', note) }, [note])
@@ -551,7 +473,7 @@ export default function Dashboard() {
         <div className="lg:col-span-2 space-y-6">
           <TodayTimeline />
           <ContinueLearning />
-          <PomodoroWidget />
+          <Pomodoro compact />
           <QuickNotesWidget />
         </div>
         <div className="space-y-6">

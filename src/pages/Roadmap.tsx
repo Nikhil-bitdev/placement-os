@@ -2,7 +2,7 @@ import { useState, useMemo, useRef } from 'react'
 import { motion } from 'framer-motion'
 import {
   Search, CheckCircle, Circle, Clock, BookOpen, FileText, Video,
-  Lightbulb, Target, Star, Flame, Globe, FileCode,
+  Target, Star, Globe, FileCode,
   Palette, FileJson, Package, GitBranch, Code2, Wind,
   Layout, Server, Terminal, Database, List, Lock, Rocket, Box,
   ArrowRight, ExternalLink, Zap,
@@ -310,18 +310,7 @@ function RoadmapPage() {
         </motion.div>
       )}
 
-      {/* RESOURCES */}
-      <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
-        className="card p-5"
-      >
-        <p className="text-xs font-semibold uppercase tracking-wider text-[#64748B] mb-3">Resources</p>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          <ResourceCard icon={FileText} label="Documentation" description="Official docs and references" />
-          <ResourceCard icon={Video} label="YouTube" description="Best video tutorials" />
-          <ResourceCard icon={Target} label="Practice" description="Exercises and challenges" />
-          <ResourceCard icon={Lightbulb} label="Project Ideas" description="Build real projects" />
-        </div>
-      </motion.div>
+
     </div>
   )
 }
