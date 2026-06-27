@@ -26,6 +26,7 @@ function HeroSection() {
   const today = getTodayStr()
   const { tasks } = usePlannerStore()
   const { getProgress } = useRoadmapStore()
+  const techProgress = useRoadmapStore(s => s.techProgress)
 
   const todayTasks = useMemo(() => tasks.filter(t => t.date === today), [tasks, today])
   const completedTasks = useMemo(() => todayTasks.filter(t => t.status === 'done'), [todayTasks])
@@ -37,7 +38,7 @@ function HeroSection() {
     roadmapTechs
       .filter(t => !t.isCheckpoint)
       .reduce((sum, t) => sum + getProgress(t.id).hoursSpent, 0),
-    [getProgress],
+    [getProgress, techProgress],
   )
 
   const { xp, level, displayName } = useGamificationStore()
@@ -98,6 +99,8 @@ function HeroSection() {
 function QuickStatsGrid() {
   const { getSectionStats } = useDSAStore()
   const { getProgress } = useRoadmapStore()
+  const progress = useDSAStore(s => s.progress)
+  const techProgress = useRoadmapStore(s => s.techProgress)
 
   const stats = useMemo(() => {
     let dsaSolved = 0
@@ -123,7 +126,7 @@ function QuickStatsGrid() {
     cards.push({ label: 'Study Hours', value: `${totalHours}h`, icon: Clock })
     if (dsaSolved > 0) cards.push({ label: 'Problems Solved', value: `${dsaSolved}`, icon: CheckCircle })
     return cards
-  }, [getSectionStats, getProgress])
+  }, [getSectionStats, getProgress, progress, techProgress])
 
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
@@ -222,6 +225,8 @@ function TodayTimeline() {
 function ContinueLearning() {
   const { getSectionStats } = useDSAStore()
   const { getProgress } = useRoadmapStore()
+  const progress = useDSAStore(s => s.progress)
+  const techProgress = useRoadmapStore(s => s.techProgress)
 
   const items = useMemo(() => {
     const dsaItems = allSections
@@ -251,7 +256,7 @@ function ContinueLearning() {
       }))
 
     return [...dsaItems, ...techItems]
-  }, [getSectionStats, getProgress])
+  }, [getSectionStats, getProgress, progress, techProgress])
 
   return (
     <motion.div

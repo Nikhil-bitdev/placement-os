@@ -258,9 +258,11 @@ function SelectedDayDetails({ date, onClose }: { date: Date | null; onClose: () 
   const { subjects } = useCoreSubjectsStore()
   const { getSectionStats } = useDSAStore()
   const { getProgress } = useRoadmapStore()
+  const progress = useDSAStore(s => s.progress)
+  const techProgress = useRoadmapStore(s => s.techProgress)
 
-  const dsaSolved = useMemo(() => allSections.reduce((s, sec) => s + getSectionStats(sec.id).solved, 0), [getSectionStats])
-  const roadmapDone = useMemo(() => roadmapTechs.filter(t => !t.isCheckpoint && getProgress(t.id).status === 'completed').length, [getProgress])
+  const dsaSolved = useMemo(() => allSections.reduce((s, sec) => s + getSectionStats(sec.id).solved, 0), [getSectionStats, progress])
+  const roadmapDone = useMemo(() => roadmapTechs.filter(t => !t.isCheckpoint && getProgress(t.id).status === 'completed').length, [getProgress, techProgress])
 
   const { score } = getProductivity(date)
   const isToday = isSameDay(date, getToday())
@@ -634,6 +636,7 @@ function SmartInsights() {
   const { tasks } = usePlannerStore()
   const { subjects } = useCoreSubjectsStore()
   const { getSectionStats } = useDSAStore()
+  const progress = useDSAStore(s => s.progress)
 
   const insights = useMemo(() => {
     const result: { text: string; type: 'info' | 'warning' | 'success' }[] = []
@@ -699,7 +702,7 @@ function SmartInsights() {
     }
 
     return result.slice(0, 6)
-  }, [activity, tasks, subjects, getSectionStats, lcStats])
+  }, [activity, tasks, subjects, getSectionStats, lcStats, progress])
 
   return (
     <div className="card p-5">
