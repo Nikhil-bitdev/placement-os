@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
-import { AnimatePresence } from 'framer-motion'
 import Layout from './components/Layout'
-import PageTransition from './components/PageTransition'
 import CommandPalette from './components/CommandPalette'
 import { ToastContainer } from './components/Toast'
 import { useAchievementChecker } from './hooks/useAchievementChecker'
@@ -17,16 +15,10 @@ import CoreSubjects from './pages/CoreSubjects'
 import IdentityForm from './components/IdentityForm'
 
 const Placeholder = ({ title }: { title: string }) => (
-  <PageTransition>
-    <div className="flex items-center justify-center h-full min-h-[60vh]">
-      <p className="text-gray-400 text-lg">{title} — Coming Soon</p>
-    </div>
-  </PageTransition>
+  <div className="flex items-center justify-center h-full min-h-[60vh]">
+    <p className="text-gray-400 text-lg">{title} — Coming Soon</p>
+  </div>
 )
-
-function WrappedPage({ children }: { children: React.ReactNode }) {
-  return <PageTransition>{children}</PageTransition>
-}
 
 export default function App() {
   const [paletteOpen, setPaletteOpen] = useState(false)
@@ -48,28 +40,26 @@ export default function App() {
 
   return (
     <>
-      <AnimatePresence mode="wait">
-        <Routes location={location} key={location.pathname}>
-          <Route element={<Layout />}>
-            <Route index element={<Navigate to="/dsa-tracker" replace />} />
-            <Route path="/dsa-tracker" element={<WrappedPage><DSATracker /></WrappedPage>} />
-            <Route path="/roadmap" element={<WrappedPage><Roadmap /></WrappedPage>} />
-            <Route path="/dashboard" element={<WrappedPage><Dashboard /></WrappedPage>} />
-            <Route path="/planner" element={<WrappedPage><Planner /></WrappedPage>} />
-            <Route path="/calendar" element={<WrappedPage><CalendarPage /></WrappedPage>} />
-            <Route path="/projects" element={<Placeholder title="Projects" />} />
-            <Route path="/subjects" element={<WrappedPage><CoreSubjects /></WrappedPage>} />
-            <Route path="/leetcode" element={<WrappedPage><LeetCode /></WrappedPage>} />
-            <Route path="/contests" element={<Placeholder title="Contests" />} />
-            <Route path="/revision" element={<Placeholder title="Revision" />} />
-            <Route path="/notes" element={<Placeholder title="Notes" />} />
-            <Route path="/habits" element={<Placeholder title="Habits" />} />
-            <Route path="/statistics" element={<WrappedPage><Statistics /></WrappedPage>} />
-            <Route path="/achievements" element={<Placeholder title="Achievements" />} />
-            <Route path="/settings" element={<Placeholder title="Settings" />} />
-          </Route>
-        </Routes>
-      </AnimatePresence>
+      <Routes location={location}>
+        <Route element={<Layout />}>
+          <Route index element={<Navigate to="/dsa-tracker" replace />} />
+          <Route path="/dsa-tracker" element={<DSATracker />} />
+          <Route path="/roadmap" element={<Roadmap />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/planner" element={<Planner />} />
+          <Route path="/calendar" element={<CalendarPage />} />
+          <Route path="/projects" element={<Placeholder title="Projects" />} />
+          <Route path="/subjects" element={<CoreSubjects />} />
+          <Route path="/leetcode" element={<LeetCode />} />
+          <Route path="/contests" element={<Placeholder title="Contests" />} />
+          <Route path="/revision" element={<Placeholder title="Revision" />} />
+          <Route path="/notes" element={<Placeholder title="Notes" />} />
+          <Route path="/habits" element={<Placeholder title="Habits" />} />
+          <Route path="/statistics" element={<Statistics />} />
+          <Route path="/achievements" element={<Placeholder title="Achievements" />} />
+          <Route path="/settings" element={<Placeholder title="Settings" />} />
+        </Route>
+      </Routes>
       <CommandPalette isOpen={paletteOpen} onClose={() => setPaletteOpen(false)} />
       <ToastContainer />
       <IdentityForm />

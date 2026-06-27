@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Outlet, useNavigate } from 'react-router-dom'
+import { Outlet, useNavigate, useLocation } from 'react-router-dom'
 import { FileText, Clock, Plus, Target } from 'lucide-react'
 import Sidebar from './Sidebar'
 import { useUIStore } from '../store/uiStore'
@@ -50,6 +50,7 @@ function FAB() {
 
 export default function Layout() {
   const { sidebarOpen } = useUIStore()
+  const location = useLocation()
 
   return (
     <div className="min-h-dvh bg-[#F8FAFC] dark:bg-[#09090B]">
@@ -60,7 +61,16 @@ export default function Layout() {
       <div role="banner" className="sr-only">Placement OS</div>
       <main id="main-content" className={`transition-all duration-300 min-h-dvh ${sidebarOpen ? 'ml-52' : 'ml-16'}`}>
         <div className="p-6 lg:p-8 max-w-7xl mx-auto">
-          <Outlet />
+          <AnimatePresence mode="wait">
+            <motion.div key={location.pathname}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.15 }}
+            >
+              <Outlet />
+            </motion.div>
+          </AnimatePresence>
         </div>
       </main>
       <FAB />

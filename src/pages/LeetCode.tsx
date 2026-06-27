@@ -246,6 +246,7 @@ export default function LeetCodePage() {
   const [filterStatus, setFilterStatus] = useState<string>('all')
   const [showFilters, setShowFilters] = useState(false)
   const stats = store.stats
+  const isSynced = !!store.username
 
   const filteredProblems = useMemo(() => {
     let problems = store.problemHistory
@@ -376,40 +377,65 @@ export default function LeetCodePage() {
         </div>
       )}
 
+      {/* SYNC PROMPT */}
+      {!isSynced && !store.syncError && (
+        <motion.div initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }}
+          className="flex items-center gap-3 px-4 py-3 rounded-lg bg-[#DBEAFE] dark:bg-blue-500/10 border border-[#93C5FD] dark:border-blue-500/20 text-sm"
+        >
+          <Sparkles size={16} className="text-[#2563EB] dark:text-blue-400 flex-shrink-0" />
+          <p className="text-xs text-[#2563EB] dark:text-blue-300">
+            Enter your LeetCode ID above and click <strong>Sync</strong> to see your stats, heatmap, and study insights.
+          </p>
+        </motion.div>
+      )}
+
       {/* STATS ROW */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-        <MiniStatCard label="Total Solved" value={stats.totalSolved} color="text-[#2563EB] dark:text-blue-400" icon={CheckCircle} />
-        <MiniStatCard label="Easy" value={stats.easySolved} color="text-[#16A34A]" icon={CheckCircle} />
-        <MiniStatCard label="Medium" value={stats.mediumSolved} color="text-[#D97706]" icon={CheckCircle} />
-        <MiniStatCard label="Hard" value={stats.hardSolved} color="text-red-400" icon={CheckCircle} />
-        <RadialStatCard label="Acceptance" value={stats.acceptanceRate} max={100} color="text-[#16A34A]" strokeColor="#16A34A" suffix="%" />
-        <MiniStatCard label="Current Streak" value={stats.currentStreak} sub="days" color="text-orange-400" icon={Flame} />
-        <MiniStatCard label="Longest Streak" value={stats.longestStreak} sub="days" color="text-orange-400" icon={Flame} />
-        <MiniStatCard label="Global Rank" value={`#${stats.globalRanking.toLocaleString()}`} color="text-[#334155] dark:text-slate-300" icon={BarChart3} />
+        <MiniStatCard label="Total Solved" value={isSynced ? stats.totalSolved : 0} color="text-[#2563EB] dark:text-blue-400" icon={CheckCircle} />
+        <MiniStatCard label="Easy" value={isSynced ? stats.easySolved : 0} color="text-[#16A34A]" icon={CheckCircle} />
+        <MiniStatCard label="Medium" value={isSynced ? stats.mediumSolved : 0} color="text-[#D97706]" icon={CheckCircle} />
+        <MiniStatCard label="Hard" value={isSynced ? stats.hardSolved : 0} color="text-red-400" icon={CheckCircle} />
+        <RadialStatCard label="Acceptance" value={isSynced ? stats.acceptanceRate : 0} max={100} color="text-[#16A34A]" strokeColor="#16A34A" suffix="%" />
+        <MiniStatCard label="Current Streak" value={isSynced ? stats.currentStreak : 0} sub="days" color="text-orange-400" icon={Flame} />
+        <MiniStatCard label="Longest Streak" value={isSynced ? stats.longestStreak : 0} sub="days" color="text-orange-400" icon={Flame} />
+        <MiniStatCard label="Global Rank" value={isSynced ? `#${stats.globalRanking.toLocaleString()}` : '—'} color="text-[#334155] dark:text-slate-300" icon={BarChart3} />
       </div>
 
       {/* MAIN GRID */}
       <div className="grid grid-cols-1 xl:grid-cols-[1fr_320px] gap-6">
         <div className="min-w-0 space-y-6">
           {/* HEATMAP */}
+          {isSynced ? (
           <ContributionHeatmap data={store.activity} />
+          ) : (
+            <div className="card p-6 text-center">
+              <Calendar size={24} className="mx-auto text-[#CBD5E1] dark:text-zinc-600 mb-2" />
+              <p className="text-sm font-medium text-[#334155] dark:text-slate-200">Contribution heatmap will appear here</p>
+              <p className="text-xs text-[#64748B] mt-1">Sync your LeetCode ID to see your coding activity.</p>
+            </div>
+          )}
 
           {/* DIFFICULTY + TOPIC GRID */}
           <div className="grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-6">
-            <DifficultyChart easy={stats.easySolved} medium={stats.mediumSolved} hard={stats.hardSolved} />
+            <DifficultyChart easy={isSynced ? stats.easySolved : 0} medium={isSynced ? stats.mediumSolved : 0} hard={isSynced ? stats.hardSolved : 0} />
             <div className="card p-5">
               <p className="text-sm font-semibold text-[#334155] dark:text-slate-200 mb-3">Topic Progress</p>
+              {isSynced ? (
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 max-h-[400px] overflow-y-auto scrollbar-thin pr-1">
                 {store.topicProgress.map(t => (
                   <TopicCard key={t.topic} topic={t.topic} solved={t.solved} total={t.total} confidence={t.confidence} revisionCount={t.revisionCount} />
                 ))}
               </div>
+              ) : (
+                <p className="text-xs text-[#64748B] text-center py-8">Sync your LeetCode ID to see topic progress.</p>
+              )}
             </div>
           </div>
 
           {/* CURRENT FOCUS */}
           <div className="card p-5">
             <p className="text-sm font-semibold text-[#334155] dark:text-slate-200 mb-3">Current Focus</p>
+            {isSynced ? (
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               {focusItems.map(item => (
                 <motion.button key={item.label} whileHover={{ y: -2 }}
@@ -425,12 +451,16 @@ export default function LeetCodePage() {
                 </motion.button>
               ))}
             </div>
+            ) : (
+              <p className="text-xs text-[#64748B] text-center py-8">Sync your LeetCode ID to get personalized focus recommendations.</p>
+            )}
           </div>
         </div>
 
         {/* SIDEBAR */}
         <div className="xl:sticky xl:top-24 self-start space-y-4">
           {/* PROFILE */}
+          {isSynced ? (
           <div className="card p-5 text-center">
             <div className="w-14 h-14 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center mx-auto mb-3">
               <span className="text-lg font-bold text-white">{displayName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || store.profile.username.slice(0, 2).toUpperCase() || 'U'}</span>
@@ -451,6 +481,13 @@ export default function LeetCodePage() {
               <div><p className="text-[9px] text-[#64748B] uppercase">Solved</p><p className="text-xs font-mono text-[#2563EB] dark:text-blue-400 mt-0.5">{stats.totalSolved}</p></div>
             </div>
           </div>
+          ) : (
+            <div className="card p-5 text-center">
+              <Code2 size={24} className="mx-auto text-[#CBD5E1] dark:text-zinc-600 mb-2" />
+              <p className="text-xs font-medium text-[#334155] dark:text-slate-200">No LeetCode ID synced</p>
+              <p className="text-[10px] text-[#64748B] mt-1">Sync your account above to see your profile.</p>
+            </div>
+          )}
 
           {/* QUICK ACTIONS */}
           <div className="card p-5">
@@ -477,7 +514,7 @@ export default function LeetCodePage() {
           <div className="card p-5">
             <p className="text-xs font-semibold text-[#334155] dark:text-slate-200 mb-3">Recent Activity</p>
             <div className="space-y-2">
-              {store.recentActivity.slice(0, 6).map((a, i) => (
+              {isSynced ? (store.recentActivity.slice(0, 6).map((a, i) => (
                 <div key={i} className="flex items-start gap-2.5">
                   <div className={`w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0 ${a.type === 'solve' ? 'bg-green-500' : a.type === 'contest' ? 'bg-amber-500' : a.type === 'badge' ? 'bg-blue-500' : a.type === 'streak' ? 'bg-orange-500' : a.type === 'revision' ? 'bg-purple-500' : 'bg-slate-500'}`} />
                   <div className="min-w-0">
@@ -485,13 +522,16 @@ export default function LeetCodePage() {
                     <p className="text-[9px] text-[#94A3B8] mt-0.5">{a.date}</p>
                   </div>
                 </div>
-              ))}
+              ))) : (
+                <p className="text-xs text-[#64748B] text-center py-4">Sync your LeetCode ID to see recent activity.</p>
+              )}
             </div>
           </div>
         </div>
       </div>
 
       {/* PROBLEM HISTORY */}
+      {isSynced ? (
       <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
         className="card overflow-hidden"
       >
@@ -577,8 +617,16 @@ export default function LeetCodePage() {
           )}
         </div>
       </motion.div>
+      ) : (
+        <div className="card p-6 text-center">
+          <List size={24} className="mx-auto text-[#CBD5E1] dark:text-zinc-600 mb-2" />
+          <p className="text-sm font-medium text-[#334155] dark:text-slate-200">Problem history will appear here</p>
+          <p className="text-xs text-[#64748B] mt-1">Sync your LeetCode ID to see your problem-solving history.</p>
+        </div>
+      )}
 
       {/* BOTTOM GRID */}
+      {isSynced ? (
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* WEAK TOPICS */}
         <div className="card p-5">
@@ -700,8 +748,16 @@ export default function LeetCodePage() {
           </div>
         </div>
       </div>
+      ) : (
+        <div className="card p-6 text-center col-span-full">
+          <BarChart3 size={24} className="mx-auto text-[#CBD5E1] dark:text-zinc-600 mb-2" />
+          <p className="text-sm font-medium text-[#334155] dark:text-slate-200">Analytics will appear here</p>
+          <p className="text-xs text-[#64748B] mt-1">Sync your LeetCode ID to see weak topics, study insights, achievements, and more.</p>
+        </div>
+      )}
 
       {/* BOTTOM CHARTS */}
+      {isSynced ? (
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="card p-5">
           <p className="text-xs font-semibold text-[#334155] dark:text-slate-200 mb-3">Weekly Progress</p>
@@ -742,6 +798,15 @@ export default function LeetCodePage() {
           </ResponsiveContainer>
         </div>
       </div>
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="card p-6 text-center lg:col-span-3">
+            <Activity size={24} className="mx-auto text-[#CBD5E1] dark:text-zinc-600 mb-2" />
+            <p className="text-sm font-medium text-[#334155] dark:text-slate-200">Progress charts will appear here</p>
+            <p className="text-xs text-[#64748B] mt-1">Sync your LeetCode ID to see weekly, monthly, and topic progress charts.</p>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
