@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
+import { AuthProvider, useAuth } from './contexts/AuthContext'
 import Layout from './components/Layout'
 import CommandPalette from './components/CommandPalette'
 import { ToastContainer } from './components/Toast'
@@ -12,7 +13,7 @@ import Statistics from './pages/Statistics'
 import LeetCode from './pages/LeetCode'
 import CalendarPage from './pages/Calendar'
 import CoreSubjects from './pages/CoreSubjects'
-import IdentityForm from './components/IdentityForm'
+import AuthPage from './pages/AuthPage'
 
 const Placeholder = ({ title }: { title: string }) => (
   <div className="flex items-center justify-center h-full min-h-[60vh]">
@@ -20,7 +21,14 @@ const Placeholder = ({ title }: { title: string }) => (
   </div>
 )
 
-export default function App() {
+function ProtectedRoute({ children }: { children: React.ReactNode }) {
+  const { user, loading } = useAuth()
+  if (loading) return <div className="min-h-screen bg-[#F8FAFC] dark:bg-zinc-900" />
+  if (!user) return <Navigate to="/auth" replace />
+  return <>{children}</>
+}
+
+function AppRoutes() {
   const [paletteOpen, setPaletteOpen] = useState(false)
   const location = useLocation()
 
@@ -41,28 +49,38 @@ export default function App() {
   return (
     <>
       <Routes location={location}>
+        <Route path="/auth" element={<AuthPage />} />
         <Route element={<Layout />}>
-          <Route index element={<Navigate to="/dsa-tracker" replace />} />
-          <Route path="/dsa-tracker" element={<DSATracker />} />
-          <Route path="/roadmap" element={<Roadmap />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/planner" element={<Planner />} />
-          <Route path="/calendar" element={<CalendarPage />} />
-          <Route path="/projects" element={<Placeholder title="Projects" />} />
-          <Route path="/subjects" element={<CoreSubjects />} />
-          <Route path="/leetcode" element={<LeetCode />} />
-          <Route path="/contests" element={<Placeholder title="Contests" />} />
-          <Route path="/revision" element={<Placeholder title="Revision" />} />
-          <Route path="/notes" element={<Placeholder title="Notes" />} />
-          <Route path="/habits" element={<Placeholder title="Habits" />} />
-          <Route path="/statistics" element={<Statistics />} />
-          <Route path="/achievements" element={<Placeholder title="Achievements" />} />
-          <Route path="/settings" element={<Placeholder title="Settings" />} />
+          {['/dsa-tracker', '/roadmap', '/dashboard', '/planner', '/calendar',
+            '/projects', '/subjects', '/leetcode', '/contests', '/revision',
+            '/notes', '/habits', '/statistics', '/achievements', '/settings'].map(p => (
+            <Route key={p} path={p} element={
+              <ProtectedRoute>
+                {p === '/dsa-tracker' ? <DSATracker /> :
+                 p === '/roadmap' ? <Roadmap /> :
+                 p === '/dashboard' ? <Dashboard /> :
+                 p === '/planner' ? <Planner /> :
+                 p === '/calendar' ? <CalendarPage /> :
+                 p === '/subjects' ? <CoreSubjects /> :
+                 p === '/leetcode' ? <LeetCode /> :
+                 p === '/statistics' ? <Statistics /> :
+                 <Placeholder title={p.slice(1).replace(/^\w/, c => c.toUpperCase())} />}
+              </ProtectedRoute>
+            } />
+          ))}
         </Route>
+        <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
       <CommandPalette isOpen={paletteOpen} onClose={() => setPaletteOpen(false)} />
       <ToastContainer />
-      <IdentityForm />
     </>
+  )
+}
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <AppRoutes />
+    </AuthProvider>
   )
 }
