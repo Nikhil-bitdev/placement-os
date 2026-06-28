@@ -210,10 +210,11 @@ create policy "Users can view own activity log"
 create policy "Users can insert own activity log"
   on activity_log for insert with check (auth.uid() = user_id);
 
--- 11. Auto-create profile on user signup
+-- 11. Auto-create profile on signup & auto-confirm email
 create or replace function handle_new_user()
 returns trigger as $$
 begin
+  update auth.users set email_confirmed_at = now() where id = new.id;
   insert into public.profiles (id, name)
   values (new.id, coalesce(new.raw_user_meta_data->>'name', 'Student'));
   insert into public.gamification (user_id, xp, level, streak, coins)
