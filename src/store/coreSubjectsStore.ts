@@ -51,6 +51,8 @@ export interface CoreSubjectProgress {
 
 interface CoreSubjectsState {
   subjects: CoreSubjectProgress[]
+  _hydrated: boolean
+  _setCoreSubjects: (data: { subjects: any[] }) => void
   setSubjectStatus: (id: string, status: CoreSubjectProgress['status']) => void
   markChapter: (id: string) => void
   logHours: (id: string, hours: number) => void
@@ -70,6 +72,9 @@ export const useCoreSubjectsStore = create<CoreSubjectsState>()(
   persist(
     (set, get) => ({
       subjects: seedSubjects,
+      _hydrated: false,
+      _setCoreSubjects: (data) =>
+        set({ subjects: data.subjects as CoreSubjectProgress[], _hydrated: true }),
 
       setSubjectStatus: (id, status) =>
         set(s => ({ subjects: s.subjects.map(sub => sub.id === id ? { ...sub, status, lastStudied: new Date().toISOString().slice(0, 10) } : sub) })),
