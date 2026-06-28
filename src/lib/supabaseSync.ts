@@ -41,7 +41,7 @@ export async function upsertDsaProgress(rows: { problem_id: string; user_id: str
   if (error) console.error('supabase: upsert dsa_progress failed', error)
 }
 
-export async function upsertRoadmapProgress(rows: { tech_id: string; user_id: string; status: string; completion_date: string | null; notes: string }[]): Promise<void> {
+export async function upsertRoadmapProgress(rows: { tech_id: string; user_id: string; status: string; hours_spent: number; notes: string; mini_projects: string[]; main_project: string; revision_count: number; confidence: number; completion_date: string | null; estimated_remaining_hours: number }[]): Promise<void> {
   if (rows.length === 0) return
   const { error } = await supabase.from('roadmap_progress').upsert(rows, { onConflict: 'tech_id,user_id' })
   if (error) console.error('supabase: upsert roadmap_progress failed', error)

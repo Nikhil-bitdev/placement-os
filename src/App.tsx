@@ -13,6 +13,7 @@ import Statistics from './pages/Statistics'
 import LeetCode from './pages/LeetCode'
 import CalendarPage from './pages/Calendar'
 import CoreSubjects from './pages/CoreSubjects'
+import DSAPatterns from './pages/DSAPatterns'
 import AuthPage from './pages/AuthPage'
 
 const Placeholder = ({ title }: { title: string }) => (
@@ -52,7 +53,7 @@ function AppRoutes() {
         <Route path="/auth" element={<AuthPage />} />
         <Route element={<Layout />}>
           {['/dsa-tracker', '/roadmap', '/dashboard', '/planner', '/calendar',
-            '/projects', '/subjects', '/leetcode', '/contests', '/revision',
+            '/projects', '/subjects', '/leetcode', '/patterns', '/contests', '/revision',
             '/notes', '/habits', '/statistics', '/achievements', '/settings'].map(p => (
             <Route key={p} path={p} element={
               <ProtectedRoute>
@@ -63,6 +64,7 @@ function AppRoutes() {
                  p === '/calendar' ? <CalendarPage /> :
                  p === '/subjects' ? <CoreSubjects /> :
                  p === '/leetcode' ? <LeetCode /> :
+                 p === '/patterns' ? <DSAPatterns /> :
                  p === '/statistics' ? <Statistics /> :
                  <Placeholder title={p.slice(1).replace(/^\w/, c => c.toUpperCase())} />}
               </ProtectedRoute>

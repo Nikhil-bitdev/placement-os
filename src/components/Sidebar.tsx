@@ -1,6 +1,7 @@
 import { NavLink, useLocation } from 'react-router-dom'
 import { useUIStore } from '../store/uiStore'
 import { useGamificationStore, XP_PER_LEVEL } from '../store/gamificationStore'
+import { useAuth } from '../contexts/AuthContext'
 import { motion } from 'framer-motion'
 
 const navGroups = [
@@ -18,6 +19,7 @@ const navGroups = [
       { to: '/dsa-tracker', label: 'DSA Tracker', icon: 'M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4' },
       { to: '/roadmap', label: 'Full Stack', icon: 'M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7' },
       { to: '/leetcode', label: 'LeetCode', icon: 'M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4' },
+      { to: '/patterns', label: 'DSA Patterns', icon: 'M4 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1V5zm10 0a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zm10 0a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z' },
       { to: '/subjects', label: 'Core Subjects', icon: 'M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253' },
     ],
   },
@@ -43,7 +45,21 @@ const navGroups = [
   },
 ]
 
-const activePages = ['/dashboard', '/planner', '/calendar', '/dsa-tracker', '/roadmap', '/projects', '/leetcode', '/subjects', '/statistics', '/achievements', '/contests', '/settings']
+const activePages = ['/dashboard', '/planner', '/calendar', '/dsa-tracker', '/roadmap', '/projects', '/leetcode', '/patterns', '/subjects', '/statistics', '/achievements', '/contests', '/settings']
+
+function SignOutButton({ sidebarOpen }: { sidebarOpen: boolean }) {
+  const { signOut } = useAuth()
+  return (
+    <button onClick={signOut} className="sidebar-item-inactive w-full sidebar-item !text-[#EF4444] hover:!text-[#DC2626]" aria-label="Sign out">
+      <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
+        <polyline points="16 17 21 12 16 7" />
+        <line x1="21" y1="12" x2="9" y2="12" />
+      </svg>
+      {sidebarOpen && <span className="text-sm">Sign Out</span>}
+    </button>
+  )
+}
 
 export default function Sidebar() {
   const { sidebarOpen, toggleSidebar, theme, toggleTheme } = useUIStore()
@@ -133,8 +149,8 @@ export default function Sidebar() {
         ))}
       </nav>
 
-      {/* Theme toggle */}
-      <div className="px-3 py-3 border-t border-[#E2E8F0] dark:border-[#ffffff08]">
+      {/* Bottom actions */}
+      <div className="px-3 py-2 border-t border-[#E2E8F0] dark:border-[#ffffff08] flex flex-col gap-1">
         <button onClick={toggleTheme} className="sidebar-item-inactive w-full sidebar-item" aria-label={theme === 'light' ? 'Dark mode' : 'Light mode'}>
           <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
             {theme === 'light' ? (
@@ -150,6 +166,7 @@ export default function Sidebar() {
           </svg>
           {sidebarOpen && <span className="text-sm">{theme === 'light' ? 'Dark Mode' : 'Light Mode'}</span>}
         </button>
+        <SignOutButton sidebarOpen={sidebarOpen} />
       </div>
     </aside>
   )

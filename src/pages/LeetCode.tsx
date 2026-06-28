@@ -23,7 +23,7 @@ const D2 = '#F59E0B'
 const D1 = '#16A34A'
 const D0 = '#E2E8F0'
 
-const heatmapColors = ['#E2E8F0', '#BFDBFE', '#60A5FA', '#2563EB', '#2563EB']
+const heatmapColors = ['#E2E8F0', '#BFDBFE', '#60A5FA', '#2563EB', '#1E40AF']
 
 const difficultyColors = { easy: '#16A34A', medium: '#F59E0B', hard: '#DC2626' }
 
@@ -145,8 +145,8 @@ function ContributionHeatmap({ data: _data }: { data: { date: string; level: 0 |
       <div className="flex items-center justify-between mt-3">
         <div className="flex items-center gap-1">
           <span className="text-[9px] text-[#94A3B8]">Less</span>
-          {heatmapColors.map(c => (
-            <div key={c} className="w-3 h-3 rounded-[3px]" style={{ backgroundColor: c }} />
+          {heatmapColors.map((c, i) => (
+            <div key={`${c}-${i}`} className="w-3 h-3 rounded-[3px]" style={{ backgroundColor: c }} />
           ))}
           <span className="text-[9px] text-[#94A3B8]">More</span>
         </div>
@@ -543,8 +543,8 @@ export default function LeetCodePage() {
           <table className="w-full text-xs">
             <thead>
               <tr className="border-b border-[#E2E8F0] dark:border-zinc-800">
-                {['Problem', 'Difficulty', 'Topic', 'Companies', 'Attempts', 'Time', 'Revisions', '', ''].map(h => (
-                  <th key={h} className="text-left text-[10px] text-[#64748B] font-medium px-3 py-2.5 whitespace-nowrap">{h}</th>
+                {[{ label: 'Problem', key: 'problem' }, { label: 'Difficulty', key: 'diff' }, { label: 'Topic', key: 'topic' }, { label: 'Companies', key: 'companies' }, { label: 'Attempts', key: 'attempts' }, { label: 'Time', key: 'time' }, { label: 'Revisions', key: 'revisions' }, { label: '', key: 'fav' }, { label: '', key: 'solved' }].map(h => (
+                  <th key={h.key} className="text-left text-[10px] text-[#64748B] font-medium px-3 py-2.5 whitespace-nowrap">{h.label}</th>
                 ))}
               </tr>
             </thead>

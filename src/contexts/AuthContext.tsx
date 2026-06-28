@@ -9,6 +9,8 @@ import { useRoadmapStore } from '../store/roadmapStore'
 import { useCoreSubjectsStore } from '../store/coreSubjectsStore'
 import { seedSubjects } from '../data/coreSubjects'
 
+const LAST_USER_KEY = 'placement-os-last-user'
+
 const STORAGE_KEYS = [
   'placement-os-gamification',
   'placement-os-leetcode',
@@ -65,6 +67,11 @@ function resetStores() {
   useCoreSubjectsStore.setState({ subjects: seedSubjects })
 }
 
+function clearForNewUser() {
+  clearStorage()
+  resetStores()
+}
+
 interface AuthState {
   user: User | null
   session: Session | null
@@ -82,13 +89,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    let lastUserId: string | undefined
-
     supabase.auth.getSession()
       .then(({ data: { session } }) => {
+        if (session?.user) {
+          const lastUserId = localStorage.getItem(LAST_USER_KEY)
+          if (lastUserId && lastUserId !== session.user.id) {
+            clearForNewUser()
+          }
+          localStorage.setItem(LAST_USER_KEY, session.user.id)
+        }
         setSession(session)
         setUser(session?.user ?? null)
-        lastUserId = session?.user?.id
       })
       .catch(() => {
         console.warn('Supabase session check failed')
@@ -96,11 +107,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .finally(() => setLoading(false))
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_IN' && session?.user && session.user.id !== lastUserId) {
-        clearStorage()
-        resetStores()
+      if (event === 'SIGNED_IN' && session?.user) {
+        const lastUserId = localStorage.getItem(LAST_USER_KEY)
+        if (lastUserId && lastUserId !== session.user.id) {
+          clearForNewUser()
+        }
+        localStorage.setItem(LAST_USER_KEY, session.user.id)
       }
-      lastUserId = session?.user?.id
       setSession(session)
       setUser(session?.user ?? null)
       setLoading(false)
@@ -124,8 +137,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   const signOut = async () => {
-    clearStorage()
-    resetStores()
+    // Keep data in localStorage for the same user to pick up on re-login.
+    // A different user signing in will trigger clearForNewUser() via onAuthStateChange.
     await supabase.auth.signOut()
   }
 

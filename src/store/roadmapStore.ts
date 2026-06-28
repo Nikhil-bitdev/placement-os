@@ -5,6 +5,8 @@ import { useGamificationStore } from './gamificationStore'
 
 interface RoadmapState {
   techProgress: Record<string, TechProgress>
+  _hydrated: boolean
+  _setRoadmapData: (data: { techProgress: Record<string, any> }) => void
   getProgress: (techId: string) => TechProgress
   updateStatus: (techId: string, status: TechProgress['status']) => void
   updateHours: (techId: string, hours: number) => void
@@ -35,6 +37,9 @@ export const useRoadmapStore = create<RoadmapState>()(
   persist(
     (set, get) => ({
       techProgress: {},
+      _hydrated: false,
+      _setRoadmapData: (data) =>
+        set({ techProgress: data.techProgress as Record<string, TechProgress>, _hydrated: true }),
 
       getProgress: (techId) => {
         return get().techProgress[techId] || defaultTechProgress()
