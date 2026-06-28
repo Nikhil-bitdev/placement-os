@@ -226,3 +226,61 @@ $$ language plpgsql security definer;
 create trigger on_auth_user_created
   after insert on auth.users
   for each row execute function handle_new_user();
+
+-- =============================================
+-- COLUMN ADDITIONS (run as ALTER or add to schema)
+-- =============================================
+
+-- profiles: add quick_notes and identity_skipped
+alter table profiles add column if not exists quick_notes text default '';
+alter table profiles add column if not exists identity_skipped boolean default false;
+
+-- dsa_progress: add missing store fields
+alter table dsa_progress add column if not exists attempts integer default 0;
+alter table dsa_progress add column if not exists favorite boolean default false;
+alter table dsa_progress add column if not exists revision_status text default 'new';
+alter table dsa_progress add column if not exists time_taken integer default 0;
+
+-- roadmap_progress: add missing store fields
+alter table roadmap_progress add column if not exists hours_spent real default 0;
+alter table roadmap_progress add column if not exists mini_projects jsonb default '[]';
+alter table roadmap_progress add column if not exists main_project text default '';
+alter table roadmap_progress add column if not exists revision_count integer default 0;
+alter table roadmap_progress add column if not exists confidence integer default 1;
+alter table roadmap_progress add column if not exists estimated_remaining_hours integer default 0;
+
+-- core_subjects_progress: store the deeply nested data as jsonb (topics + interview questions)
+alter table core_subjects_progress add column if not exists status text default 'not-started';
+alter table core_subjects_progress add column if not exists chapters_completed integer default 0;
+alter table core_subjects_progress add column if not exists total_chapters integer default 0;
+alter table core_subjects_progress add column if not exists last_studied timestamptz;
+alter table core_subjects_progress add column if not exists interview_readiness integer default 0;
+alter table core_subjects_progress add column if not exists topics jsonb default '[]';
+
+-- gamification: add achievements array
+alter table gamification add column if not exists achievements jsonb default '[]';
+
+-- =============================================
+-- NEW TABLE: dsa_pattern_progress
+-- =============================================
+create table if not exists dsa_pattern_progress (
+  pattern_id text not null,
+  user_id uuid not null references auth.users(id) on delete cascade,
+  solved boolean default false,
+  completed_at timestamptz,
+  primary key (pattern_id, user_id)
+);
+
+alter table dsa_pattern_progress enable row level security;
+
+create policy "Users can view own pattern progress"
+  on dsa_pattern_progress for select using (auth.uid() = user_id);
+
+create policy "Users can upsert own pattern progress"
+  on dsa_pattern_progress for insert with check (auth.uid() = user_id);
+
+create policy "Users can update own pattern progress"
+  on dsa_pattern_progress for update using (auth.uid() = user_id);
+
+create policy "Users can delete own pattern progress"
+  on dsa_pattern_progress for delete using (auth.uid() = user_id);
