@@ -40,12 +40,7 @@ export default function AuthPage() {
     }
 
     if (mode === 'signup') {
-      const signInErr = await signIn(email, password)
-      if (signInErr) {
-        setError(signInErr)
-        setSubmitting(false)
-        return
-      }
+      await signIn(email, password)
     }
 
     navigate('/dashboard')
