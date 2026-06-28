@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Outlet, useNavigate, useLocation } from 'react-router-dom'
 import { FileText, Clock, Plus, Target } from 'lucide-react'
 import Sidebar from './Sidebar'
+import IdentityForm from './IdentityForm'
 import { useUIStore } from '../store/uiStore'
 import { motion, AnimatePresence } from 'framer-motion'
 
@@ -71,6 +72,7 @@ export default function Layout() {
         </div>
       </main>
       <FAB />
+      <IdentityForm />
     </div>
   )
 }
