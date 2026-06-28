@@ -36,12 +36,19 @@ export default function AuthPage() {
     if (err) {
       setError(err)
       setSubmitting(false)
-    } else if (mode === 'signup') {
-      setError('Check your email for the confirmation link!')
-      setSubmitting(false)
-    } else {
-      navigate('/dashboard')
+      return
     }
+
+    if (mode === 'signup') {
+      const signInErr = await signIn(email, password)
+      if (signInErr) {
+        setError(signInErr)
+        setSubmitting(false)
+        return
+      }
+    }
+
+    navigate('/dashboard')
   }
 
   return (
