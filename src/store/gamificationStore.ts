@@ -8,10 +8,12 @@ export interface GamificationState {
   level: number
   displayName: string
   achievements: string[]
+  _hydrated: boolean
   addXP: (amount: number) => void
   unlockAchievement: (id: string) => void
   hasAchievement: (id: string) => boolean
   setDisplayName: (name: string) => void
+  _setGamification: (data: Partial<{ xp: number; level: number; displayName: string; achievements: string[] }>) => void
 }
 
 export const useGamificationStore = create<GamificationState>()(
@@ -21,6 +23,7 @@ export const useGamificationStore = create<GamificationState>()(
       level: 1,
       displayName: 'User',
       achievements: [],
+      _hydrated: false,
       addXP: (amount) => set(state => {
         const newXP = state.xp + amount
         const newLevel = Math.floor(newXP / XP_PER_LEVEL) + 1
@@ -31,6 +34,7 @@ export const useGamificationStore = create<GamificationState>()(
       })),
       hasAchievement: (id) => get().achievements.includes(id),
       setDisplayName: (name) => set({ displayName: name }),
+      _setGamification: (data) => set(data),
     }),
     { name: 'placement-os-gamification' }
   )
