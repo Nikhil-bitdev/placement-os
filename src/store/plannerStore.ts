@@ -68,6 +68,8 @@ export { CATEGORIES }
 
 interface PlannerState {
   tasks: PlannerTask[]
+  _hydrated: boolean
+  _setTasks: (tasks: PlannerTask[]) => void
   addTask: (task: Omit<PlannerTask, 'id' | 'completedAt' | 'createdAt'>) => void
   updateTask: (id: string, updates: Partial<PlannerTask>) => void
   deleteTask: (id: string) => void
@@ -84,6 +86,8 @@ export const usePlannerStore = create<PlannerState>()(
   persist(
     (set) => ({
       tasks: [],
+      _hydrated: false,
+      _setTasks: (tasks) => set({ tasks, _hydrated: true }),
 
       addTask: (task) =>
         set((state) => {
