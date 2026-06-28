@@ -3,6 +3,7 @@ import { persist } from 'zustand/middleware'
 import { fetchLeetCodeProfile, fetchProblemDetails } from '../lib/leetcodeApi'
 import allSections from '../data/dsa'
 import { useDSAStore } from './dsaStore'
+import { allQuestions as patternQuestions } from '../data/dsaPatterns'
 
 export interface ActivityDay {
   date: string
@@ -44,6 +45,7 @@ export interface Badge {
 }
 
 export interface LeetCodeState {
+  _hydrated: boolean
   username: string
   isSyncing: boolean
   lastSynced: string | null
@@ -285,6 +287,7 @@ function getInitialState(): LeetCodeState {
   const recentActivity = generateRecentActivity()
   const badges = generateBadges()
   return {
+    _hydrated: false,
     username: '',
     isSyncing: false,
     lastSynced: null,
@@ -403,8 +406,10 @@ export const useLeetCodeStore = create<LeetCodeState>()(
           if (weak.length > 0) weak.slice(0, 2).forEach(t =>
             studyInsights.push({ text: `Your ${t.topic} success rate is only ${t.confidence}%.`, type: 'negative' })
           )
-          const best = topicProgress.reduce((a, b) => a.confidence > b.confidence ? a : b)
-          studyInsights.push({ text: `${best.topic} is your strongest topic at ${best.confidence}% confidence.`, type: 'positive' })
+          const best = topicProgress.length > 0
+            ? topicProgress.reduce((a, b) => a.confidence > b.confidence ? a : b)
+            : null
+          if (best) studyInsights.push({ text: `${best.topic} is your strongest topic at ${best.confidence}% confidence.`, type: 'positive' })
           if (data.currentStreak > 3) studyInsights.push({ text: `Solving streak is ${data.currentStreak} days!`, type: 'positive' })
           studyInsights.push({ text: `Total solved: ${data.totalSolved} problems across all topics.`, type: 'neutral' })
 
@@ -528,6 +533,26 @@ export const useLeetCodeStore = create<LeetCodeState>()(
                 useDSAStore.getState().markSolved(problem.id)
               }
             }
+          }
+
+          const patternKey = 'pattern_solved_ids'
+          const existingPatternSolved: string[] = (() => {
+            try { return JSON.parse(localStorage.getItem(patternKey) || '[]') }
+            catch { return [] }
+          })()
+          const patternSolved = new Set(existingPatternSolved)
+          let patternChanged = false
+          for (const q of patternQuestions) {
+            if (patternSolved.has(q.id)) continue
+            const match = q.leetcodeUrl.match(/problems\/([^/]+)/)
+            if (!match) continue
+            if (solvedSlugs.has(match[1])) {
+              patternSolved.add(q.id)
+              patternChanged = true
+            }
+          }
+          if (patternChanged) {
+            localStorage.setItem(patternKey, JSON.stringify([...patternSolved]))
           }
         } catch (e) {
           set({

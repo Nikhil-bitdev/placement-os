@@ -177,6 +177,7 @@ create table leetcode_cache (
   username text,
   stats jsonb default '{}',
   activity jsonb default '[]',
+  full_state jsonb default '{}',
   last_synced timestamptz,
   updated_at timestamptz default now()
 );
