@@ -7,6 +7,7 @@ import { useGamificationStore } from './gamificationStore'
 interface DSAState {
   progress: Record<string, DSAProblemProgress>
   expandedSections: Record<string, boolean>
+  _hydrated: boolean
   getSectionStats: (sectionId: string) => SectionStats
   markSolved: (problemId: string) => void
   markUnsolved: (problemId: string) => void
@@ -18,6 +19,7 @@ interface DSAState {
   updateTimeTaken: (problemId: string, minutes: number) => void
   setRevisionStatus: (problemId: string, status: DSAProblemProgress['revisionStatus']) => void
   resetProgress: () => void
+  _setDSAData: (data: { progress: Record<string, any> }) => void
 }
 
 const defaultProgress = (): DSAProblemProgress => ({
@@ -35,6 +37,7 @@ export const useDSAStore = create<DSAState>()(
     (set, get) => ({
       progress: {},
       expandedSections: {},
+      _hydrated: false,
 
       getSectionStats: (sectionId: string): SectionStats => {
         const section = allSections.find((s) => s.id === sectionId)
@@ -168,6 +171,8 @@ export const useDSAStore = create<DSAState>()(
           },
         })),
 
+      _setDSAData: (data) =>
+        set({ progress: data.progress as Record<string, DSAProblemProgress>, _hydrated: true }),
       resetProgress: () => set({ progress: {} }),
     }),
     { name: 'placement-os-dsa' },
