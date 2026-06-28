@@ -1,77 +1,7 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
 import { Session, User } from '@supabase/supabase-js'
 import { supabase } from '../lib/supabase'
-import { useGamificationStore } from '../store/gamificationStore'
-import { useLeetCodeStore } from '../store/leetcodeStore'
-import { useDSAStore } from '../store/dsaStore'
-import { usePlannerStore } from '../store/plannerStore'
-import { useRoadmapStore } from '../store/roadmapStore'
-import { useCoreSubjectsStore } from '../store/coreSubjectsStore'
-import { seedSubjects } from '../data/coreSubjects'
 import { migrateLocalStorageToSupabase } from '../lib/migrateLocalStorageToSupabase'
-
-const LAST_USER_KEY = 'placement-os-last-user'
-
-const STORAGE_KEYS = [
-  'placement-os-gamification',
-  'placement-os-leetcode',
-  'placement-os-dsa',
-  'placement-os-planner',
-  'placement-os-roadmap',
-  'placement-os-core-subjects',
-  'placement-os-streak',
-  'placement-os-streak-last',
-  'placement-os-identity-skipped',
-  'placement-os-achievements',
-  'placement-os-quick-notes',
-]
-
-function clearStorage() {
-  for (const key of STORAGE_KEYS) {
-    localStorage.removeItem(key)
-  }
-}
-
-function resetStores() {
-  useGamificationStore.setState({
-    xp: 0,
-    level: 1,
-    displayName: 'User',
-    achievements: [],
-  })
-  useLeetCodeStore.setState({
-    username: '',
-    isSyncing: false,
-    lastSynced: null,
-    syncError: null,
-    stats: {
-      totalSolved: 0, easySolved: 0, mediumSolved: 0, hardSolved: 0,
-      acceptanceRate: 0, currentStreak: 0, longestStreak: 0,
-      contestRating: 0, contestPeakRating: 0, globalRanking: 0, countryRanking: 0,
-      studyHours: 0, weeklyGoal: 15, monthlyGoal: 60, weeklyProgress: 0, monthlyProgress: 0,
-    },
-    activity: [],
-    topicProgress: [],
-    weakTopics: [],
-    studyInsights: [],
-    contest: { rating: 0, peakRating: 0, attended: 0, bestRank: 0, worstRank: 0, averageRank: 0 },
-    problemHistory: [],
-    recentActivity: [],
-    badges: [],
-    goals: { easy: 2, medium: 2, hard: 1 },
-    dailyGoalCompleted: false,
-    profile: { username: '', rating: 0, contestBadge: '' },
-  })
-  useDSAStore.setState({ progress: {}, expandedSections: {} })
-  usePlannerStore.setState({ tasks: [] })
-  useRoadmapStore.setState({ techProgress: {} })
-  useCoreSubjectsStore.setState({ subjects: seedSubjects })
-}
-
-function clearForNewUser() {
-  clearStorage()
-  resetStores()
-}
 
 interface AuthState {
   user: User | null
@@ -92,28 +22,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     supabase.auth.getSession()
       .then(({ data: { session } }) => {
-        if (session?.user) {
-          const lastUserId = localStorage.getItem(LAST_USER_KEY)
-          if (lastUserId && lastUserId !== session.user.id) {
-            clearForNewUser()
-          }
-          localStorage.setItem(LAST_USER_KEY, session.user.id)
-        }
         setSession(session)
         setUser(session?.user ?? null)
       })
-      .catch(() => {
-        console.warn('Supabase session check failed')
-      })
+      .catch(() => console.warn('Supabase session check failed'))
       .finally(() => setLoading(false))
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_IN' && session?.user) {
-        const lastUserId = localStorage.getItem(LAST_USER_KEY)
-        if (lastUserId && lastUserId !== session.user.id) {
-          clearForNewUser()
-        }
-        localStorage.setItem(LAST_USER_KEY, session.user.id)
         migrateLocalStorageToSupabase(session.user.id)
       }
       setSession(session)
@@ -139,8 +55,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   const signOut = async () => {
-    // Keep data in localStorage for the same user to pick up on re-login.
-    // A different user signing in will trigger clearForNewUser() via onAuthStateChange.
     await supabase.auth.signOut()
   }
 

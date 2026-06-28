@@ -29,11 +29,29 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   return <>{children}</>
 }
 
+const LEGACY_KEYS = [
+  'placement-os-gamification',
+  'placement-os-leetcode',
+  'placement-os-dsa',
+  'placement-os-planner',
+  'placement-os-roadmap',
+  'placement-os-core-subjects',
+  'placement-os-streak',
+  'placement-os-streak-last',
+  'placement-os-last-user',
+]
+
 function AppRoutes() {
   const [paletteOpen, setPaletteOpen] = useState(false)
   const location = useLocation()
 
   useAchievementChecker()
+
+  useEffect(() => {
+    for (const key of LEGACY_KEYS) {
+      localStorage.removeItem(key)
+    }
+  }, [])
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
