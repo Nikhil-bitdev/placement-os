@@ -26,13 +26,21 @@ export function GamificationSync() {
         update.xp = g.xp ?? 0
         update.level = g.level ?? 1
         update.achievements = g.achievements ?? []
+        if (g.streak !== undefined) {
+          localStorage.setItem('placement-os-streak', String(g.streak))
+        }
       }
       return update
     },
     save: async (userId, state) => {
       await Promise.all([
         supabase.from('profiles').upsert({ id: userId, name: state.displayName }, { onConflict: 'id' }),
-        upsertGamification(userId, { xp: state.xp, level: state.level, achievements: JSON.stringify(state.achievements) }),
+        upsertGamification(userId, {
+          xp: state.xp,
+          level: state.level,
+          achievements: JSON.stringify(state.achievements),
+          streak: parseInt(localStorage.getItem('placement-os-streak') || '0', 10),
+        }),
       ])
     },
   })
