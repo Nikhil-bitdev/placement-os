@@ -8,6 +8,7 @@ import { usePlannerStore } from '../store/plannerStore'
 import { useRoadmapStore } from '../store/roadmapStore'
 import { useCoreSubjectsStore } from '../store/coreSubjectsStore'
 import { seedSubjects } from '../data/coreSubjects'
+import { migrateLocalStorageToSupabase } from '../lib/migrateLocalStorageToSupabase'
 
 const LAST_USER_KEY = 'placement-os-last-user'
 
@@ -113,6 +114,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           clearForNewUser()
         }
         localStorage.setItem(LAST_USER_KEY, session.user.id)
+        migrateLocalStorageToSupabase(session.user.id)
       }
       setSession(session)
       setUser(session?.user ?? null)
